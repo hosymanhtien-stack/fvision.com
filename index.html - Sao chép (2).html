@@ -1970,49 +1970,60 @@ auth.onAuthStateChanged(async user => {
     // Chưa đăng ký → show register form
     document.getElementById('regAvatar').src = user.photoURL || '';
     document.getElementById('regEmailDisplay').textContent = user.email;
-    document.getElementById('regFormArea').style.display = '';
-    document.getElementById('regPendingArea').style.display = 'none';
     document.getElementById('regErr').classList.remove('show');
     showScreen('register');
     return;
   }
 
+  // ── Đã đăng ký → vào học luôn ──
   const data = snap.data();
+  enterStudentApp(user, data, docRef);
+}); // end onAuthStateChanged
+} // end startAuthListener
 
-  // Đã đăng ký nhưng chưa được admin duyệt (chưa có courses)
-  if(!data.approved){
-    document.getElementById('regAvatar').src = user.photoURL || '';
-    document.getElementById('regEmailDisplay').textContent = user.email;
-    document.getElementById('regFormArea').style.display = 'none';
-    document.getElementById('regPendingArea').style.display = '';
-    showScreen('register');
-    // Lắng nghe realtime khi admin duyệt
-    unsubscribeStudent = docRef.onSnapshot(s => {
-      if(s.exists && s.data().approved){ location.reload(); }
-    });
-    return;
-  }
-
-  // ── Đã được duyệt → vào học ──
+// ── Enter student app ──
+function enterStudentApp(user, data, docRef){
   currentUser = {type:'student', user, data};
   document.getElementById('userLabel').textContent = data.name || user.displayName;
   renderStudentNav(data);
   showScreen('app');
-  const firstCourse = (data.courses||[0])[0] ?? 0;
-  selectCourse(firstCourse);
 
-  // Realtime: nếu admin thay đổi courses → reload nav ngay
+  // Nếu chưa có môn nào → hiện thông báo chờ admin cấp
+  if(!data.courses || data.courses.length === 0){
+    document.getElementById('mainArea').innerHTML = `
+    <div style="text-align:center;padding:80px 20px;animation:fadeUp .4s ease">
+      <div style="font-size:64px;margin-bottom:16px">📚</div>
+      <h2 style="font-size:22px;font-weight:800;margin-bottom:10px">Chào mừng, ${data.name}!</h2>
+      <p style="color:var(--muted);font-size:15px;line-height:1.7;max-width:420px;margin:0 auto 24px">
+        Tài khoản của bạn đã được tạo thành công.<br>
+        Vui lòng liên hệ quản trị viên để được cấp môn học.
+      </p>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 28px;display:inline-block">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:8px">GMAIL CỦA BẠN</div>
+        <div style="font-weight:700;color:var(--text)">${user.email}</div>
+      </div>
+    </div>`;
+  } else {
+    const firstCourse = data.courses[0];
+    selectCourse(firstCourse);
+  }
+
+  // Realtime: admin cấp/thu môn → cập nhật ngay
   unsubscribeStudent = docRef.onSnapshot(s => {
     if(!s.exists) return;
     const nd = s.data();
-    if(JSON.stringify(nd.courses) !== JSON.stringify(currentUser.data.courses)){
+    const oldCourses = JSON.stringify(currentUser.data.courses||[]);
+    const newCourses = JSON.stringify(nd.courses||[]);
+    if(oldCourses !== newCourses){
       currentUser.data = nd;
       renderStudentNav(nd);
+      if((nd.courses||[]).length > 0 && (currentUser.data.courses||[]).length === 0){
+        selectCourse(nd.courses[0]);
+      }
       showToast('Môn học của bạn vừa được cập nhật!','ok');
     }
   });
-}); // end onAuthStateChanged
-} // end startAuthListener
+}
 
 // ── Google Sign-In ──
 function signInWithGoogle(){
@@ -2030,27 +2041,27 @@ async function submitRegister(){
   if(!name){ errEl.classList.add('show'); return; }
   errEl.classList.remove('show');
 
+  const btn = document.querySelector('#regFormArea .login-btn');
+  if(btn){ btn.textContent = '⏳ Đang tạo tài khoản…'; btn.disabled = true; }
+
   const user = auth.currentUser;
   if(!user) return;
   try{
-    await db.collection('students').doc(user.uid).set({
+    const docRef = db.collection('students').doc(user.uid);
+    await docRef.set({
       name,
       email: user.email,
       photoURL: user.photoURL || '',
       courses: [],
-      approved: false,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    // Show pending
-    document.getElementById('regFormArea').style.display = 'none';
-    document.getElementById('regPendingArea').style.display = '';
-    // Listen for approval
-    unsubscribeStudent = db.collection('students').doc(user.uid).onSnapshot(s=>{
-      if(s.exists && s.data().approved){ location.reload(); }
-    });
+    // Vào thẳng app luôn
+    const data = (await docRef.get()).data();
+    enterStudentApp(user, data, docRef);
   } catch(e){
     errEl.textContent = '❌ Lỗi: '+e.message;
     errEl.classList.add('show');
+    if(btn){ btn.textContent = '✓ Hoàn tất đăng ký'; btn.disabled = false; }
   }
 }
 
@@ -2103,20 +2114,12 @@ function initAdminPanel(){
   if(unsubAdmin) unsubAdmin();
   unsubAdmin = db.collection('students').onSnapshot(snap => {
     adminStudents = [];
-    adminPending  = [];
     snap.forEach(doc => {
-      const d = {...doc.data(), uid: doc.id};
-      if(d.approved) adminStudents.push(d);
-      else adminPending.push(d);
+      adminStudents.push({...doc.data(), uid: doc.id});
     });
-    // Update pending badge
+    // Hide pending badge - no longer needed
     const badge = document.getElementById('pendingBadge');
-    if(adminPending.length > 0){
-      badge.textContent = adminPending.length;
-      badge.style.display = 'inline';
-    } else {
-      badge.style.display = 'none';
-    }
+    if(badge) badge.style.display = 'none';
     // Refresh current visible tab
     const active = document.querySelector('.admin-section.show');
     if(active){
@@ -2124,7 +2127,6 @@ function initAdminPanel(){
       if(id==='overview')   renderOverview();
       if(id==='students')   renderStudentTable();
       if(id==='courses')    renderCourseMgmt();
-      if(id==='pending')    renderPendingList();
     } else {
       renderOverview();
     }
@@ -2134,8 +2136,8 @@ function initAdminPanel(){
 
 function renderOverview(){
   const total = adminStudents.length;
-  const pending = adminPending.length;
   const totalEnroll = adminStudents.reduce((a,s)=>a+(s.courses||[]).length,0);
+  const noCoursesCount = adminStudents.filter(s=>!(s.courses||[]).length).length;
 
   document.getElementById('adminStatsArea').innerHTML = `
     <div style="margin-bottom:24px">
@@ -2144,29 +2146,36 @@ function renderOverview(){
     </div>
     <div class="admin-stats">
       <div class="a-stat"><div class="a-num" style="color:#f59e0b">${total}</div><div class="a-lbl">Học sinh</div></div>
-      <div class="a-stat"><div class="a-num" style="color:var(--red)">${pending}</div><div class="a-lbl">Chờ duyệt</div></div>
+      <div class="a-stat"><div class="a-num" style="color:var(--red)">${noCoursesCount}</div><div class="a-lbl">Chưa có môn</div></div>
       <div class="a-stat"><div class="a-num" style="color:var(--green)">${COURSE_META.length}</div><div class="a-lbl">Môn học</div></div>
       <div class="a-stat"><div class="a-num" style="color:var(--acc1)">${totalEnroll}</div><div class="a-lbl">Lượt mở môn</div></div>
     </div>
     <div class="admin-card">
       <h2 style="font-size:16px;margin-bottom:16px">📋 Danh sách học sinh</h2>
+      ${total === 0 ? '<div class="admin-empty"><div class="ae-icon">👥</div><p>Chưa có học sinh nào đăng ký.</p></div>' : `
       <table class="admin-table">
         <thead><tr><th>#</th><th>Họ tên</th><th>Email</th><th>Môn học</th></tr></thead>
         <tbody>
           ${adminStudents.map((s,i)=>`
           <tr>
             <td style="color:var(--muted)">${i+1}</td>
-            <td><div class="stu-name">${s.name||'—'}</div></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px">
+                ${s.photoURL?`<img src="${s.photoURL}" style="width:28px;height:28px;border-radius:50%">`:''}
+                <div class="stu-name">${s.name||'—'}</div>
+              </div>
+            </td>
             <td><div class="stu-account">${s.email||''}</div></td>
             <td><div class="course-pills">
               ${COURSE_META.map((cm,ci)=>(s.courses||[]).includes(ci)
                 ?`<span class="course-pill unlocked" style="background:${cm.color}">${cm.code}</span>`
                 :`<span class="course-pill locked">${cm.code}</span>`
               ).join('')}
+              ${!(s.courses||[]).length?'<span style="font-size:12px;color:var(--muted)">Chưa có môn</span>':''}
             </div></td>
           </tr>`).join('')}
         </tbody>
-      </table>
+      </table>`}
     </div>`;
 }
 
