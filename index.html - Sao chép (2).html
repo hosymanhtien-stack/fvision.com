@@ -15,6 +15,11 @@
   window.__fbReady = loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js')
     .then(()=>loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js'))
     .then(()=>loadScript('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js'));
+
+  // Document parsing libs for the AI Course Converter (admin only) — loaded lazily, non-blocking
+  window.__convLibsReady = loadScript('https://unpkg.com/mammoth/mammoth.browser.min.js')
+    .then(()=>loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'))
+    .then(()=>{ window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; });
 })();
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -408,6 +413,39 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   .admin-stats{grid-template-columns:repeat(2,1fr)}
   .admin-form-row{grid-template-columns:1fr}
 }
+
+/* ─── COURSE UPLOAD ─── */
+.course-drop-zone{border:2px dashed var(--border);border-radius:16px;padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface)}
+.course-drop-zone:hover,.course-drop-zone.dragover{border-color:#f59e0b;background:rgba(245,158,11,.05)}
+.format-hint-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:18px}
+
+/* ─── INTEGRATED AI CONVERTER ─── */
+.conv-step{display:flex;gap:16px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.conv-step:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.conv-step-num{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.conv-step-body{flex:1;min-width:0}
+.conv-label{display:block;font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px}
+.conv-hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
+.conv-file-chip{display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid #f59e0b;border-radius:10px;padding:8px 14px;font-size:12px;margin-top:10px}
+.conv-file-chip .cfc-remove{cursor:pointer;color:var(--red);font-weight:700;margin-left:6px}
+.conv-progress-bar{background:var(--border);border-radius:8px;height:7px;overflow:hidden;margin-bottom:8px}
+.conv-progress-fill{height:100%;background:linear-gradient(90deg,#f59e0b,#ef4444);border-radius:8px;transition:width .3s ease;width:0%}
+.conv-progress-text{font-size:12px;color:var(--muted);text-align:center}
+.conv-err-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--red);margin-top:12px;display:none}
+.conv-err-box.show{display:block}
+.conv-result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.conv-r-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.conv-r-stat .rn{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;margin-bottom:4px}
+.conv-r-stat .rl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.conv-preview-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;max-height:320px;overflow-y:auto;margin-bottom:16px}
+.conv-preview-q{padding:10px 0;border-bottom:1px solid var(--border)}
+.conv-preview-q:last-child{border-bottom:none}
+.conv-preview-q .pq-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:4px}
+.conv-preview-q .pq-text{font-size:12px;font-weight:600;margin-bottom:6px;line-height:1.5}
+.conv-preview-q .pq-opt{font-size:11px;color:var(--muted);padding:3px 10px;border-radius:6px;margin-bottom:2px}
+.conv-preview-q .pq-opt.correct{color:var(--green);background:rgba(34,197,94,.1);font-weight:600}
+.conv-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:convSpin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
+@keyframes convSpin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -491,6 +529,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <br>
       <h3 style="margin-top:16px">Môn học</h3>
       <button class="admin-nav-btn" onclick="showAdminTab('courses',this)">📚 Quản lý môn</button>
+      <button class="admin-nav-btn" onclick="showAdminTab('uploadCourse',this)">📤 Thêm môn học</button>
+      <button class="admin-nav-btn" onclick="showAdminTab('manageCourses',this)">🗂 Danh sách môn</button>
     </div>
 
     <!-- Content -->
@@ -591,6 +631,119 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
           <h2>📚 Quản lý môn học</h2>
           <p>Bật/tắt quyền truy cập môn học cho từng học sinh nhanh chóng.</p>
           <div id="courseMgmtArea"></div>
+        </div>
+      </div>
+
+      <!-- UPLOAD NEW COURSE — INTEGRATED AI CONVERTER -->
+      <div class="admin-section" id="tab-uploadCourse">
+        <div class="admin-card">
+          <h2>✨ Thêm môn học mới bằng AI</h2>
+          <p>Upload file PDF/Word câu hỏi trắc nghiệm — AI sẽ tự đọc, nhận diện câu hỏi và đáp án đúng, rồi thêm thẳng vào StudyHub. Không cần công cụ ngoài.</p>
+
+          <!-- Step 1: API Key -->
+          <div class="conv-step">
+            <div class="conv-step-num">1</div>
+            <div class="conv-step-body">
+              <label class="conv-label">Claude API Key</label>
+              <div style="display:flex;gap:8px">
+                <input type="password" id="convApiKey" class="admin-input" placeholder="sk-ant-api03-..." style="flex:1"/>
+                <button class="admin-btn secondary" onclick="toggleConvKeyVisibility()" id="convToggleKeyBtn">👁</button>
+              </div>
+              <div class="conv-hint">Key được lưu trên máy bạn, chỉ dùng để gọi AI phân tích — không lưu lên server.</div>
+            </div>
+          </div>
+
+          <!-- Step 2: Upload file -->
+          <div class="conv-step">
+            <div class="conv-step-num">2</div>
+            <div class="conv-step-body">
+              <label class="conv-label">File câu hỏi (PDF / Word / TXT)</label>
+              <div class="course-drop-zone" id="courseDropZone" onclick="document.getElementById('convFileInput').click()">
+                <div style="font-size:32px;margin-bottom:8px">📄</div>
+                <div style="font-size:13px;font-weight:600;margin-bottom:4px">Kéo thả file vào đây hoặc nhấn để chọn</div>
+                <div style="font-size:11px;color:var(--muted)">PDF, DOCX, hoặc TXT — đáp án nên đánh dấu rõ (✓, *, in đậm...)</div>
+                <input type="file" id="convFileInput" accept=".pdf,.docx,.txt" style="display:none"/>
+              </div>
+              <div id="convFileChipArea"></div>
+              <div style="text-align:center;color:var(--muted);font-size:11px;margin:12px 0">— hoặc dán văn bản trực tiếp —</div>
+              <textarea id="convPasteText" class="admin-input" placeholder="Dán nội dung câu hỏi + đáp án..." style="width:100%;min-height:90px;resize:vertical;font-family:inherit"></textarea>
+            </div>
+          </div>
+
+          <!-- Step 3: Course info -->
+          <div class="conv-step">
+            <div class="conv-step-num">3</div>
+            <div class="conv-step-body">
+              <label class="conv-label">Thông tin môn học</label>
+              <div class="admin-form-row" style="grid-template-columns:1fr 1fr">
+                <div class="admin-input-wrap">
+                  <label>Mã môn</label>
+                  <input type="text" id="convCourseCode" class="admin-input" placeholder="PSY101" style="text-transform:uppercase"/>
+                </div>
+                <div class="admin-input-wrap">
+                  <label>Tên môn học</label>
+                  <input type="text" id="convCourseName" class="admin-input" placeholder="Tâm Lý Học Đại Cương"/>
+                </div>
+              </div>
+              <div class="admin-form-row" style="grid-template-columns:1fr 1fr;margin-top:12px">
+                <div class="admin-input-wrap">
+                  <label>Icon (emoji)</label>
+                  <input type="text" id="convCourseIcon" class="admin-input" placeholder="📘" value="📘" maxlength="4"/>
+                </div>
+                <div class="admin-input-wrap">
+                  <label>Màu chủ đề</label>
+                  <select id="convCourseColor" class="admin-input">
+                    <option value="#6366f1">🟣 Indigo</option>
+                    <option value="#0ea5e9">🔵 Sky</option>
+                    <option value="#10b981">🟢 Emerald</option>
+                    <option value="#f97316">🟠 Orange</option>
+                    <option value="#a855f7">🟣 Purple</option>
+                    <option value="#ec4899">🩷 Pink</option>
+                    <option value="#eab308">🟡 Yellow</option>
+                    <option value="#06b6d4">🩵 Cyan</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Convert -->
+          <div class="conv-step">
+            <div class="conv-step-num">4</div>
+            <div class="conv-step-body">
+              <button class="admin-btn primary" id="convStartBtn" onclick="startAIConversion()" style="width:100%;padding:13px;font-size:14px">✨ Phân tích bằng AI</button>
+
+              <div id="convProgressArea" style="display:none;margin-top:16px">
+                <div class="conv-progress-bar"><div class="conv-progress-fill" id="convProgressFill"></div></div>
+                <div class="conv-progress-text" id="convProgressText">Đang khởi động...</div>
+              </div>
+
+              <div id="convErrBox" class="conv-err-box"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RESULT PREVIEW -->
+        <div class="admin-card" id="convResultArea" style="display:none">
+          <h2>✅ Kết quả phân tích</h2>
+          <div class="conv-result-stats">
+            <div class="conv-r-stat"><div class="rn" id="convRsTotal" style="color:var(--acc1)">0</div><div class="rl">Câu hỏi</div></div>
+            <div class="conv-r-stat"><div class="rn" id="convRsConfident" style="color:var(--green)">0</div><div class="rl">Đáp án rõ ràng</div></div>
+            <div class="conv-r-stat"><div class="rn" id="convRsCourse" style="color:var(--gold)">—</div><div class="rl">Mã môn</div></div>
+          </div>
+          <div class="conv-preview-box" id="convPreviewBox"></div>
+          <button class="admin-btn primary" onclick="confirmAddCourse()" style="width:100%">✓ Xác nhận thêm môn học vào StudyHub</button>
+          <button class="admin-btn secondary" onclick="cancelCourseUpload()" style="width:100%;margin-top:8px">✕ Hủy, làm lại</button>
+        </div>
+      </div>
+
+      <!-- MANAGE EXISTING COURSES (delete) -->
+      <div class="admin-section" id="tab-manageCourses">
+        <div class="admin-card">
+          <h2>🗂 Danh sách môn học</h2>
+          <p>Xem toàn bộ môn học hiện có trong StudyHub. Các môn do bạn thêm vào có thể xóa được.</p>
+          <div id="courseListArea"></div>
         </div>
       </div>
 
@@ -1886,7 +2039,52 @@ const COURSES = [
     {q:"He went on ______ about his success.",opts:["talk","talking","to talk","talked"],ans:2,exp:'⚠️ ĐỘNG TỪ KÉP:\ngo on + to V = chuyển sang làm việc khác tiếp theo'}
     ]
   }
-];
+]
+
+// ═══════════════════════════════════════
+//  DYNAMIC COURSES (added by Admin via JSON upload)
+//  Stored in Firestore collection 'customCourses'
+// ═══════════════════════════════════════
+let customCoursesLoaded = false;
+
+function buildCourseObject(meta, idx){
+  // meta: {code, name, icon, color, questions:[{q,opts,ans,exp}]}
+  return {
+    id: idx,
+    code: meta.code,
+    name: meta.name,
+    color: meta.color, // hex string, used directly (not CSS var) for dynamic courses
+    colorName: meta.color,
+    badge: meta.color + '26', // ~15% opacity hex suffix
+    textBadge: meta.color,
+    icon: meta.icon || '📘',
+    emoji: meta.icon || '📘',
+    isCustom: true,
+    customId: meta._docId || null,
+    questions: (meta.questions||[]).map(q=>({
+      q: q.q, opts: q.opts, ans: q.ans,
+      ...(q.exp ? {exp:q.exp} : {})
+    }))
+  };
+}
+
+async function loadCustomCourses(){
+  if(customCoursesLoaded) return;
+  customCoursesLoaded = true;
+  try{
+    const snap = await db.collection('customCourses').orderBy('createdAt','asc').get();
+    snap.forEach(doc=>{
+      const data = doc.data();
+      data._docId = doc.id;
+      const newIdx = COURSES.length;
+      COURSES.push(buildCourseObject(data, newIdx));
+      COURSE_META.push({code:data.code, color:data.color, label:`${data.icon||'📘'} ${data.code}`});
+    });
+  }catch(e){
+    console.warn('Could not load custom courses:', e);
+  }
+}
+;
 
 // ═══════════════════════════════════════
 //  FIREBASE CONFIG & INIT
@@ -1958,6 +2156,9 @@ auth.onAuthStateChanged(async user => {
     showScreen('login');
     return;
   }
+
+  // Load any admin-added courses before proceeding
+  await loadCustomCourses();
 
   // ── ADMIN ──
   if(user.email === ADMIN_EMAIL){
@@ -2083,17 +2284,38 @@ function renderStudentNav(data){
   const nav = document.querySelector('.nav-courses');
   nav.innerHTML = '';
   const courses = data.courses || [];
+  let isFirst = true;
   COURSE_META.forEach((cm,i)=>{
     if(!courses.includes(i)) return;
     const btn = document.createElement('button');
     btn.className='nav-btn';
     btn.dataset.course=i;
     btn.textContent=cm.label;
-    btn.onclick=()=>selectCourse(i);
+    btn.onclick=()=>selectNavCourse(i, btn);
+    if(isFirst){
+      btn.classList.add('active');
+      btn.style.background = cm.color + '2e';
+      btn.style.color = cm.color;
+      isFirst = false;
+    }
     nav.appendChild(btn);
   });
-  const first = nav.querySelector('.nav-btn');
-  if(first) first.classList.add('active');
+}
+
+// Wrapper that also applies inline active styling (needed for dynamic/custom courses
+// whose index isn't covered by the static CSS rules for course 0-4)
+function selectNavCourse(idx, btnEl){
+  document.querySelectorAll('.nav-courses .nav-btn').forEach(b=>{
+    b.classList.remove('active');
+    b.style.background = '';
+    b.style.color = '';
+  });
+  if(btnEl){
+    const cm = COURSE_META[idx];
+    btnEl.classList.add('active');
+    if(cm){ btnEl.style.background = cm.color + '2e'; btnEl.style.color = cm.color; }
+  }
+  selectCourse(idx);
 }
 
 // ═══════════════════════════════════════
@@ -2108,11 +2330,12 @@ function showAdminTab(tab, btn){
   document.querySelectorAll('.admin-nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('show');
   if(btn) btn.classList.add('active');
-  if(tab==='students')   renderStudentTable();
-  if(tab==='addStudent') renderAddStudentTab();
-  if(tab==='courses')    renderCourseMgmt();
-  if(tab==='overview')   renderOverview();
-  if(tab==='pending')    renderPendingList();
+  if(tab==='students')       renderStudentTable();
+  if(tab==='addStudent')     renderAddStudentTab();
+  if(tab==='courses')        renderCourseMgmt();
+  if(tab==='overview')       renderOverview();
+  if(tab==='pending')        renderPendingList();
+  if(tab==='manageCourses')  renderCourseListAdmin();
 }
 
 function initAdminPanel(){
@@ -2130,9 +2353,10 @@ function initAdminPanel(){
     const active = document.querySelector('.admin-section.show');
     if(active){
       const id = active.id.replace('tab-','');
-      if(id==='overview')   renderOverview();
-      if(id==='students')   renderStudentTable();
-      if(id==='courses')    renderCourseMgmt();
+      if(id==='overview')       renderOverview();
+      if(id==='students')       renderStudentTable();
+      if(id==='courses')        renderCourseMgmt();
+      if(id==='manageCourses')  renderCourseListAdmin();
     } else {
       renderOverview();
     }
@@ -2334,6 +2558,363 @@ function renderCourseMgmt(){
           </span>`).join('')}
       </div>
     </div>`).join('<hr style="border-color:var(--border);margin:20px 0">');
+}
+
+// ═══════════════════════════════════════
+//  INTEGRATED AI COURSE CONVERTER
+//  PDF/Word/Text → Claude API → Questions → Firestore → live
+// ═══════════════════════════════════════
+let convUploadedFile = null;
+let pendingCourseUpload = null;
+
+// ── API key persistence ──
+window.addEventListener('DOMContentLoaded', ()=>{
+  const saved = localStorage.getItem('sh_claude_api_key');
+  const inp = document.getElementById('convApiKey');
+  if(saved && inp) inp.value = saved;
+});
+document.getElementById('convApiKey')?.addEventListener('change', e=>{
+  localStorage.setItem('sh_claude_api_key', e.target.value);
+});
+
+function toggleConvKeyVisibility(){
+  const inp = document.getElementById('convApiKey');
+  const btn = document.getElementById('convToggleKeyBtn');
+  if(inp.type==='password'){ inp.type='text'; btn.textContent='🙈'; }
+  else { inp.type='password'; btn.textContent='👁'; }
+}
+
+// ── Drag & drop file ──
+(function setupCourseDropZone(){
+  const dz = document.getElementById('courseDropZone');
+  const input = document.getElementById('convFileInput');
+  if(!dz || !input) return;
+
+  ['dragover','dragenter'].forEach(evt=>dz.addEventListener(evt,e=>{e.preventDefault();dz.classList.add('dragover');}));
+  ['dragleave','drop'].forEach(evt=>dz.addEventListener(evt,e=>{e.preventDefault();dz.classList.remove('dragover');}));
+  dz.addEventListener('drop', e=>{
+    const f = e.dataTransfer.files[0];
+    if(f) handleConvFile(f);
+  });
+  input.addEventListener('change', e=>{
+    const f = e.target.files[0];
+    if(f) handleConvFile(f);
+  });
+})();
+
+function handleConvFile(file){
+  convUploadedFile = file;
+  document.getElementById('convFileChipArea').innerHTML = `
+    <div class="conv-file-chip">
+      📎 ${file.name} <span style="color:var(--muted)">(${(file.size/1024).toFixed(0)} KB)</span>
+      <span class="cfc-remove" onclick="removeConvFile()">✕</span>
+    </div>`;
+}
+function removeConvFile(){
+  convUploadedFile = null;
+  document.getElementById('convFileInput').value = '';
+  document.getElementById('convFileChipArea').innerHTML = '';
+}
+
+// ── Extract text from uploaded file ──
+async function extractConvText(file){
+  const ext = file.name.split('.').pop().toLowerCase();
+  if(ext === 'txt') return await file.text();
+
+  if(ext === 'docx'){
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({arrayBuffer});
+    return result.value;
+  }
+
+  if(ext === 'pdf'){
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+    let fullText = '';
+    for(let i=1; i<=pdf.numPages; i++){
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      fullText += content.items.map(it=>it.str).join(' ') + '\n\n';
+      updateConvProgress(10 + (i/pdf.numPages)*20, `Đang đọc trang ${i}/${pdf.numPages}...`);
+    }
+    return fullText;
+  }
+  throw new Error('Định dạng file không được hỗ trợ');
+}
+
+function updateConvProgress(pct, text){
+  document.getElementById('convProgressFill').style.width = pct+'%';
+  document.getElementById('convProgressText').textContent = text;
+}
+function showConvError(msg){
+  const box = document.getElementById('convErrBox');
+  box.textContent = '❌ ' + msg;
+  box.classList.add('show');
+}
+function hideConvError(){
+  document.getElementById('convErrBox').classList.remove('show');
+}
+
+// ── Main: start AI conversion ──
+async function startAIConversion(){
+  hideConvError();
+  const apiKey = document.getElementById('convApiKey').value.trim();
+  const courseCode = document.getElementById('convCourseCode').value.trim().toUpperCase();
+  const courseName = document.getElementById('convCourseName').value.trim();
+  const courseIcon = document.getElementById('convCourseIcon').value.trim() || '📘';
+  const courseColor = document.getElementById('convCourseColor').value;
+  const pastedText = document.getElementById('convPasteText').value.trim();
+
+  if(!apiKey){ showConvError('Vui lòng nhập Claude API Key.'); return; }
+  if(!courseCode){ showConvError('Vui lòng nhập mã môn học.'); return; }
+  if(!courseName){ showConvError('Vui lòng nhập tên môn học.'); return; }
+  if(!convUploadedFile && !pastedText){ showConvError('Vui lòng upload file hoặc dán văn bản câu hỏi.'); return; }
+  if(COURSES.find(c=>c.code.toUpperCase() === courseCode)){
+    showConvError(`Mã môn "${courseCode}" đã tồn tại trong hệ thống!`); return;
+  }
+
+  const btn = document.getElementById('convStartBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="conv-spinner"></span> Đang xử lý...';
+  document.getElementById('convProgressArea').style.display = '';
+  document.getElementById('convResultArea').style.display = 'none';
+
+  try{
+    updateConvProgress(5, 'Đang chuẩn bị công cụ đọc file...');
+    await (window.__convLibsReady || Promise.resolve());
+
+    updateConvProgress(8, 'Đang trích xuất nội dung file...');
+    let text = pastedText;
+    if(convUploadedFile) text = await extractConvText(convUploadedFile);
+
+    if(!text || text.trim().length < 20){
+      throw new Error('Không trích xuất được nội dung. Thử file khác hoặc dán văn bản trực tiếp.');
+    }
+
+    updateConvProgress(35, 'Đang gửi nội dung đến AI để phân tích...');
+    const questions = await analyzeWithClaudeAI(text, apiKey, (pct,msg)=>updateConvProgress(pct,msg));
+
+    if(!questions || questions.length === 0){
+      throw new Error('AI không tìm thấy câu hỏi trắc nghiệm nào. Kiểm tra lại nội dung file.');
+    }
+
+    updateConvProgress(100, 'Hoàn tất!');
+
+    pendingCourseUpload = {
+      code: courseCode, name: courseName, icon: courseIcon, color: courseColor,
+      questions: questions
+    };
+    showConvResult(pendingCourseUpload);
+
+  } catch(err){
+    console.error(err);
+    showConvError(err.message || 'Có lỗi xảy ra trong quá trình xử lý.');
+  } finally{
+    btn.disabled = false;
+    btn.innerHTML = '✨ Phân tích bằng AI';
+    setTimeout(()=>{ document.getElementById('convProgressArea').style.display = 'none'; }, 1200);
+  }
+}
+
+// ── Call Claude API to extract questions ──
+async function analyzeWithClaudeAI(text, apiKey, onProgress){
+  const MAX_CHUNK = 15000;
+  const chunks = [];
+  if(text.length <= MAX_CHUNK){
+    chunks.push(text);
+  } else {
+    const paragraphs = text.split(/\n\s*\n/);
+    let current = '';
+    for(const p of paragraphs){
+      if((current+p).length > MAX_CHUNK && current.length>0){ chunks.push(current); current = p; }
+      else current += (current?'\n\n':'') + p;
+    }
+    if(current) chunks.push(current);
+  }
+
+  let allQuestions = [];
+
+  for(let i=0; i<chunks.length; i++){
+    onProgress(35 + (i/chunks.length)*55, `AI đang phân tích phần ${i+1}/${chunks.length}...`);
+
+    const prompt = `Bạn là một trợ lý chuyên trích xuất câu hỏi trắc nghiệm từ văn bản. Hãy đọc kỹ đoạn văn bản dưới đây và trích xuất TẤT CẢ các câu hỏi trắc nghiệm (multiple choice) có trong đó.
+
+QUAN TRỌNG:
+- Mỗi câu hỏi PHẢI có đầy đủ phần câu hỏi và các lựa chọn (options)
+- Phải xác định CHÍNH XÁC đáp án đúng dựa trên các dấu hiệu như: ✓, *, in đậm, gạch chân, "Đáp án:", "Answer:", hoặc bất kỳ dấu hiệu đánh dấu nào khác trong văn bản
+- Nếu một câu hỏi KHÔNG có dấu hiệu đáp án đúng rõ ràng, vẫn trích xuất câu đó nhưng đặt "ans": -1 và "uncertain": true
+- Giữ nguyên ngôn ngữ gốc của câu hỏi (không dịch)
+- Bỏ qua các ký tự đánh dấu (✓, *, A., B., 1., etc.) khỏi nội dung text cuối cùng
+- Nếu có giải thích (explanation) đi kèm câu hỏi, hãy trích xuất vào trường "exp"
+
+Trả về DUY NHẤT một JSON array hợp lệ, không có markdown code block, không có text giải thích thêm, theo format:
+[
+  {"q": "Nội dung câu hỏi", "opts": ["Lựa chọn A", "Lựa chọn B", "Lựa chọn C", "Lựa chọn D"], "ans": 0, "exp": "Giải thích nếu có (để trống string nếu không có)"}
+]
+
+Văn bản cần phân tích:
+"""
+${chunks[i]}
+"""`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 8000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if(!response.ok){
+      const errData = await response.json().catch(()=>({}));
+      throw new Error(`Lỗi API (${response.status}): ${errData?.error?.message || 'Không thể kết nối Claude API. Kiểm tra lại API key.'}`);
+    }
+
+    const data = await response.json();
+    const textContent = data.content?.find(c=>c.type==='text')?.text || '';
+    let cleaned = textContent.trim();
+    cleaned = cleaned.replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/```\s*$/, '');
+
+    try{
+      const parsed = JSON.parse(cleaned);
+      if(Array.isArray(parsed)) allQuestions = allQuestions.concat(parsed);
+    } catch(parseErr){
+      const match = cleaned.match(/\[[\s\S]*\]/);
+      if(match){
+        try{
+          const parsed2 = JSON.parse(match[0]);
+          if(Array.isArray(parsed2)) allQuestions = allQuestions.concat(parsed2);
+        }catch(e2){ /* skip chunk */ }
+      }
+    }
+  }
+
+  return allQuestions
+    .filter(q => q.q && Array.isArray(q.opts) && q.opts.length >= 2)
+    .map(q => ({
+      q: String(q.q).trim(),
+      opts: q.opts.map(o=>String(o).trim()),
+      ans: typeof q.ans === 'number' ? q.ans : -1,
+      exp: q.exp ? String(q.exp).trim() : '',
+      uncertain: q.ans === -1 || q.uncertain === true
+    }));
+}
+
+// ── Show preview of parsed questions ──
+function showConvResult(data){
+  const confident = data.questions.filter(q=>!q.uncertain).length;
+  document.getElementById('convRsTotal').textContent = data.questions.length;
+  document.getElementById('convRsConfident').textContent = confident;
+  document.getElementById('convRsCourse').textContent = data.code;
+
+  const labels = ['A','B','C','D','E'];
+  document.getElementById('convPreviewBox').innerHTML = data.questions.slice(0,8).map((q,i)=>`
+    <div class="conv-preview-q">
+      <div class="pq-num">CÂU ${i+1} ${q.uncertain?'⚠️ <span style="color:var(--gold)">Chưa rõ đáp án</span>':''}</div>
+      <div class="pq-text">${q.q}</div>
+      ${q.opts.map((o,oi)=>`<div class="pq-opt ${oi===q.ans?'correct':''}">${labels[oi]}. ${o}${oi===q.ans?' ✓':''}</div>`).join('')}
+    </div>`).join('') + (data.questions.length>8 ? `<div style="text-align:center;padding:10px;color:var(--muted);font-size:11px">... và ${data.questions.length-8} câu khác</div>` : '');
+
+  document.getElementById('convResultArea').style.display = '';
+  document.getElementById('convResultArea').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function cancelCourseUpload(){
+  pendingCourseUpload = null;
+  convUploadedFile = null;
+  document.getElementById('convResultArea').style.display = 'none';
+  document.getElementById('convFileInput').value = '';
+  document.getElementById('convFileChipArea').innerHTML = '';
+  document.getElementById('convPasteText').value = '';
+  document.getElementById('convCourseCode').value = '';
+  document.getElementById('convCourseName').value = '';
+  hideConvError();
+}
+
+async function confirmAddCourse(){
+  if(!pendingCourseUpload) return;
+  const data = pendingCourseUpload;
+
+  try{
+    const docRef = await db.collection('customCourses').add({
+      code: data.code,
+      name: data.name,
+      icon: data.icon || '📘',
+      color: data.color || '#6366f1',
+      questions: data.questions,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    data._docId = docRef.id;
+    const newIdx = COURSES.length;
+    COURSES.push(buildCourseObject(data, newIdx));
+    COURSE_META.push({code:data.code, color:data.color||'#6366f1', label:`${data.icon||'📘'} ${data.code}`});
+
+    showToast(`Đã thêm môn "${data.name}" (${data.questions.length} câu) vào StudyHub!`,'ok');
+    cancelCourseUpload();
+    renderCourseListAdmin();
+    renderAddStudentTab();
+  } catch(e){
+    showToast('Lỗi khi lưu môn học: '+e.message,'err');
+    console.error(e);
+  }
+}
+
+function renderCourseListAdmin(){
+  const area = document.getElementById('courseListArea');
+  area.innerHTML = COURSES.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)">
+      <div style="font-size:28px">${c.icon}</div>
+      <div style="flex:1">
+        <div style="font-weight:700">${c.name}</div>
+        <div style="font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace">${c.code} · ${c.questions.length} câu hỏi ${c.isCustom?'· <span style="color:#f59e0b">Tự thêm</span>':'· <span style="color:var(--green)">Có sẵn</span>'}</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted)">${adminStudents.filter(s=>(s.courses||[]).includes(i)).length} học sinh</div>
+      ${c.isCustom ? `<button class="admin-btn danger" onclick="deleteCustomCourse(${i},'${c.customId}','${c.name.replace(/'/g,"\\'")}')">🗑 Xóa</button>` : '<span style="font-size:11px;color:var(--muted2);padding:6px 12px">Mặc định</span>'}
+    </div>`).join('');
+}
+
+async function deleteCustomCourse(idx, docId, name){
+  if(!confirm(`Xóa môn học "${name}"? Toàn bộ câu hỏi sẽ bị xóa vĩnh viễn và học sinh sẽ mất quyền truy cập.`)) return;
+
+  try{
+    if(docId) await db.collection('customCourses').doc(docId).delete();
+
+    // Remove from in-memory arrays
+    COURSES.splice(idx, 1);
+    COURSE_META.splice(idx, 1);
+
+    // Re-index remaining courses' id field
+    COURSES.forEach((c,i)=>c.id=i);
+
+    // Remove this course index from all students' courses arrays, and shift indices above it down by 1
+    const batch = db.batch();
+    adminStudents.forEach(s=>{
+      const oldCourses = s.courses || [];
+      const newCourses = oldCourses
+        .filter(ci=>ci!==idx)
+        .map(ci=>ci>idx ? ci-1 : ci);
+      if(JSON.stringify(oldCourses)!==JSON.stringify(newCourses)){
+        batch.update(db.collection('students').doc(s.uid), {courses:newCourses});
+      }
+    });
+    await batch.commit();
+
+    showToast(`Đã xóa môn "${name}"`,'ok');
+    renderCourseListAdmin();
+    renderCourseMgmt();
+    renderOverview();
+  } catch(e){
+    showToast('Lỗi khi xóa môn học: '+e.message,'err');
+    console.error(e);
+  }
 }
 
 // ── Toast ──
