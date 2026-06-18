@@ -477,7 +477,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 .chat-panel-header{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0}
 .chat-header-info{display:flex;align-items:center;gap:12px;flex:1}
-.chat-avatar-circle{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--acc1),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.chat-avatar-circle{position:relative;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--acc1),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .chat-header-title{font-size:14px;font-weight:800;color:var(--text)}
 .chat-header-sub{font-size:11px;color:var(--green);display:flex;align-items:center;gap:5px}
 .chat-header-sub::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
@@ -494,6 +494,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .chat-msg-row.from-them .chat-bubble{background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:16px 16px 16px 4px}
 .chat-msg-time{font-size:10px;color:var(--muted2);margin-top:4px;padding:0 4px}
 .chat-msg-sender{font-size:10.5px;color:var(--muted);font-weight:700;margin-bottom:3px;padding:0 4px}
+.chat-system-msg{align-self:center;max-width:90%;text-align:center;font-size:11.5px;color:var(--gold);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:12px;padding:8px 16px;margin:4px 0;line-height:1.5}
 
 .chat-empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);padding:30px}
 .chat-empty-state .ces-icon{font-size:44px;margin-bottom:12px}
@@ -512,7 +513,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .admin-chat-list-item{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;position:relative}
 .admin-chat-list-item:hover{background:var(--card2)}
 .admin-chat-list-item.active{background:rgba(99,102,241,.1);border-left:3px solid var(--acc1)}
-.acl-avatar{width:40px;height:40px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;color:var(--muted)}
+.acl-avatar{position:relative;width:40px;height:40px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;color:var(--muted)}
 .acl-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 .acl-info{flex:1;min-width:0}
 .acl-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -526,6 +527,96 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .admin-chat-main-header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0}
 .admin-chat-empty-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted)}
 .admin-chat-empty-main .acem-icon{font-size:52px;margin-bottom:14px;opacity:.5}
+
+/* ═══════════════════════════════════════
+   AFFILIATE PROGRAM
+═══════════════════════════════════════ */
+
+/* Student nav fab button */
+.affiliate-fab-btn{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ec4899);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.affiliate-fab-btn:hover{transform:translateY(-1px) scale(1.05);box-shadow:0 4px 16px rgba(236,72,153,.35)}
+
+/* Affiliate panel body (reuses chat-overlay/.chat-panel shell) */
+.affiliate-panel{width:420px}
+.affiliate-body{flex:1;overflow-y:auto;padding:0}
+
+/* Promo hero inside the panel */
+.aff-hero{background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(236,72,153,.12));padding:24px 22px;border-bottom:1px solid var(--border)}
+.aff-hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.2);color:var(--gold);font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:12px}
+.aff-hero h3{font-size:18px;font-weight:800;line-height:1.4;margin-bottom:8px;color:var(--text)}
+.aff-hero p{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.aff-perks{display:flex;flex-direction:column;gap:10px}
+.aff-perk{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--text)}
+.aff-perk-icon{width:30px;height:30px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.aff-perk b{color:var(--gold)}
+
+.aff-section{padding:20px 22px}
+.aff-section-title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* Form */
+.aff-field{margin-bottom:14px}
+.aff-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px}
+.aff-field input,.aff-field select,.aff-field textarea{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:11px 14px;color:var(--text);font-family:inherit;font-size:13px;outline:none;transition:border-color .2s}
+.aff-field input:focus,.aff-field select:focus,.aff-field textarea:focus{border-color:#ec4899}
+.aff-field input::placeholder,.aff-field textarea::placeholder{color:var(--muted2)}
+.aff-submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,#f59e0b,#ec4899);border:none;border-radius:12px;color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:6px}
+.aff-submit-btn:hover{opacity:.9;transform:translateY(-1px)}
+.aff-submit-btn:disabled{opacity:.5;cursor:default;transform:none}
+.aff-err{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--red);margin-bottom:14px;display:none}
+.aff-err.show{display:block}
+
+/* Status views (pending / approved / rejected) */
+.aff-status-view{padding:36px 24px;text-align:center}
+.aff-status-icon{font-size:56px;margin-bottom:16px}
+.aff-status-title{font-size:17px;font-weight:800;margin-bottom:8px;color:var(--text)}
+.aff-status-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px}
+.aff-status-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;text-align:left;margin-bottom:18px}
+.aff-status-row{display:flex;justify-content:space-between;padding:6px 0;font-size:12.5px;border-bottom:1px solid var(--border)}
+.aff-status-row:last-child{border-bottom:none}
+.aff-status-row .asr-label{color:var(--muted)}
+.aff-status-row .asr-val{color:var(--text);font-weight:600}
+.aff-badge-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px}
+.aff-badge-pill.pending{background:rgba(245,158,11,.15);color:var(--gold)}
+.aff-badge-pill.approved{background:rgba(34,197,94,.15);color:var(--green)}
+.aff-badge-pill.rejected{background:rgba(239,68,68,.15);color:var(--red)}
+
+/* ─── ADMIN: Affiliate applications list ─── */
+.affiliate-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.aff-tab{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:9px 16px;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.aff-tab:hover{border-color:var(--border2);color:var(--text)}
+.aff-tab.active{background:rgba(236,72,153,.12);border-color:#ec4899;color:#ec4899}
+.aff-tab span{background:var(--card2);color:var(--muted);font-size:10px;font-weight:800;padding:1px 7px;border-radius:8px}
+.aff-tab.active span{background:rgba(236,72,153,.2);color:#ec4899}
+
+.aff-app-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.aff-app-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.aff-app-avatar{width:42px;height:42px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;color:var(--muted)}
+.aff-app-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.aff-app-name{font-size:14px;font-weight:700;color:var(--text)}
+.aff-app-email{font-size:11.5px;color:var(--muted)}
+.aff-app-status{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:4px 11px;border-radius:14px}
+.aff-app-status.pending{background:rgba(245,158,11,.15);color:var(--gold)}
+.aff-app-status.approved{background:rgba(34,197,94,.15);color:var(--green)}
+.aff-app-status.rejected{background:rgba(239,68,68,.15);color:var(--red)}
+.aff-app-details{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.aff-app-detail-item{background:var(--card);border-radius:10px;padding:10px 12px}
+.aff-app-detail-item .adi-label{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.aff-app-detail-item .adi-val{font-size:12.5px;color:var(--text);font-weight:600}
+.aff-app-actions{display:flex;gap:8px}
+.aff-app-actions .admin-btn{flex:1}
+
+/* Avatar ring for approved affiliates in chat */
+.acl-avatar.affiliate-ring,
+.chat-avatar-circle.affiliate-ring{
+  position:relative;
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px #f59e0b, 0 0 0 4px transparent;
+}
+.affiliate-star-badge{position:absolute;bottom:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ec4899);display:flex;align-items:center;justify-content:center;font-size:9px;border:2px solid var(--surface)}
+
+@media(max-width:480px){
+  .affiliate-panel{width:100%}
+  .aff-app-details{grid-template-columns:1fr 1fr}
+}
 
 @media(max-width:900px){
   .admin-chat-layout{flex-direction:column;height:auto}
@@ -659,6 +750,9 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <button class="admin-nav-btn active" onclick="showAdminTab('overview',this)">📊 Tổng quan</button>
       <button class="admin-nav-btn" onclick="showAdminTab('students',this)">👥 Học sinh</button>
       <button class="admin-nav-btn" onclick="showAdminTab('chat',this)">💬 Chat <span id="adminChatBadge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px;display:none">0</span></button>
+      <br>
+      <h3 style="margin-top:16px">Affiliate</h3>
+      <button class="admin-nav-btn" onclick="showAdminTab('affiliate',this)">🤝 Quản lý Affiliate <span id="affiliatePendingBadge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px;display:none">0</span></button>
       <br>
       <h3 style="margin-top:16px">Môn học</h3>
       <button class="admin-nav-btn" onclick="showAdminTab('courses',this)">📚 Quản lý môn</button>
@@ -872,6 +966,21 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         </div>
       </div>
 
+      <!-- AFFILIATE MANAGEMENT -->
+      <div class="admin-section" id="tab-affiliate">
+        <div class="admin-card">
+          <h2>🤝 Quản lý chương trình Affiliate</h2>
+          <p>Xem xét và phê duyệt các đơn đăng ký tham gia Affiliate từ học sinh.</p>
+          <div class="affiliate-tabs">
+            <button class="aff-tab active" onclick="filterAffiliateApps('pending',this)">⏳ Chờ duyệt <span id="affTabPendingCount">0</span></button>
+            <button class="aff-tab" onclick="filterAffiliateApps('approved',this)">✅ Đã duyệt <span id="affTabApprovedCount">0</span></button>
+            <button class="aff-tab" onclick="filterAffiliateApps('rejected',this)">❌ Đã từ chối <span id="affTabRejectedCount">0</span></button>
+            <button class="aff-tab" onclick="filterAffiliateApps('all',this)">Tất cả</button>
+          </div>
+          <div id="affiliateAppsList"></div>
+        </div>
+      </div>
+
     </div><!-- end admin-content -->
   </div><!-- end admin-body -->
 </div><!-- end admin-page -->
@@ -890,6 +999,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     </div>
     <div class="nav-right">
       <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtnStudent" title="Đổi giao diện sáng/tối">🌙</button>
+      <button class="affiliate-fab-btn" onclick="openAffiliatePanel()" title="Affiliate cùng StudyHub">🤝</button>
       <button class="chat-fab-btn" onclick="openStudentChat()" title="Chat với StudyHub Assistant">
         💬<span class="chat-unread-badge" id="studentChatBadge" style="display:none">0</span>
       </button>
@@ -919,6 +1029,23 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         <textarea class="chat-text-input" id="studentChatInput" placeholder="Nhập tin nhắn..." rows="1" onkeydown="handleChatInputKey(event,'student')" oninput="autoGrowChatInput(this)"></textarea>
         <button class="chat-send-btn" onclick="sendChatMessage('student')">➤</button>
       </div>
+    </div>
+  </div>
+
+  <!-- AFFILIATE PANEL (student) -->
+  <div class="chat-overlay" id="affiliateOverlay" onclick="if(event.target===this)closeAffiliatePanel()">
+    <div class="chat-panel affiliate-panel">
+      <div class="chat-panel-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar-circle" style="background:linear-gradient(135deg,#f59e0b,#ec4899)">🤝</div>
+          <div>
+            <div class="chat-header-title">Affiliate cùng StudyHub</div>
+            <div class="chat-header-sub" style="color:var(--muted)" id="affiliateHeaderSub">Chương trình hợp tác</div>
+          </div>
+        </div>
+        <button class="chat-close-btn" onclick="closeAffiliatePanel()">✕</button>
+      </div>
+      <div class="affiliate-body" id="affiliateBody"></div>
     </div>
   </div>
 </div>
@@ -2487,6 +2614,7 @@ function showAdminTab(tab, btn){
   if(tab==='pending')        renderPendingList();
   if(tab==='manageCourses')  renderCourseListAdmin();
   if(tab==='chat')           initAdminChatInbox();
+  if(tab==='affiliate')      renderAffiliateAppsList();
 }
 
 function initAdminPanel(){
@@ -2516,6 +2644,9 @@ function initAdminPanel(){
   // Chat inbox listener starts immediately so the badge updates
   // even while admin is on a different tab (not just when Chat tab is opened)
   initAdminChatInbox();
+
+  // Affiliate applications watcher — also starts immediately for the sidebar badge
+  initAdminAffiliateWatcher();
 }
 
 function renderOverview(){
@@ -3973,6 +4104,9 @@ function renderStudentChatMessages(messages){
   }
 
   box.innerHTML = messages.map(m=>{
+    if(m.senderRole === 'system'){
+      return `<div class="chat-system-msg">${escapeHtml(m.text)}</div>`;
+    }
     const isMe = m.senderRole === 'student';
     return `<div class="chat-msg-row ${isMe?'from-me':'from-them'}">
       ${!isMe?'<div class="chat-msg-sender">StudyHub Assistant</div>':''}
@@ -4113,8 +4247,9 @@ function renderAdminChatList(){
   list.innerHTML = adminChatConversations.map(c=>{
     const unread = c.unreadByAdmin || 0;
     const initial = (c.studentName||c.studentEmail||'?').charAt(0).toUpperCase();
+    const isAffiliate = affiliateApprovedUids.has(c.uid);
     return `<div class="admin-chat-list-item ${c.uid===activeChatStudentUid?'active':''}" onclick="openAdminChatThread('${c.uid}')">
-      <div class="acl-avatar">${initial}</div>
+      <div class="acl-avatar ${isAffiliate?'affiliate-ring':''}" title="${isAffiliate?'Đối tác Affiliate':''}">${initial}${isAffiliate?'<span class="affiliate-star-badge">★</span>':''}</div>
       <div class="acl-info">
         <div class="acl-name">${escapeHtml(c.studentName || c.studentEmail || 'Học sinh')}</div>
         <div class="acl-preview">${escapeHtml(c.lastMessage || 'Chưa có tin nhắn')}</div>
@@ -4138,11 +4273,12 @@ function openAdminChatThread(studentUid){
   chatRef.update({unreadByAdmin: 0}).catch(()=>{});
 
   const main = document.getElementById('adminChatMain');
+  const isAffiliateThread = affiliateApprovedUids.has(studentUid);
   main.innerHTML = `
     <div class="admin-chat-main-header">
-      <div class="chat-avatar-circle" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">${(conv?.studentName||'?').charAt(0).toUpperCase()}</div>
+      <div class="chat-avatar-circle ${isAffiliateThread?'affiliate-ring':''}" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">${(conv?.studentName||'?').charAt(0).toUpperCase()}${isAffiliateThread?'<span class="affiliate-star-badge">★</span>':''}</div>
       <div>
-        <div class="chat-header-title">${escapeHtml(conv?.studentName || 'Học sinh')}</div>
+        <div class="chat-header-title">${escapeHtml(conv?.studentName || 'Học sinh')} ${isAffiliateThread?'<span style="font-size:10px;color:var(--gold);font-weight:800;margin-left:4px">AFFILIATE</span>':''}</div>
         <div class="chat-header-sub" style="color:var(--muted)">${escapeHtml(conv?.studentEmail || '')}</div>
       </div>
     </div>
@@ -4176,6 +4312,9 @@ function renderAdminChatMessages(messages){
   }
 
   box.innerHTML = messages.map(m=>{
+    if(m.senderRole === 'system'){
+      return `<div class="chat-system-msg">${escapeHtml(m.text)}</div>`;
+    }
     const isMe = m.senderRole === 'admin';
     return `<div class="chat-msg-row ${isMe?'from-me':'from-them'}">
       <div class="chat-bubble">${escapeHtml(m.text)}</div>
@@ -4184,6 +4323,298 @@ function renderAdminChatMessages(messages){
   }).join('');
 
   box.scrollTop = box.scrollHeight;
+}
+
+
+// ═══════════════════════════════════════
+//  AFFILIATE PROGRAM
+//  Firestore model: affiliateApps/{studentUid}
+//    { name, dob, major, status:'pending'|'approved'|'rejected',
+//      studentEmail, studentUid, studentName, createdAt, reviewedAt }
+//  1 student = 1 application document (re-applying overwrites it)
+// ═══════════════════════════════════════
+
+let studentAffiliateUnsub = null;
+let adminAffiliateApps = []; // cached list for admin tab
+let adminAffiliateUnsub = null;
+let affiliateApprovedUids = new Set(); // quick lookup for chat avatar rings
+
+// ── Student: open the panel ──
+function openAffiliatePanel(){
+  if(!currentUser || currentUser.type !== 'student') return;
+  document.getElementById('affiliateOverlay').classList.add('show');
+
+  const uid = currentUser.user.uid;
+  const docRef = db.collection('affiliateApps').doc(uid);
+
+  if(studentAffiliateUnsub) studentAffiliateUnsub();
+  studentAffiliateUnsub = docRef.onSnapshot(snap=>{
+    if(!snap.exists){
+      renderAffiliateForm();
+    } else {
+      renderAffiliateStatus(snap.data());
+    }
+  });
+}
+
+function closeAffiliatePanel(){
+  document.getElementById('affiliateOverlay').classList.remove('show');
+}
+
+// ── Student: registration form (also shown again after rejection) ──
+function renderAffiliateForm(prefill){
+  const body = document.getElementById('affiliateBody');
+  document.getElementById('affiliateHeaderSub').textContent = 'Chương trình hợp tác';
+
+  body.innerHTML = `
+    <div class="aff-hero">
+      <div class="aff-hero-badge">✨ Cơ hội thu nhập thêm</div>
+      <h3>Kiếm tiền cùng StudyHub —<br>giới thiệu càng nhiều, nhận càng nhiều!</h3>
+      <p>Bạn đang học tốt một môn nào đó? Hãy chia sẻ StudyHub đến bạn bè, vừa giúp họ học tốt hơn, vừa giúp bạn có thêm thu nhập mỗi tháng — hoàn toàn linh hoạt thời gian, làm khi nào bạn rảnh.</p>
+      <div class="aff-perks">
+        <div class="aff-perk"><span class="aff-perk-icon">💰</span> Hoa hồng <b>40%</b> trên mỗi môn học bạn giới thiệu thành công</div>
+        <div class="aff-perk"><span class="aff-perk-icon">⏰</span> Thời gian <b>hoàn toàn linh hoạt</b>, không ràng buộc ca làm</div>
+        <div class="aff-perk"><span class="aff-perk-icon">✅</span> Hoa hồng được thanh toán ngay sau khi <b>StudyHub xác nhận đơn hàng</b></div>
+        <div class="aff-perk"><span class="aff-perk-icon">🏷️</span> Tài khoản Affiliate có <b>huy hiệu riêng</b> hiển thị trong khung chat</div>
+      </div>
+    </div>
+    <div class="aff-section">
+      <div class="aff-section-title">📝 Đăng ký tham gia</div>
+      <div class="aff-err" id="affFormErr"></div>
+      <div class="aff-field">
+        <label>Họ và tên</label>
+        <input type="text" id="affName" placeholder="Nguyễn Văn A" value="${prefill&&prefill.name ? escapeHtml(prefill.name) : ''}"/>
+      </div>
+      <div class="aff-field">
+        <label>Ngày tháng năm sinh</label>
+        <input type="date" id="affDob" value="${prefill&&prefill.dob ? prefill.dob : ''}"/>
+      </div>
+      <div class="aff-field">
+        <label>Chuyên ngành</label>
+        <input type="text" id="affMajor" placeholder="Marketing, Kế toán, CNTT..." value="${prefill&&prefill.major ? escapeHtml(prefill.major) : ''}"/>
+      </div>
+      <button class="aff-submit-btn" id="affSubmitBtn" onclick="submitAffiliateApp()">✓ Gửi đơn đăng ký</button>
+    </div>`;
+}
+
+// ── Student: submit the application ──
+async function submitAffiliateApp(){
+  const name = document.getElementById('affName').value.trim();
+  const dob = document.getElementById('affDob').value;
+  const major = document.getElementById('affMajor').value.trim();
+  const errEl = document.getElementById('affFormErr');
+
+  if(!name || !dob || !major){
+    errEl.textContent = '❌ Vui lòng điền đầy đủ Họ tên, Ngày sinh và Chuyên ngành.';
+    errEl.classList.add('show');
+    return;
+  }
+  errEl.classList.remove('show');
+
+  const btn = document.getElementById('affSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang gửi...';
+
+  try{
+    const uid = currentUser.user.uid;
+    const studentName = currentUser.data.name || currentUser.user.displayName || '';
+    const studentEmail = currentUser.user.email;
+
+    await db.collection('affiliateApps').doc(uid).set({
+      name, dob, major,
+      status: 'pending',
+      studentUid: uid,
+      studentEmail,
+      studentName,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      reviewedAt: null
+    });
+
+    // Auto-post a system notice into the chat thread so admin sees it right away
+    const chatRef = db.collection('chats').doc(uid);
+    const noticeText = `🤝 ${studentName} đã gửi phiếu đăng ký tham gia chương trình Affiliate. Vui lòng vào tab Affiliate để xem chi tiết và phê duyệt.`;
+    await chatRef.collection('messages').add({
+      senderRole: 'system',
+      text: noticeText,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await chatRef.set({
+      studentName, studentEmail,
+      lastMessage: noticeText,
+      lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      unreadByAdmin: firebase.firestore.FieldValue.increment(1),
+      unreadByStudent: 0
+    }, {merge:true});
+
+    showToast('Đã gửi đơn đăng ký Affiliate!','ok');
+  } catch(e){
+    errEl.textContent = '❌ Lỗi: '+e.message;
+    errEl.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = '✓ Gửi đơn đăng ký';
+  }
+}
+
+// ── Student: status view (pending / approved / rejected) ──
+function renderAffiliateStatus(app){
+  const body = document.getElementById('affiliateBody');
+
+  if(app.status === 'rejected'){
+    document.getElementById('affiliateHeaderSub').textContent = 'Đơn chưa được duyệt';
+    const safeApp = JSON.stringify({name:app.name, dob:app.dob, major:app.major}).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    body.innerHTML = `
+      <div class="aff-status-view">
+        <div class="aff-badge-pill rejected">❌ Đã từ chối</div>
+        <div class="aff-status-icon">😔</div>
+        <div class="aff-status-title">Đơn đăng ký chưa được duyệt</div>
+        <div class="aff-status-desc">Rất tiếc, đơn đăng ký Affiliate của bạn chưa được phê duyệt lần này. Bạn có thể chỉnh sửa thông tin và gửi lại đơn mới bất cứ lúc nào.</div>
+        <button class="aff-submit-btn" onclick='renderAffiliateForm(${safeApp})'>↺ Gửi lại đơn đăng ký</button>
+      </div>`;
+    return;
+  }
+
+  if(app.status === 'approved'){
+    document.getElementById('affiliateHeaderSub').textContent = 'Đối tác Affiliate';
+    body.innerHTML = `
+      <div class="aff-status-view">
+        <div class="aff-badge-pill approved">✅ Đã duyệt</div>
+        <div class="aff-status-icon">🎉</div>
+        <div class="aff-status-title">Chào mừng bạn đến với StudyHub Affiliate!</div>
+        <div class="aff-status-desc">Bạn đã chính thức trở thành đối tác Affiliate. Huy hiệu đặc biệt đã xuất hiện quanh ảnh đại diện của bạn trong khung chat. Liên hệ StudyHub Assistant nếu cần hỗ trợ thêm.</div>
+        <div class="aff-status-card">
+          <div class="aff-status-row"><span class="asr-label">Họ tên</span><span class="asr-val">${escapeHtml(app.name)}</span></div>
+          <div class="aff-status-row"><span class="asr-label">Chuyên ngành</span><span class="asr-val">${escapeHtml(app.major)}</span></div>
+          <div class="aff-status-row"><span class="asr-label">Hoa hồng</span><span class="asr-val" style="color:var(--gold)">40% / môn</span></div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  // pending
+  document.getElementById('affiliateHeaderSub').textContent = 'Đang chờ duyệt';
+  body.innerHTML = `
+    <div class="aff-status-view">
+      <div class="aff-badge-pill pending">⏳ Chờ duyệt</div>
+      <div class="aff-status-icon">📨</div>
+      <div class="aff-status-title">Phiếu đăng ký đã được gửi!</div>
+      <div class="aff-status-desc">StudyHub đang xem xét đơn đăng ký của bạn. Bạn sẽ nhận được thông báo ngay khi có kết quả. Thông tin phiếu đăng ký:</div>
+      <div class="aff-status-card">
+        <div class="aff-status-row"><span class="asr-label">Họ tên</span><span class="asr-val">${escapeHtml(app.name)}</span></div>
+        <div class="aff-status-row"><span class="asr-label">Ngày sinh</span><span class="asr-val">${app.dob}</span></div>
+        <div class="aff-status-row"><span class="asr-label">Chuyên ngành</span><span class="asr-val">${escapeHtml(app.major)}</span></div>
+      </div>
+    </div>`;
+}
+
+// ───────────────────────────────────────
+//  ADMIN SIDE — review & approve applications
+// ───────────────────────────────────────
+let affiliateFilterStatus = 'pending';
+
+function initAdminAffiliateWatcher(){
+  // Lightweight watcher that runs from the moment admin logs in,
+  // so the sidebar badge updates even before opening the tab.
+  if(adminAffiliateUnsub) adminAffiliateUnsub();
+  adminAffiliateUnsub = db.collection('affiliateApps').onSnapshot(snap=>{
+    adminAffiliateApps = snap.docs.map(d=>Object.assign({}, d.data(), {uid:d.id}));
+    affiliateApprovedUids = new Set(adminAffiliateApps.filter(a=>a.status==='approved').map(a=>a.uid));
+
+    const pendingCount = adminAffiliateApps.filter(a=>a.status==='pending').length;
+    const badge = document.getElementById('affiliatePendingBadge');
+    if(badge){
+      if(pendingCount>0){ badge.textContent = pendingCount; badge.style.display='inline'; }
+      else badge.style.display='none';
+    }
+
+    // Refresh the apps list if that tab is currently visible
+    if(document.getElementById('tab-affiliate') && document.getElementById('tab-affiliate').classList.contains('show')){
+      renderAffiliateAppsList();
+    }
+    // Refresh chat avatar rings (approved-status may have changed)
+    renderAdminChatList();
+  });
+}
+
+function filterAffiliateApps(status, btn){
+  affiliateFilterStatus = status;
+  document.querySelectorAll('.aff-tab').forEach(t=>t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderAffiliateAppsList();
+}
+
+function renderAffiliateAppsList(){
+  const pendingN = adminAffiliateApps.filter(a=>a.status==='pending').length;
+  const approvedN = adminAffiliateApps.filter(a=>a.status==='approved').length;
+  const rejectedN = adminAffiliateApps.filter(a=>a.status==='rejected').length;
+  document.getElementById('affTabPendingCount').textContent = pendingN;
+  document.getElementById('affTabApprovedCount').textContent = approvedN;
+  document.getElementById('affTabRejectedCount').textContent = rejectedN;
+
+  const list = affiliateFilterStatus === 'all'
+    ? adminAffiliateApps.slice()
+    : adminAffiliateApps.filter(a=>a.status===affiliateFilterStatus);
+
+  // Most recent first
+  list.sort(function(a,b){
+    const ta = (a.createdAt && a.createdAt.toMillis) ? a.createdAt.toMillis() : 0;
+    const tb = (b.createdAt && b.createdAt.toMillis) ? b.createdAt.toMillis() : 0;
+    return tb - ta;
+  });
+
+  const area = document.getElementById('affiliateAppsList');
+  if(list.length === 0){
+    area.innerHTML = '<div class="admin-empty"><div class="ae-icon">🤝</div><p>Không có đơn đăng ký nào ở mục này.</p></div>';
+    return;
+  }
+
+  const statusLabel = {pending:'⏳ Chờ duyệt', approved:'✅ Đã duyệt', rejected:'❌ Đã từ chối'};
+
+  area.innerHTML = list.map(function(a){
+    const initial = (a.studentName||a.studentEmail||'?').charAt(0).toUpperCase();
+    const safeName = (a.studentName||'').replace(/'/g,"\\'");
+    const actions = a.status === 'pending'
+      ? '<div class="aff-app-actions">'
+        + '<button class="admin-btn primary" onclick="approveAffiliateApp(\'' + a.uid + '\')">✓ Phê duyệt</button>'
+        + '<button class="admin-btn danger" onclick="rejectAffiliateApp(\'' + a.uid + '\',\'' + safeName + '\')">✗ Từ chối</button>'
+        + '</div>'
+      : a.status === 'approved'
+        ? '<div class="aff-app-actions"><button class="admin-btn danger" onclick="rejectAffiliateApp(\'' + a.uid + '\',\'' + safeName + '\')">✗ Thu hồi phê duyệt</button></div>'
+        : '<div class="aff-app-actions"><button class="admin-btn primary" onclick="approveAffiliateApp(\'' + a.uid + '\')">✓ Phê duyệt</button></div>';
+
+    return `<div class="aff-app-card">
+      <div class="aff-app-header">
+        <div class="aff-app-avatar">${initial}</div>
+        <div>
+          <div class="aff-app-name">${escapeHtml(a.studentName || a.name)}</div>
+          <div class="aff-app-email">${escapeHtml(a.studentEmail||'')}</div>
+        </div>
+        <div class="aff-app-status ${a.status}">${statusLabel[a.status]||a.status}</div>
+      </div>
+      <div class="aff-app-details">
+        <div class="aff-app-detail-item"><div class="adi-label">Họ tên</div><div class="adi-val">${escapeHtml(a.name)}</div></div>
+        <div class="aff-app-detail-item"><div class="adi-label">Ngày sinh</div><div class="adi-val">${a.dob}</div></div>
+        <div class="aff-app-detail-item"><div class="adi-label">Chuyên ngành</div><div class="adi-val">${escapeHtml(a.major)}</div></div>
+      </div>
+      ${actions}
+    </div>`;
+  }).join('');
+}
+
+async function approveAffiliateApp(uid){
+  await db.collection('affiliateApps').doc(uid).update({
+    status: 'approved',
+    reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  showToast('Đã phê duyệt đối tác Affiliate!','ok');
+}
+
+async function rejectAffiliateApp(uid, name){
+  if(!confirm('Từ chối đơn đăng ký Affiliate của "' + name + '"? Học sinh có thể gửi lại đơn mới sau đó.')) return;
+  await db.collection('affiliateApps').doc(uid).update({
+    status: 'rejected',
+    reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  showToast('Đã từ chối đơn đăng ký.','ok');
 }
 
 </script>
