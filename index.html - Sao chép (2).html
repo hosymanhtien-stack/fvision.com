@@ -8,6 +8,15 @@
 <meta name="theme-color" content="#6366f1">
 <meta name="apple-mobile-web-app-title" content="StudyHub">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script>
+// Apply saved theme immediately (before paint) to avoid a light/dark flash on load
+(function(){
+  try{
+    const saved = localStorage.getItem('sh_theme');
+    if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+  }catch(e){}
+})();
+</script>
 <!-- Firebase SDKs — loaded dynamically to ensure order -->
 <script>
 (function(){
@@ -44,7 +53,39 @@
   --acc4:#f97316; /* orange - SSA */
   --acc5:#a855f7; /* purple - ENG */
   --radius:16px;
+  --shadow-card: none;
 }
+
+/* ─── LIGHT THEME ─── */
+[data-theme="light"]{
+  --bg:#f4f5f9;
+  --surface:#ffffff;
+  --card:#ffffff;
+  --card2:#f1f2f7;
+  --border:#e2e4ee;
+  --border2:#d0d3e2;
+  --text:#16171f;
+  --muted:#6b6e85;
+  --muted2:#9a9cb0;
+  --gold:#d97706;
+  --red:#dc2626;
+  --green:#16a34a;
+  --shadow-card: 0 1px 3px rgba(20,20,40,.06), 0 1px 2px rgba(20,20,40,.04);
+}
+[data-theme="light"] body::after{ opacity:.015; }
+[data-theme="light"] .card,
+[data-theme="light"] .login-card,
+[data-theme="light"] .q-card,
+[data-theme="light"] .mode-card,
+[data-theme="light"] .stat-chip,
+[data-theme="light"] .admin-card,
+[data-theme="light"] .a-stat,
+[data-theme="light"] .r-chip,
+[data-theme="light"] .review-item,
+[data-theme="light"] .chat-panel,
+[data-theme="light"] .register-card{ box-shadow: var(--shadow-card); }
+[data-theme="light"] .card-front,
+[data-theme="light"] .card-back{ box-shadow: var(--shadow-card); }
 body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;overflow-x:hidden}
 
 /* ─── NOISE TEXTURE ─── */
@@ -96,6 +137,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .user-chip .dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 6px var(--green)}
 .logout-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--muted);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
 .logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* ─── THEME TOGGLE ─── */
+.theme-toggle-btn{width:36px;height:36px;border-radius:50%;background:var(--card);border:1.5px solid var(--border);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s;flex-shrink:0}
+.theme-toggle-btn:hover{border-color:var(--gold);transform:rotate(15deg) scale(1.05)}
+.theme-toggle-btn.spin{animation:themeFlip .4s ease}
+@keyframes themeFlip{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(.7)}100%{transform:rotate(360deg) scale(1)}}
 
 /* ─── MAIN CONTENT ─── */
 .main{flex:1;padding:32px 24px;max-width:960px;margin:0 auto;width:100%}
@@ -542,6 +589,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 <!-- ══════════ LOGIN ══════════ -->
 <div class="login-page hidden" id="loginPage">
+  <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtnLogin" title="Đổi giao diện sáng/tối" style="position:fixed;top:20px;right:20px;z-index:10">🌙</button>
   <div class="login-card">
     <div class="login-logo">
       <div class="dot-row">
@@ -599,6 +647,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="brand">StudyHub Admin</div>
     <span class="admin-badge">⚙ Quản trị viên</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+      <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtnAdmin" title="Đổi giao diện sáng/tối">🌙</button>
       <span style="font-size:12px;color:var(--muted)" id="adminUserLabel">—</span>
       <button class="logout-btn" onclick="doLogout()">⎋ Đăng xuất</button>
     </div>
@@ -840,6 +889,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <button class="nav-btn" data-course="4" onclick="selectCourse(4)">🇬🇧 ENG111</button>
     </div>
     <div class="nav-right">
+      <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtnStudent" title="Đổi giao diện sáng/tối">🌙</button>
       <button class="chat-fab-btn" onclick="openStudentChat()" title="Chat với StudyHub Assistant">
         💬<span class="chat-unread-badge" id="studentChatBadge" style="display:none">0</span>
       </button>
@@ -2462,6 +2512,10 @@ function initAdminPanel(){
       renderOverview();
     }
   });
+
+  // Chat inbox listener starts immediately so the badge updates
+  // even while admin is on a different tab (not just when Chat tab is opened)
+  initAdminChatInbox();
 }
 
 function renderOverview(){
@@ -3793,6 +3847,48 @@ function confetti(big=false){
     setTimeout(()=>p.remove(),4000);
   }
 }
+
+// ═══════════════════════════════════════
+//  THEME TOGGLE (Light / Dark mode)
+// ═══════════════════════════════════════
+function getCurrentTheme(){
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+}
+
+function syncThemeToggleIcons(){
+  const isLight = getCurrentTheme() === 'light';
+  const icon = isLight ? '☀️' : '🌙';
+  ['themeToggleBtnAdmin','themeToggleBtnStudent','themeToggleBtnLogin'].forEach(id=>{
+    const btn = document.getElementById(id);
+    if(btn) btn.textContent = icon;
+  });
+}
+
+function toggleTheme(){
+  const isLight = getCurrentTheme() === 'light';
+  if(isLight){
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('sh_theme','dark');
+  } else {
+    document.documentElement.setAttribute('data-theme','light');
+    localStorage.setItem('sh_theme','light');
+  }
+  syncThemeToggleIcons();
+
+  // Small spin feedback on whichever button was clicked
+  ['themeToggleBtnAdmin','themeToggleBtnStudent','themeToggleBtnLogin'].forEach(id=>{
+    const btn = document.getElementById(id);
+    if(btn){
+      btn.classList.remove('spin');
+      void btn.offsetWidth; // restart animation
+      btn.classList.add('spin');
+    }
+  });
+}
+
+// Sync icons once DOM is ready (theme attribute itself was already applied in <head>)
+document.addEventListener('DOMContentLoaded', syncThemeToggleIcons);
+syncThemeToggleIcons();
 
 // ═══════════════════════════════════════
 //  CHAT SYSTEM — Student ↔ Admin (text only)
