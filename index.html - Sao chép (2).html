@@ -2733,7 +2733,9 @@ async function extractConvText(file){
 }
 
 function updateConvProgress(pct, text){
-  document.getElementById('convProgressFill').style.width = pct+'%';
+  if(pct !== null && pct !== undefined){
+    document.getElementById('convProgressFill').style.width = pct+'%';
+  }
   document.getElementById('convProgressText').textContent = text;
 }
 function showConvError(msg){
@@ -2874,16 +2876,41 @@ function cleanQuestions(arr){
     }));
 }
 
+// ── Fetch with automatic retry for transient errors (503 overload, 429 rate-limit) ──
+async function fetchWithRetry(url, options, onProgress, baseMsg, maxRetries=4){
+  const RETRYABLE = [429, 500, 503];
+  let lastErr = null;
+
+  for(let attempt=0; attempt<=maxRetries; attempt++){
+    if(attempt > 0){
+      const waitSec = Math.min(3 * Math.pow(2, attempt-1), 30); // 3s, 6s, 12s, 24s, capped at 30s
+      if(onProgress) onProgress(null, `${baseMsg} — quá tải, tự thử lại sau ${waitSec}s (lần ${attempt}/${maxRetries})...`);
+      await new Promise(r=>setTimeout(r, waitSec*1000));
+    }
+
+    const response = await fetch(url, options);
+    if(response.ok) return response;
+
+    if(RETRYABLE.includes(response.status) && attempt < maxRetries){
+      lastErr = response;
+      continue; // retry
+    }
+    return response; // non-retryable error or out of retries — let caller handle
+  }
+  return lastErr;
+}
+
 // ── Call Gemini API to extract questions (free tier) ──
 async function analyzeWithGeminiAI(text, apiKey, onProgress){
   const chunks = splitIntoChunks(text);
   let allQuestions = [];
 
   for(let i=0; i<chunks.length; i++){
-    onProgress(35 + (i/chunks.length)*55, `Gemini đang phân tích phần ${i+1}/${chunks.length}...`);
+    const baseMsg = `Gemini đang phân tích phần ${i+1}/${chunks.length}...`;
+    onProgress(35 + (i/chunks.length)*55, baseMsg);
 
     const prompt = buildExtractionPrompt(chunks[i]);
-    const response = await fetch(
+    const response = await fetchWithRetry(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,
       {
         method: 'POST',
@@ -2892,12 +2919,17 @@ async function analyzeWithGeminiAI(text, apiKey, onProgress){
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { temperature: 0.2, maxOutputTokens: 8192 }
         })
-      }
+      },
+      onProgress, baseMsg
     );
 
     if(!response.ok){
       const errData = await response.json().catch(()=>({}));
-      throw new Error(`Lỗi Gemini API (${response.status}): ${errData?.error?.message || 'Kiểm tra lại API key.'}`);
+      const msg = errData?.error?.message || 'Kiểm tra lại API key.';
+      const friendly = response.status===503
+        ? 'Server Gemini đang quá tải, đã thử lại nhiều lần nhưng chưa thành công. Vui lòng đợi 1-2 phút rồi thử lại.'
+        : msg;
+      throw new Error(`Lỗi Gemini API (${response.status}): ${friendly}`);
     }
 
     const data = await response.json();
@@ -2914,10 +2946,11 @@ async function analyzeWithClaudeAI(text, apiKey, onProgress){
   let allQuestions = [];
 
   for(let i=0; i<chunks.length; i++){
-    onProgress(35 + (i/chunks.length)*55, `Claude đang phân tích phần ${i+1}/${chunks.length}...`);
+    const baseMsg = `Claude đang phân tích phần ${i+1}/${chunks.length}...`;
+    onProgress(35 + (i/chunks.length)*55, baseMsg);
 
     const prompt = buildExtractionPrompt(chunks[i]);
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetchWithRetry('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -2930,11 +2963,15 @@ async function analyzeWithClaudeAI(text, apiKey, onProgress){
         max_tokens: 8000,
         messages: [{ role: 'user', content: prompt }]
       })
-    });
+    }, onProgress, baseMsg);
 
     if(!response.ok){
       const errData = await response.json().catch(()=>({}));
-      throw new Error(`Lỗi Claude API (${response.status}): ${errData?.error?.message || 'Kiểm tra lại API key.'}`);
+      const msg = errData?.error?.message || 'Kiểm tra lại API key.';
+      const friendly = response.status===503 || response.status===429
+        ? 'Server Claude đang quá tải, đã thử lại nhiều lần nhưng chưa thành công. Vui lòng đợi 1-2 phút rồi thử lại.'
+        : msg;
+      throw new Error(`Lỗi Claude API (${response.status}): ${friendly}`);
     }
 
     const data = await response.json();
