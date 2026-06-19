@@ -550,6 +550,45 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .aff-perk-icon{width:30px;height:30px;border-radius:9px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .aff-perk b{color:var(--gold)}
 
+/* Terms & conditions screen */
+.aff-terms-block{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}
+.aff-terms-row{display:flex;gap:12px;align-items:flex-start}
+.aff-terms-row .atr-icon{width:34px;height:34px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.aff-terms-row .atr-title{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:3px}
+.aff-terms-row .atr-desc{font-size:11.5px;color:var(--muted);line-height:1.6}
+.aff-terms-agree{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.aff-checkbox-row{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--text);line-height:1.5}
+.aff-checkbox-row input{margin-top:2px;width:16px;height:16px;accent-color:#ec4899;flex-shrink:0;cursor:pointer}
+
+/* Affiliate dashboard (student, post-approval) */
+.aff-dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ads-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center}
+.ads-stat .ads-num{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;white-space:nowrap}
+.ads-stat .ads-lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;line-height:1.3}
+.aff-course-select{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:11px 14px;color:var(--text);font-family:inherit;font-size:13px;outline:none;cursor:pointer}
+.aff-hint{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5}
+.aff-order-history-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.aff-order-history-item:last-child{border-bottom:none}
+.aohi-course{font-size:12.5px;font-weight:700;color:var(--text)}
+.aohi-email{font-size:11px;color:var(--muted)}
+
+/* Order card embedded in chat bubbles */
+.chat-order-card{width:100%;max-width:280px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;font-size:12px}
+.coc-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.coc-icon{font-size:15px}
+.coc-title{font-size:12.5px;font-weight:800;color:var(--text)}
+.coc-details{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.coc-row{display:flex;justify-content:space-between;gap:8px;font-size:11.5px}
+.coc-label{color:var(--muted);flex-shrink:0}
+.coc-val{color:var(--text);font-weight:600;text-align:right}
+.coc-actions{display:flex;gap:6px}
+.coc-actions .admin-btn{flex:1;padding:8px 10px;font-size:11.5px}
+.coc-note{font-size:11px;color:var(--muted);line-height:1.5;font-style:italic}
+.coc-payment-box{background:var(--surface);border:1px dashed var(--gold);border-radius:10px;padding:11px 13px;margin-bottom:10px}
+.cpb-title{font-size:11.5px;font-weight:700;color:var(--gold);margin-bottom:8px}
+.cpb-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:3px 0}
+.cpb-row b{color:var(--text)}
+
 .aff-section{padding:20px 22px}
 .aff-section-title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
@@ -968,6 +1007,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
       <!-- AFFILIATE MANAGEMENT -->
       <div class="admin-section" id="tab-affiliate">
+        <div class="admin-stats" id="affiliateOverviewStats" style="margin-bottom:20px">
+          <div class="a-stat"><div class="a-num" id="affOvAffiliates" style="color:#ec4899">0</div><div class="a-lbl">Đối tác Affiliate</div></div>
+          <div class="a-stat"><div class="a-num" id="affOvOrders" style="color:var(--green)">0</div><div class="a-lbl">Đơn đã bán</div></div>
+          <div class="a-stat"><div class="a-num" id="affOvRevenue" style="color:var(--acc2)">0đ</div><div class="a-lbl">Tổng doanh thu</div></div>
+          <div class="a-stat"><div class="a-num" id="affOvCommission" style="color:var(--gold)">0đ</div><div class="a-lbl">Tổng hoa hồng</div></div>
+        </div>
         <div class="admin-card">
           <h2>🤝 Quản lý chương trình Affiliate</h2>
           <p>Xem xét và phê duyệt các đơn đăng ký tham gia Affiliate từ học sinh.</p>
@@ -2436,6 +2481,9 @@ auth.onAuthStateChanged(async user => {
 
   // Load any admin-added courses before proceeding
   await loadCustomCourses();
+
+  // Live cache of all affiliate orders — needed by both admin and student chat views
+  startAffOrdersCacheListener();
 
   // ── ADMIN ──
   if(user.email === ADMIN_EMAIL){
@@ -4107,6 +4155,10 @@ function renderStudentChatMessages(messages){
     if(m.senderRole === 'system'){
       return `<div class="chat-system-msg">${escapeHtml(m.text)}</div>`;
     }
+    if(m.senderRole === 'affiliate-order'){
+      const order = affOrdersCache[m.orderId];
+      return `<div class="chat-msg-row from-me">${renderOrderCardHTML(order, 'student')}<div class="chat-msg-time">${formatChatTime(m.timestamp)}</div></div>`;
+    }
     const isMe = m.senderRole === 'student';
     return `<div class="chat-msg-row ${isMe?'from-me':'from-them'}">
       ${!isMe?'<div class="chat-msg-sender">StudyHub Assistant</div>':''}
@@ -4315,6 +4367,10 @@ function renderAdminChatMessages(messages){
     if(m.senderRole === 'system'){
       return `<div class="chat-system-msg">${escapeHtml(m.text)}</div>`;
     }
+    if(m.senderRole === 'affiliate-order'){
+      const order = affOrdersCache[m.orderId];
+      return `<div class="chat-msg-row from-them">${renderOrderCardHTML(order, 'admin')}<div class="chat-msg-time">${formatChatTime(m.timestamp)}</div></div>`;
+    }
     const isMe = m.senderRole === 'admin';
     return `<div class="chat-msg-row ${isMe?'from-me':'from-them'}">
       <div class="chat-bubble">${escapeHtml(m.text)}</div>
@@ -4350,9 +4406,14 @@ function openAffiliatePanel(){
   if(studentAffiliateUnsub) studentAffiliateUnsub();
   studentAffiliateUnsub = docRef.onSnapshot(snap=>{
     if(!snap.exists){
-      renderAffiliateForm();
+      renderAffiliateTerms();
     } else {
-      renderAffiliateStatus(snap.data());
+      const data = snap.data();
+      if(data.status === 'approved'){
+        renderAffiliateDashboard(data);
+      } else {
+        renderAffiliateStatus(data);
+      }
     }
   });
 }
@@ -4361,8 +4422,8 @@ function closeAffiliatePanel(){
   document.getElementById('affiliateOverlay').classList.remove('show');
 }
 
-// ── Student: registration form (also shown again after rejection) ──
-function renderAffiliateForm(prefill){
+// ── Student: full terms & conditions screen (shown before the form) ──
+function renderAffiliateTerms(){
   const body = document.getElementById('affiliateBody');
   document.getElementById('affiliateHeaderSub').textContent = 'Chương trình hợp tác';
 
@@ -4371,15 +4432,73 @@ function renderAffiliateForm(prefill){
       <div class="aff-hero-badge">✨ Cơ hội thu nhập thêm</div>
       <h3>Kiếm tiền cùng StudyHub —<br>giới thiệu càng nhiều, nhận càng nhiều!</h3>
       <p>Bạn đang học tốt một môn nào đó? Hãy chia sẻ StudyHub đến bạn bè, vừa giúp họ học tốt hơn, vừa giúp bạn có thêm thu nhập mỗi tháng — hoàn toàn linh hoạt thời gian, làm khi nào bạn rảnh.</p>
-      <div class="aff-perks">
-        <div class="aff-perk"><span class="aff-perk-icon">💰</span> Hoa hồng <b>40%</b> trên mỗi môn học bạn giới thiệu thành công</div>
-        <div class="aff-perk"><span class="aff-perk-icon">⏰</span> Thời gian <b>hoàn toàn linh hoạt</b>, không ràng buộc ca làm</div>
-        <div class="aff-perk"><span class="aff-perk-icon">✅</span> Hoa hồng được thanh toán ngay sau khi <b>StudyHub xác nhận đơn hàng</b></div>
-        <div class="aff-perk"><span class="aff-perk-icon">🏷️</span> Tài khoản Affiliate có <b>huy hiệu riêng</b> hiển thị trong khung chat</div>
-      </div>
     </div>
     <div class="aff-section">
-      <div class="aff-section-title">📝 Đăng ký tham gia</div>
+      <div class="aff-section-title">📋 Chi tiết chương trình</div>
+
+      <div class="aff-terms-block">
+        <div class="aff-terms-row">
+          <span class="atr-icon">💵</span>
+          <div>
+            <div class="atr-title">Đơn giá mỗi môn học</div>
+            <div class="atr-desc">Mỗi môn học trên StudyHub có giá <b>50.000đ</b>.</div>
+          </div>
+        </div>
+        <div class="aff-terms-row">
+          <span class="atr-icon">💰</span>
+          <div>
+            <div class="atr-title">Hoa hồng 40%</div>
+            <div class="atr-desc">Mỗi đơn giới thiệu thành công, bạn nhận <b>20.000đ</b> (40% × 50.000đ).</div>
+          </div>
+        </div>
+        <div class="aff-terms-row">
+          <span class="atr-icon">⏰</span>
+          <div>
+            <div class="atr-title">Thời gian linh hoạt</div>
+            <div class="atr-desc">Không ràng buộc ca làm, giới thiệu bất cứ khi nào bạn muốn.</div>
+          </div>
+        </div>
+        <div class="aff-terms-row">
+          <span class="atr-icon">🔄</span>
+          <div>
+            <div class="atr-title">Quy trình báo bán hàng</div>
+            <div class="atr-desc">Sau khi được duyệt, bạn chọn môn học đã giới thiệu thành công, nhập tên & Gmail người mua, gửi báo cáo cho StudyHub qua khung chat.</div>
+          </div>
+        </div>
+        <div class="aff-terms-row">
+          <span class="atr-icon">🏦</span>
+          <div>
+            <div class="atr-title">Thanh toán hoa hồng</div>
+            <div class="atr-desc">Sau khi StudyHub xác nhận đơn hàng hợp lệ, bạn thanh toán phí môn học hộ người mua qua chuyển khoản, StudyHub xác nhận giao dịch và mở môn học cho người được giới thiệu.</div>
+          </div>
+        </div>
+        <div class="aff-terms-row">
+          <span class="atr-icon">🏷️</span>
+          <div>
+            <div class="atr-title">Huy hiệu Affiliate</div>
+            <div class="atr-desc">Tài khoản của bạn sẽ có vòng viền đặc biệt quanh ảnh đại diện trong khung chat, giúp StudyHub nhận diện đối tác chính thức.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aff-terms-agree">
+        <label class="aff-checkbox-row">
+          <input type="checkbox" id="affAgreeCheck" onchange="document.getElementById('affAgreeBtn').disabled=!this.checked"/>
+          <span>Tôi đã đọc và đồng ý với các điều khoản của chương trình Affiliate StudyHub</span>
+        </label>
+      </div>
+      <button class="aff-submit-btn" id="affAgreeBtn" disabled onclick="renderAffiliateForm()">✓ Đồng ý & Tiếp tục đăng ký</button>
+    </div>`;
+}
+
+// ── Student: registration form (also shown again after rejection) ──
+function renderAffiliateForm(prefill){
+  const body = document.getElementById('affiliateBody');
+  document.getElementById('affiliateHeaderSub').textContent = 'Đăng ký tham gia';
+
+  body.innerHTML = `
+    <div class="aff-section">
+      <div class="aff-section-title">📝 Thông tin đăng ký</div>
       <div class="aff-err" id="affFormErr"></div>
       <div class="aff-field">
         <label>Họ và tên</label>
@@ -4432,7 +4551,7 @@ async function submitAffiliateApp(){
 
     // Auto-post a system notice into the chat thread so admin sees it right away
     const chatRef = db.collection('chats').doc(uid);
-    const noticeText = `🤝 ${studentName} đã gửi phiếu đăng ký tham gia chương trình Affiliate. Vui lòng vào tab Affiliate để xem chi tiết và phê duyệt.`;
+    const noticeText = `🤝 PHIẾU ĐĂNG KÝ AFFILIATE\n\n${studentName} đã gửi đơn đăng ký tham gia chương trình Affiliate StudyHub.\n\n📋 Họ tên: ${name}\n🎂 Ngày sinh: ${dob}\n🎓 Chuyên ngành: ${major}\n\nVui lòng vào tab "🤝 Quản lý Affiliate" để xem chi tiết và phê duyệt.`;
     await chatRef.collection('messages').add({
       senderRole: 'system',
       text: noticeText,
@@ -4440,7 +4559,7 @@ async function submitAffiliateApp(){
     });
     await chatRef.set({
       studentName, studentEmail,
-      lastMessage: noticeText,
+      lastMessage: '🤝 Đã gửi phiếu đăng ký Affiliate',
       lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
       unreadByAdmin: firebase.firestore.FieldValue.increment(1),
       unreadByStudent: 0
@@ -4473,24 +4592,7 @@ function renderAffiliateStatus(app){
     return;
   }
 
-  if(app.status === 'approved'){
-    document.getElementById('affiliateHeaderSub').textContent = 'Đối tác Affiliate';
-    body.innerHTML = `
-      <div class="aff-status-view">
-        <div class="aff-badge-pill approved">✅ Đã duyệt</div>
-        <div class="aff-status-icon">🎉</div>
-        <div class="aff-status-title">Chào mừng bạn đến với StudyHub Affiliate!</div>
-        <div class="aff-status-desc">Bạn đã chính thức trở thành đối tác Affiliate. Huy hiệu đặc biệt đã xuất hiện quanh ảnh đại diện của bạn trong khung chat. Liên hệ StudyHub Assistant nếu cần hỗ trợ thêm.</div>
-        <div class="aff-status-card">
-          <div class="aff-status-row"><span class="asr-label">Họ tên</span><span class="asr-val">${escapeHtml(app.name)}</span></div>
-          <div class="aff-status-row"><span class="asr-label">Chuyên ngành</span><span class="asr-val">${escapeHtml(app.major)}</span></div>
-          <div class="aff-status-row"><span class="asr-label">Hoa hồng</span><span class="asr-val" style="color:var(--gold)">40% / môn</span></div>
-        </div>
-      </div>`;
-    return;
-  }
-
-  // pending
+  // pending (approved is handled separately by renderAffiliateDashboard)
   document.getElementById('affiliateHeaderSub').textContent = 'Đang chờ duyệt';
   body.innerHTML = `
     <div class="aff-status-view">
@@ -4550,6 +4652,18 @@ function renderAffiliateAppsList(){
   document.getElementById('affTabApprovedCount').textContent = approvedN;
   document.getElementById('affTabRejectedCount').textContent = rejectedN;
 
+  // System-wide overview stats (all confirmed orders across all affiliates)
+  const allConfirmed = Object.values(affOrdersCache).filter(o=>o.status==='confirmed');
+  const totalRevenue = allConfirmed.length * AFF_COURSE_PRICE;
+  const totalCommission = allConfirmed.length * (AFF_COURSE_PRICE*AFF_COMMISSION_RATE);
+  const ovAffEl = document.getElementById('affOvAffiliates');
+  if(ovAffEl){
+    ovAffEl.textContent = approvedN;
+    document.getElementById('affOvOrders').textContent = allConfirmed.length;
+    document.getElementById('affOvRevenue').textContent = formatVND(totalRevenue);
+    document.getElementById('affOvCommission').textContent = formatVND(totalCommission);
+  }
+
   const list = affiliateFilterStatus === 'all'
     ? adminAffiliateApps.slice()
     : adminAffiliateApps.filter(a=>a.status===affiliateFilterStatus);
@@ -4581,6 +4695,19 @@ function renderAffiliateAppsList(){
         ? '<div class="aff-app-actions"><button class="admin-btn danger" onclick="rejectAffiliateApp(\'' + a.uid + '\',\'' + safeName + '\')">✗ Thu hồi phê duyệt</button></div>'
         : '<div class="aff-app-actions"><button class="admin-btn primary" onclick="approveAffiliateApp(\'' + a.uid + '\')">✓ Phê duyệt</button></div>';
 
+    // Sales stats for approved affiliates, computed from the live orders cache
+    let salesBlock = '';
+    if(a.status === 'approved'){
+      const myOrders = Object.values(affOrdersCache).filter(o=>o.affiliateUid===a.uid && o.status==='confirmed');
+      const revenue = myOrders.length * AFF_COURSE_PRICE;
+      const commission = myOrders.length * (AFF_COURSE_PRICE*AFF_COMMISSION_RATE);
+      salesBlock = `<div class="aff-app-details" style="margin-top:10px">
+        <div class="aff-app-detail-item"><div class="adi-label">Đơn đã bán</div><div class="adi-val">${myOrders.length}</div></div>
+        <div class="aff-app-detail-item"><div class="adi-label">Doanh thu</div><div class="adi-val">${formatVND(revenue)}</div></div>
+        <div class="aff-app-detail-item"><div class="adi-label">Hoa hồng</div><div class="adi-val" style="color:var(--gold)">${formatVND(commission)}</div></div>
+      </div>`;
+    }
+
     return `<div class="aff-app-card">
       <div class="aff-app-header">
         <div class="aff-app-avatar">${initial}</div>
@@ -4595,6 +4722,7 @@ function renderAffiliateAppsList(){
         <div class="aff-app-detail-item"><div class="adi-label">Ngày sinh</div><div class="adi-val">${a.dob}</div></div>
         <div class="aff-app-detail-item"><div class="adi-label">Chuyên ngành</div><div class="adi-val">${escapeHtml(a.major)}</div></div>
       </div>
+      ${salesBlock}
       ${actions}
     </div>`;
   }).join('');
@@ -4615,6 +4743,390 @@ async function rejectAffiliateApp(uid, name){
     reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
   });
   showToast('Đã từ chối đơn đăng ký.','ok');
+}
+
+
+// ═══════════════════════════════════════
+//  AFFILIATE ORDERS — sale reporting & payment flow
+//  Firestore: affiliateOrders/{orderId}
+//    { affiliateUid, affiliateName, affiliateEmail,
+//      courseIdx, courseCode, courseName,
+//      buyerName, buyerEmail,
+//      status: 'pending_admin' | 'rejected' | 'awaiting_payment' | 'payment_submitted' | 'confirmed',
+//      price, commission,
+//      createdAt, updatedAt }
+//
+//  Price: 50,000 VND / course. Commission: 40% = 20,000 VND.
+// ═══════════════════════════════════════
+
+const AFF_COURSE_PRICE = 50000;
+const AFF_COMMISSION_RATE = 0.4;
+const MB_BANK_ACCOUNT = '0367031025';
+const MB_BANK_NAME = 'HO SY MANH TIEN';
+
+function formatVND(n){
+  return n.toLocaleString('vi-VN') + 'đ';
+}
+
+// ── Student: Affiliate dashboard (shown once approved) ──
+let affDashboardOrdersUnsub = null;
+
+function renderAffiliateDashboard(appData){
+  const body = document.getElementById('affiliateBody');
+  document.getElementById('affiliateHeaderSub').textContent = 'Đối tác Affiliate';
+
+  body.innerHTML = `
+    <div class="aff-section" style="padding-bottom:0">
+      <div class="aff-badge-pill approved" style="margin-bottom:14px">✅ Đối tác Affiliate</div>
+      <div class="aff-dash-stats" id="affDashStats">
+        <div class="ads-stat"><div class="ads-num" id="adsOrderCount">0</div><div class="ads-lbl">Đơn đã bán</div></div>
+        <div class="ads-stat"><div class="ads-num" id="adsRevenue">0đ</div><div class="ads-lbl">Doanh thu</div></div>
+        <div class="ads-stat"><div class="ads-num" id="adsCommission">0đ</div><div class="ads-lbl">Hoa hồng kiếm được</div></div>
+      </div>
+    </div>
+
+    <div class="aff-section">
+      <div class="aff-section-title">🛍️ Báo bán hàng mới</div>
+      <div class="aff-err" id="affOrderErr"></div>
+      <div class="aff-field">
+        <label>Môn học đã giới thiệu thành công</label>
+        <select id="affOrderCourse" class="aff-course-select"></select>
+      </div>
+      <div class="aff-field">
+        <label>Họ tên người mua</label>
+        <input type="text" id="affBuyerName" placeholder="Tên người được giới thiệu"/>
+      </div>
+      <div class="aff-field">
+        <label>Gmail người mua</label>
+        <input type="email" id="affBuyerEmail" placeholder="email@gmail.com"/>
+      </div>
+      <button class="aff-submit-btn" id="affOrderSubmitBtn" onclick="submitAffiliateOrder()">📨 Gửi báo cáo cho StudyHub</button>
+      <div class="aff-hint">Sau khi gửi, một thẻ đơn hàng sẽ xuất hiện trong khung chat để StudyHub xác nhận.</div>
+    </div>
+
+    <div class="aff-section">
+      <div class="aff-section-title">📜 Lịch sử đơn hàng</div>
+      <div id="affOrderHistory"><div class="admin-empty" style="padding:24px"><div class="ae-icon">📭</div><p>Chưa có đơn hàng nào.</p></div></div>
+    </div>`;
+
+  // Populate course dropdown from live COURSES array
+  const sel = document.getElementById('affOrderCourse');
+  sel.innerHTML = COURSES.map(function(c,i){ return '<option value="'+i+'">'+c.icon+' '+c.code+' — '+c.name+'</option>'; }).join('');
+
+  // Watch this affiliate's own orders for stats + history
+  if(affDashboardOrdersUnsub) affDashboardOrdersUnsub();
+  affDashboardOrdersUnsub = db.collection('affiliateOrders')
+    .where('affiliateUid','==', currentUser.user.uid)
+    .onSnapshot(function(snap){
+      const orders = snap.docs.map(function(d){ return Object.assign({}, d.data(), {id:d.id}); });
+      renderAffiliateOwnStats(orders);
+      renderAffiliateOwnHistory(orders);
+    });
+}
+
+function renderAffiliateOwnStats(orders){
+  const confirmed = orders.filter(function(o){ return o.status==='confirmed'; });
+  const revenue = confirmed.length * AFF_COURSE_PRICE;
+  const commission = confirmed.length * (AFF_COURSE_PRICE*AFF_COMMISSION_RATE);
+  document.getElementById('adsOrderCount').textContent = confirmed.length;
+  document.getElementById('adsRevenue').textContent = formatVND(revenue);
+  document.getElementById('adsCommission').textContent = formatVND(commission);
+}
+
+const AFF_STATUS_LABEL = {
+  pending_admin: {label:'⏳ Chờ StudyHub xác nhận', cls:'pending'},
+  rejected: {label:'❌ Đã từ chối', cls:'rejected'},
+  awaiting_payment: {label:'🏦 Chờ bạn thanh toán', cls:'pending'},
+  payment_submitted: {label:'🔎 Chờ StudyHub xác thực', cls:'pending'},
+  confirmed: {label:'✅ Hoàn tất', cls:'approved'}
+};
+
+function renderAffiliateOwnHistory(orders){
+  const area = document.getElementById('affOrderHistory');
+  if(!area) return;
+  if(orders.length === 0){
+    area.innerHTML = '<div class="admin-empty" style="padding:24px"><div class="ae-icon">📭</div><p>Chưa có đơn hàng nào.</p></div>';
+    return;
+  }
+  orders.sort(function(a,b){
+    const ta=(a.createdAt&&a.createdAt.toMillis)?a.createdAt.toMillis():0;
+    const tb=(b.createdAt&&b.createdAt.toMillis)?b.createdAt.toMillis():0;
+    return tb-ta;
+  });
+  area.innerHTML = orders.map(function(o){
+    const st = AFF_STATUS_LABEL[o.status] || {label:o.status, cls:'pending'};
+    return '<div class="aff-order-history-item">'
+      + '<div>'
+      + '<div class="aohi-course">' + escapeHtml(o.courseCode) + ' — ' + escapeHtml(o.buyerName) + '</div>'
+      + '<div class="aohi-email">' + escapeHtml(o.buyerEmail) + '</div>'
+      + '</div>'
+      + '<div class="aff-app-status ' + st.cls + '">' + st.label + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+// ── Student: submit a new sale report ──
+async function submitAffiliateOrder(){
+  const courseIdx = parseInt(document.getElementById('affOrderCourse').value);
+  const buyerName = document.getElementById('affBuyerName').value.trim();
+  const buyerEmail = document.getElementById('affBuyerEmail').value.trim().toLowerCase();
+  const errEl = document.getElementById('affOrderErr');
+
+  if(!buyerName || !buyerEmail){
+    errEl.textContent = '❌ Vui lòng điền đầy đủ tên và Gmail người mua.';
+    errEl.classList.add('show');
+    return;
+  }
+  if(!buyerEmail.includes('@') || !buyerEmail.endsWith('.com')){
+    errEl.textContent = '❌ Vui lòng nhập đúng định dạng Gmail.';
+    errEl.classList.add('show');
+    return;
+  }
+  errEl.classList.remove('show');
+
+  const btn = document.getElementById('affOrderSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang gửi...';
+
+  try{
+    const course = COURSES[courseIdx];
+    const affiliateUid = currentUser.user.uid;
+    const affiliateName = currentUser.data.name || currentUser.user.displayName || '';
+    const affiliateEmail = currentUser.user.email;
+
+    const orderRef = await db.collection('affiliateOrders').add({
+      affiliateUid: affiliateUid, affiliateName: affiliateName, affiliateEmail: affiliateEmail,
+      courseIdx: courseIdx, courseCode: course.code, courseName: course.name,
+      buyerName: buyerName, buyerEmail: buyerEmail,
+      status: 'pending_admin',
+      price: AFF_COURSE_PRICE,
+      commission: AFF_COURSE_PRICE * AFF_COMMISSION_RATE,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Post an order-card message into the chat thread
+    const chatRef = db.collection('chats').doc(affiliateUid);
+    await chatRef.collection('messages').add({
+      senderRole: 'affiliate-order',
+      orderId: orderRef.id,
+      text: '🛍️ Đơn hàng mới: ' + course.code + ' cho ' + buyerName,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await chatRef.set({
+      studentName: affiliateName, studentEmail: affiliateEmail,
+      lastMessage: '🛍️ Báo bán hàng: ' + course.code,
+      lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      unreadByAdmin: firebase.firestore.FieldValue.increment(1),
+      unreadByStudent: 0
+    }, {merge:true});
+
+    document.getElementById('affBuyerName').value = '';
+    document.getElementById('affBuyerEmail').value = '';
+    showToast('Đã gửi báo cáo bán hàng!','ok');
+  } catch(e){
+    errEl.textContent = '❌ Lỗi: '+e.message;
+    errEl.classList.add('show');
+  } finally{
+    btn.disabled = false;
+    btn.textContent = '📨 Gửi báo cáo cho StudyHub';
+  }
+}
+
+// ── Order card renderer — used inside BOTH student and admin chat message lists ──
+// Pass viewerRole = 'student' | 'admin' so action buttons differ per side.
+function renderOrderCardHTML(order, viewerRole){
+  if(!order){
+    return '<div class="chat-order-card"><div class="coc-note">⏳ Đang tải thông tin đơn hàng...</div></div>';
+  }
+
+  const st = AFF_STATUS_LABEL[order.status] || {label:order.status, cls:'pending'};
+  const header = ''
+    + '<div class="coc-header">'
+    + '<span class="coc-icon">🛍️</span>'
+    + '<div class="coc-title">Đơn hàng Affiliate</div>'
+    + '<span class="aff-app-status ' + st.cls + '" style="margin-left:auto">' + st.label + '</span>'
+    + '</div>'
+    + '<div class="coc-details">'
+    + '<div class="coc-row"><span class="coc-label">Môn học</span><span class="coc-val">' + escapeHtml(order.courseCode) + ' — ' + escapeHtml(order.courseName) + '</span></div>'
+    + '<div class="coc-row"><span class="coc-label">Người mua</span><span class="coc-val">' + escapeHtml(order.buyerName) + '</span></div>'
+    + '<div class="coc-row"><span class="coc-label">Gmail</span><span class="coc-val">' + escapeHtml(order.buyerEmail) + '</span></div>'
+    + '<div class="coc-row"><span class="coc-label">Giá trị</span><span class="coc-val">' + formatVND(order.price) + '</span></div>'
+    + '<div class="coc-row"><span class="coc-label">Hoa hồng</span><span class="coc-val" style="color:var(--gold)">' + formatVND(order.commission) + '</span></div>'
+    + '</div>';
+
+  let actions = '';
+
+  if(order.status === 'pending_admin' && viewerRole === 'admin'){
+    actions = '<div class="coc-actions">'
+      + '<button class="admin-btn primary" onclick="adminApproveOrder(\'' + order.id + '\')">✓ Xác nhận đơn</button>'
+      + '<button class="admin-btn danger" onclick="adminRejectOrder(\'' + order.id + '\')">✗ Từ chối</button>'
+      + '</div>';
+  } else if(order.status === 'pending_admin' && viewerRole === 'student'){
+    actions = '<div class="coc-note">Đang chờ StudyHub xác nhận đơn hàng...</div>';
+  } else if(order.status === 'rejected'){
+    actions = '<div class="coc-note" style="color:var(--red)">Đơn hàng đã bị từ chối.</div>';
+  } else if(order.status === 'awaiting_payment' && viewerRole === 'student'){
+    actions = ''
+      + '<div class="coc-payment-box">'
+      + '<div class="cpb-title">🏦 Thông tin chuyển khoản</div>'
+      + '<div class="cpb-row"><span>Ngân hàng</span><b>MB Bank</b></div>'
+      + '<div class="cpb-row"><span>Số tài khoản</span><b>' + MB_BANK_ACCOUNT + '</b></div>'
+      + '<div class="cpb-row"><span>Chủ tài khoản</span><b>' + MB_BANK_NAME + '</b></div>'
+      + '<div class="cpb-row"><span>Số tiền</span><b>' + formatVND(order.price) + '</b></div>'
+      + '</div>'
+      + '<button class="admin-btn primary" style="width:100%" onclick="studentMarkPaid(\'' + order.id + '\')">✓ Tôi đã thanh toán</button>';
+  } else if(order.status === 'awaiting_payment' && viewerRole === 'admin'){
+    actions = '<div class="coc-note">Đang chờ affiliate thanh toán...</div>';
+  } else if(order.status === 'payment_submitted' && viewerRole === 'student'){
+    actions = '<div class="coc-note">⏳ Môn học sẽ được cập nhật cho người mua sau khi StudyHub xác thực giao dịch thành công.</div>';
+  } else if(order.status === 'payment_submitted' && viewerRole === 'admin'){
+    actions = '<div class="coc-actions">'
+      + '<button class="admin-btn primary" onclick="adminConfirmPayment(\'' + order.id + '\')">✓ Xác nhận đã nhận tiền</button>'
+      + '</div>';
+  } else if(order.status === 'confirmed'){
+    actions = '<div class="coc-note" style="color:var(--green)">🎉 Giao dịch thành công! Môn học đã/sẽ được cập nhật cho người mua.</div>';
+  }
+
+  return '<div class="chat-order-card">' + header + actions + '</div>';
+}
+
+// Cache of orders by id, refreshed via a dedicated listener so chat cards stay live
+let affOrdersCache = {};
+let affOrdersCacheUnsub = null;
+
+function startAffOrdersCacheListener(){
+  if(affOrdersCacheUnsub) return; // already running
+  affOrdersCacheUnsub = db.collection('affiliateOrders').onSnapshot(function(snap){
+    snap.docChanges().forEach(function(change){
+      const data = change.doc.data();
+      data.id = change.doc.id;
+      affOrdersCache[change.doc.id] = data;
+    });
+    // Re-render whichever chat view is currently open so cards reflect new status live
+    if(currentUser && currentUser.type === 'student'){
+      const overlay = document.getElementById('studentChatOverlay');
+      if(overlay && overlay.classList.contains('show') && studentChatDocRef){
+        studentChatDocRef.collection('messages').orderBy('timestamp','asc').get().then(function(s){
+          renderStudentChatMessages(s.docs.map(function(d){ return d.data(); }));
+        });
+      }
+    }
+    if(currentUser && currentUser.type === 'admin' && activeChatStudentUid){
+      db.collection('chats').doc(activeChatStudentUid).collection('messages').orderBy('timestamp','asc').get().then(function(s){
+        renderAdminChatMessages(s.docs.map(function(d){ return d.data(); }));
+      });
+    }
+    // Keep the admin Affiliate management tab numbers fresh too
+    if(currentUser && currentUser.type === 'admin' && document.getElementById('tab-affiliate') && document.getElementById('tab-affiliate').classList.contains('show')){
+      renderAffiliateAppsList();
+    }
+    // Keep the student's own dashboard stats fresh (separate from the per-order listener)
+    if(currentUser && currentUser.type === 'student' && document.getElementById('adsOrderCount')){
+      const myOrders = Object.values(affOrdersCache).filter(function(o){ return o.affiliateUid===currentUser.user.uid; });
+      renderAffiliateOwnStats(myOrders);
+      renderAffiliateOwnHistory(myOrders);
+    }
+  });
+}
+
+// ── Admin actions on an order ──
+async function adminApproveOrder(orderId){
+  const order = affOrdersCache[orderId];
+  if(!order) return;
+
+  // Check if buyer already has a student account
+  const existing = await db.collection('students').where('email','==', order.buyerEmail).limit(1).get();
+  const buyerExists = !existing.empty;
+
+  await db.collection('affiliateOrders').doc(orderId).update({
+    status: 'awaiting_payment',
+    buyerAlreadyRegistered: buyerExists,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  const noteText = buyerExists
+    ? ('✓ Đơn hàng ' + order.courseCode + ' đã được xác nhận. Gmail người mua đã có tài khoản StudyHub — vui lòng thanh toán để hoàn tất.')
+    : ('✓ Đơn hàng ' + order.courseCode + ' đã được xác nhận. Gmail người mua chưa có tài khoản — StudyHub sẽ mở môn sau khi người mua tự đăng ký. Vui lòng thanh toán để hoàn tất.');
+
+  await postSystemChatNote(order.affiliateUid, noteText);
+  showToast('Đã xác nhận đơn hàng, chờ affiliate thanh toán.','ok');
+}
+
+async function adminRejectOrder(orderId){
+  const order = affOrdersCache[orderId];
+  if(!order) return;
+  if(!confirm('Từ chối đơn hàng ' + order.courseCode + ' của ' + order.buyerName + '?')) return;
+
+  await db.collection('affiliateOrders').doc(orderId).update({
+    status: 'rejected',
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  await postSystemChatNote(order.affiliateUid, '❌ Đơn hàng ' + order.courseCode + ' cho ' + order.buyerName + ' đã bị từ chối.');
+  showToast('Đã từ chối đơn hàng.','ok');
+}
+
+// ── Student: mark as paid ──
+async function studentMarkPaid(orderId){
+  if(!confirm('Xác nhận bạn đã chuyển khoản thanh toán cho đơn hàng này?')) return;
+  const order = affOrdersCache[orderId];
+  await db.collection('affiliateOrders').doc(orderId).update({
+    status: 'payment_submitted',
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  const chatRef = db.collection('chats').doc(currentUser.user.uid);
+  await chatRef.update({
+    lastMessage: '💳 Đã thanh toán đơn ' + (order?order.courseCode:'') + ', chờ xác thực',
+    lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    unreadByAdmin: firebase.firestore.FieldValue.increment(1)
+  });
+  showToast('Đã ghi nhận thanh toán, chờ StudyHub xác thực.','ok');
+}
+
+// ── Admin: confirm payment received → unlock course for buyer if they exist ──
+async function adminConfirmPayment(orderId){
+  const order = affOrdersCache[orderId];
+  if(!order) return;
+  if(!confirm('Xác nhận đã nhận thanh toán cho đơn ' + order.courseCode + '? Môn học sẽ được mở cho người mua nếu đã có tài khoản.')) return;
+
+  await db.collection('affiliateOrders').doc(orderId).update({
+    status: 'confirmed',
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  // Try to unlock the course for the buyer if their account already exists
+  try{
+    const existing = await db.collection('students').where('email','==', order.buyerEmail).limit(1).get();
+    if(!existing.empty){
+      const buyerDoc = existing.docs[0];
+      const buyerData = buyerDoc.data();
+      const courses = buyerData.courses || [];
+      if(!courses.includes(order.courseIdx)){
+        courses.push(order.courseIdx);
+        courses.sort(function(a,b){return a-b;});
+        await db.collection('students').doc(buyerDoc.id).update({courses: courses});
+      }
+    }
+  } catch(e){ console.warn('Could not auto-unlock course for buyer:', e); }
+
+  await postSystemChatNote(order.affiliateUid, '🎉 Giao dịch thành công! Đơn hàng ' + order.courseCode + ' cho ' + order.buyerName + ' đã hoàn tất. Hoa hồng ' + formatVND(order.commission) + ' đã được ghi nhận.');
+  showToast('Đã xác nhận giao dịch thành công!','ok');
+}
+
+// ── Shared helper: post a plain system message into a student's chat thread ──
+async function postSystemChatNote(studentUid, text){
+  const chatRef = db.collection('chats').doc(studentUid);
+  await chatRef.collection('messages').add({
+    senderRole: 'system',
+    text: text,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  await chatRef.update({
+    lastMessage: text.length > 60 ? text.slice(0,60)+'…' : text,
+    lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    unreadByStudent: firebase.firestore.FieldValue.increment(1)
+  });
 }
 
 </script>
