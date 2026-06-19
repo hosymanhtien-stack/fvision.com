@@ -566,6 +566,16 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .ads-stat .ads-num{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;white-space:nowrap}
 .ads-stat .ads-lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;line-height:1.3}
 .aff-course-select{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:11px 14px;color:var(--text);font-family:inherit;font-size:13px;outline:none;cursor:pointer}
+
+/* Multi-course selection checkboxes for sale reporting */
+.aff-course-checks{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;padding-right:2px}
+.aff-course-check-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:10px 14px;cursor:pointer;font-size:12.5px;color:var(--text);transition:all .15s}
+.aff-course-check-row:hover{border-color:var(--border2)}
+.aff-course-check-row.checked{border-color:#ec4899;background:rgba(236,72,153,.08)}
+.aff-course-check-row input{width:16px;height:16px;accent-color:#ec4899;flex-shrink:0;cursor:pointer}
+.aff-order-total-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin:14px 0;display:flex;flex-direction:column;gap:6px}
+.aotb-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.aotb-row b{color:var(--text);font-size:13px}
 .aff-hint{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5}
 .aff-order-history-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
 .aff-order-history-item:last-child{border-bottom:none}
@@ -1009,7 +1019,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <div class="admin-section" id="tab-affiliate">
         <div class="admin-stats" id="affiliateOverviewStats" style="margin-bottom:20px">
           <div class="a-stat"><div class="a-num" id="affOvAffiliates" style="color:#ec4899">0</div><div class="a-lbl">Đối tác Affiliate</div></div>
-          <div class="a-stat"><div class="a-num" id="affOvOrders" style="color:var(--green)">0</div><div class="a-lbl">Đơn đã bán</div></div>
+          <div class="a-stat"><div class="a-num" id="affOvOrders" style="color:var(--green)">0</div><div class="a-lbl">Môn đã bán</div></div>
           <div class="a-stat"><div class="a-num" id="affOvRevenue" style="color:var(--acc2)">0đ</div><div class="a-lbl">Tổng doanh thu</div></div>
           <div class="a-stat"><div class="a-num" id="affOvCommission" style="color:var(--gold)">0đ</div><div class="a-lbl">Tổng hoa hồng</div></div>
         </div>
@@ -4654,12 +4664,13 @@ function renderAffiliateAppsList(){
 
   // System-wide overview stats (all confirmed orders across all affiliates)
   const allConfirmed = Object.values(affOrdersCache).filter(o=>o.status==='confirmed');
-  const totalRevenue = allConfirmed.length * AFF_COURSE_PRICE;
-  const totalCommission = allConfirmed.length * (AFF_COURSE_PRICE*AFF_COMMISSION_RATE);
+  const totalCoursesSold = allConfirmed.reduce((sum,o)=>sum+((o.courseIdxs||[]).length||1), 0);
+  const totalRevenue = allConfirmed.reduce((sum,o)=>sum+(o.price||0), 0);
+  const totalCommission = allConfirmed.reduce((sum,o)=>sum+(o.commission||0), 0);
   const ovAffEl = document.getElementById('affOvAffiliates');
   if(ovAffEl){
     ovAffEl.textContent = approvedN;
-    document.getElementById('affOvOrders').textContent = allConfirmed.length;
+    document.getElementById('affOvOrders').textContent = totalCoursesSold;
     document.getElementById('affOvRevenue').textContent = formatVND(totalRevenue);
     document.getElementById('affOvCommission').textContent = formatVND(totalCommission);
   }
@@ -4699,10 +4710,11 @@ function renderAffiliateAppsList(){
     let salesBlock = '';
     if(a.status === 'approved'){
       const myOrders = Object.values(affOrdersCache).filter(o=>o.affiliateUid===a.uid && o.status==='confirmed');
-      const revenue = myOrders.length * AFF_COURSE_PRICE;
-      const commission = myOrders.length * (AFF_COURSE_PRICE*AFF_COMMISSION_RATE);
+      const coursesSold = myOrders.reduce((sum,o)=>sum+((o.courseIdxs||[]).length||1), 0);
+      const revenue = myOrders.reduce((sum,o)=>sum+(o.price||0), 0);
+      const commission = myOrders.reduce((sum,o)=>sum+(o.commission||0), 0);
       salesBlock = `<div class="aff-app-details" style="margin-top:10px">
-        <div class="aff-app-detail-item"><div class="adi-label">Đơn đã bán</div><div class="adi-val">${myOrders.length}</div></div>
+        <div class="aff-app-detail-item"><div class="adi-label">Môn đã bán</div><div class="adi-val">${coursesSold}</div></div>
         <div class="aff-app-detail-item"><div class="adi-label">Doanh thu</div><div class="adi-val">${formatVND(revenue)}</div></div>
         <div class="aff-app-detail-item"><div class="adi-label">Hoa hồng</div><div class="adi-val" style="color:var(--gold)">${formatVND(commission)}</div></div>
       </div>`;
@@ -4761,6 +4773,8 @@ async function rejectAffiliateApp(uid, name){
 
 const AFF_COURSE_PRICE = 50000;
 const AFF_COMMISSION_RATE = 0.4;
+const AFF_COMMISSION_PER_COURSE = AFF_COURSE_PRICE * AFF_COMMISSION_RATE; // 20,000đ
+const AFF_PAYABLE_PER_COURSE = AFF_COURSE_PRICE - AFF_COMMISSION_PER_COURSE; // 30,000đ — what the affiliate transfers to StudyHub
 const MB_BANK_ACCOUNT = '0367031025';
 const MB_BANK_NAME = 'HO SY MANH TIEN';
 
@@ -4779,7 +4793,7 @@ function renderAffiliateDashboard(appData){
     <div class="aff-section" style="padding-bottom:0">
       <div class="aff-badge-pill approved" style="margin-bottom:14px">✅ Đối tác Affiliate</div>
       <div class="aff-dash-stats" id="affDashStats">
-        <div class="ads-stat"><div class="ads-num" id="adsOrderCount">0</div><div class="ads-lbl">Đơn đã bán</div></div>
+        <div class="ads-stat"><div class="ads-num" id="adsOrderCount">0</div><div class="ads-lbl">Môn đã bán</div></div>
         <div class="ads-stat"><div class="ads-num" id="adsRevenue">0đ</div><div class="ads-lbl">Doanh thu</div></div>
         <div class="ads-stat"><div class="ads-num" id="adsCommission">0đ</div><div class="ads-lbl">Hoa hồng kiếm được</div></div>
       </div>
@@ -4789,8 +4803,13 @@ function renderAffiliateDashboard(appData){
       <div class="aff-section-title">🛍️ Báo bán hàng mới</div>
       <div class="aff-err" id="affOrderErr"></div>
       <div class="aff-field">
-        <label>Môn học đã giới thiệu thành công</label>
-        <select id="affOrderCourse" class="aff-course-select"></select>
+        <label>Môn học đã giới thiệu thành công (chọn 1 hoặc nhiều môn)</label>
+        <div id="affOrderCourseChecks" class="aff-course-checks"></div>
+      </div>
+      <div class="aff-order-total-box" id="affOrderTotalBox" style="display:none">
+        <div class="aotb-row"><span>Số môn đã chọn</span><b id="aotbCount">0</b></div>
+        <div class="aotb-row"><span>Tổng hoa hồng nhận được</span><b id="aotbCommission" style="color:var(--gold)">0đ</b></div>
+        <div class="aotb-row"><span>Số tiền cần thanh toán</span><b id="aotbPayable">0đ</b></div>
       </div>
       <div class="aff-field">
         <label>Họ tên người mua</label>
@@ -4809,9 +4828,14 @@ function renderAffiliateDashboard(appData){
       <div id="affOrderHistory"><div class="admin-empty" style="padding:24px"><div class="ae-icon">📭</div><p>Chưa có đơn hàng nào.</p></div></div>
     </div>`;
 
-  // Populate course dropdown from live COURSES array
-  const sel = document.getElementById('affOrderCourse');
-  sel.innerHTML = COURSES.map(function(c,i){ return '<option value="'+i+'">'+c.icon+' '+c.code+' — '+c.name+'</option>'; }).join('');
+  // Populate course checkboxes from live COURSES array
+  const checksArea = document.getElementById('affOrderCourseChecks');
+  checksArea.innerHTML = COURSES.map(function(c,i){
+    return '<label class="aff-course-check-row" id="acc-wrap-'+i+'">'
+      + '<input type="checkbox" value="'+i+'" class="aff-course-checkbox" onchange="updateAffOrderTotal()"/>'
+      + '<span>'+c.icon+' '+c.code+' — '+c.name+'</span>'
+      + '</label>';
+  }).join('');
 
   // Watch this affiliate's own orders for stats + history
   if(affDashboardOrdersUnsub) affDashboardOrdersUnsub();
@@ -4824,11 +4848,35 @@ function renderAffiliateDashboard(appData){
     });
 }
 
+// ── Live total calculation as affiliate checks/unchecks courses ──
+function updateAffOrderTotal(){
+  const checked = Array.from(document.querySelectorAll('.aff-course-checkbox:checked'));
+  const count = checked.length;
+  const box = document.getElementById('affOrderTotalBox');
+
+  // Highlight selected rows
+  document.querySelectorAll('.aff-course-check-row').forEach(row=>row.classList.remove('checked'));
+  checked.forEach(cb=>{
+    const row = document.getElementById('acc-wrap-'+cb.value);
+    if(row) row.classList.add('checked');
+  });
+
+  if(count === 0){
+    box.style.display = 'none';
+    return;
+  }
+  box.style.display = '';
+  document.getElementById('aotbCount').textContent = count;
+  document.getElementById('aotbCommission').textContent = formatVND(count * AFF_COMMISSION_PER_COURSE);
+  document.getElementById('aotbPayable').textContent = formatVND(count * AFF_PAYABLE_PER_COURSE);
+}
+
 function renderAffiliateOwnStats(orders){
   const confirmed = orders.filter(function(o){ return o.status==='confirmed'; });
-  const revenue = confirmed.length * AFF_COURSE_PRICE;
-  const commission = confirmed.length * (AFF_COURSE_PRICE*AFF_COMMISSION_RATE);
-  document.getElementById('adsOrderCount').textContent = confirmed.length;
+  const totalCourses = confirmed.reduce(function(sum,o){ return sum + ((o.courseIdxs||[]).length || 1); }, 0);
+  const revenue = confirmed.reduce(function(sum,o){ return sum + (o.price||0); }, 0);
+  const commission = confirmed.reduce(function(sum,o){ return sum + (o.commission||0); }, 0);
+  document.getElementById('adsOrderCount').textContent = totalCourses;
   document.getElementById('adsRevenue').textContent = formatVND(revenue);
   document.getElementById('adsCommission').textContent = formatVND(commission);
 }
@@ -4855,9 +4903,10 @@ function renderAffiliateOwnHistory(orders){
   });
   area.innerHTML = orders.map(function(o){
     const st = AFF_STATUS_LABEL[o.status] || {label:o.status, cls:'pending'};
+    const courseLabel = (o.courses||[]).map(c=>c.code).join(', ') || o.courseCode || '';
     return '<div class="aff-order-history-item">'
       + '<div>'
-      + '<div class="aohi-course">' + escapeHtml(o.courseCode) + ' — ' + escapeHtml(o.buyerName) + '</div>'
+      + '<div class="aohi-course">' + escapeHtml(courseLabel) + ' — ' + escapeHtml(o.buyerName) + '</div>'
       + '<div class="aohi-email">' + escapeHtml(o.buyerEmail) + '</div>'
       + '</div>'
       + '<div class="aff-app-status ' + st.cls + '">' + st.label + '</div>'
@@ -4867,11 +4916,17 @@ function renderAffiliateOwnHistory(orders){
 
 // ── Student: submit a new sale report ──
 async function submitAffiliateOrder(){
-  const courseIdx = parseInt(document.getElementById('affOrderCourse').value);
+  const checkedBoxes = Array.from(document.querySelectorAll('.aff-course-checkbox:checked'));
+  const courseIdxs = checkedBoxes.map(cb=>parseInt(cb.value)).sort((a,b)=>a-b);
   const buyerName = document.getElementById('affBuyerName').value.trim();
   const buyerEmail = document.getElementById('affBuyerEmail').value.trim().toLowerCase();
   const errEl = document.getElementById('affOrderErr');
 
+  if(courseIdxs.length === 0){
+    errEl.textContent = '❌ Vui lòng chọn ít nhất một môn học.';
+    errEl.classList.add('show');
+    return;
+  }
   if(!buyerName || !buyerEmail){
     errEl.textContent = '❌ Vui lòng điền đầy đủ tên và Gmail người mua.';
     errEl.classList.add('show');
@@ -4889,38 +4944,45 @@ async function submitAffiliateOrder(){
   btn.textContent = '⏳ Đang gửi...';
 
   try{
-    const course = COURSES[courseIdx];
+    const selectedCourses = courseIdxs.map(i=>({idx:i, code:COURSES[i].code, name:COURSES[i].name}));
     const affiliateUid = currentUser.user.uid;
     const affiliateName = currentUser.data.name || currentUser.user.displayName || '';
     const affiliateEmail = currentUser.user.email;
+    const n = selectedCourses.length;
 
     const orderRef = await db.collection('affiliateOrders').add({
       affiliateUid: affiliateUid, affiliateName: affiliateName, affiliateEmail: affiliateEmail,
-      courseIdx: courseIdx, courseCode: course.code, courseName: course.name,
+      courseIdxs: courseIdxs,
+      courses: selectedCourses, // [{idx, code, name}, ...]
       buyerName: buyerName, buyerEmail: buyerEmail,
       status: 'pending_admin',
-      price: AFF_COURSE_PRICE,
-      commission: AFF_COURSE_PRICE * AFF_COMMISSION_RATE,
+      price: AFF_COURSE_PRICE * n,
+      commission: AFF_COMMISSION_PER_COURSE * n,
+      payable: AFF_PAYABLE_PER_COURSE * n,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+
+    const courseLabel = selectedCourses.map(c=>c.code).join(', ');
 
     // Post an order-card message into the chat thread
     const chatRef = db.collection('chats').doc(affiliateUid);
     await chatRef.collection('messages').add({
       senderRole: 'affiliate-order',
       orderId: orderRef.id,
-      text: '🛍️ Đơn hàng mới: ' + course.code + ' cho ' + buyerName,
+      text: '🛍️ Đơn hàng mới: ' + courseLabel + ' cho ' + buyerName,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
     await chatRef.set({
       studentName: affiliateName, studentEmail: affiliateEmail,
-      lastMessage: '🛍️ Báo bán hàng: ' + course.code,
+      lastMessage: '🛍️ Báo bán hàng: ' + courseLabel,
       lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
       unreadByAdmin: firebase.firestore.FieldValue.increment(1),
       unreadByStudent: 0
     }, {merge:true});
 
+    checkedBoxes.forEach(cb=>{ cb.checked = false; });
+    updateAffOrderTotal();
     document.getElementById('affBuyerName').value = '';
     document.getElementById('affBuyerEmail').value = '';
     showToast('Đã gửi báo cáo bán hàng!','ok');
@@ -4941,6 +5003,10 @@ function renderOrderCardHTML(order, viewerRole){
   }
 
   const st = AFF_STATUS_LABEL[order.status] || {label:order.status, cls:'pending'};
+  const courseList = (order.courses || []).map(c=>c.code).join(', ') || order.courseCode || '';
+  const courseListFull = (order.courses || []).map(c=>c.code+' — '+c.name).join('<br>') || (order.courseCode+' — '+order.courseName) || '';
+  const payableAmount = (typeof order.payable === 'number') ? order.payable : order.price; // fallback for any legacy single-course orders
+
   const header = ''
     + '<div class="coc-header">'
     + '<span class="coc-icon">🛍️</span>'
@@ -4948,7 +5014,7 @@ function renderOrderCardHTML(order, viewerRole){
     + '<span class="aff-app-status ' + st.cls + '" style="margin-left:auto">' + st.label + '</span>'
     + '</div>'
     + '<div class="coc-details">'
-    + '<div class="coc-row"><span class="coc-label">Môn học</span><span class="coc-val">' + escapeHtml(order.courseCode) + ' — ' + escapeHtml(order.courseName) + '</span></div>'
+    + '<div class="coc-row"><span class="coc-label">Môn học</span><span class="coc-val">' + courseListFull + '</span></div>'
     + '<div class="coc-row"><span class="coc-label">Người mua</span><span class="coc-val">' + escapeHtml(order.buyerName) + '</span></div>'
     + '<div class="coc-row"><span class="coc-label">Gmail</span><span class="coc-val">' + escapeHtml(order.buyerEmail) + '</span></div>'
     + '<div class="coc-row"><span class="coc-label">Giá trị</span><span class="coc-val">' + formatVND(order.price) + '</span></div>'
@@ -4973,11 +5039,11 @@ function renderOrderCardHTML(order, viewerRole){
       + '<div class="cpb-row"><span>Ngân hàng</span><b>MB Bank</b></div>'
       + '<div class="cpb-row"><span>Số tài khoản</span><b>' + MB_BANK_ACCOUNT + '</b></div>'
       + '<div class="cpb-row"><span>Chủ tài khoản</span><b>' + MB_BANK_NAME + '</b></div>'
-      + '<div class="cpb-row"><span>Số tiền</span><b>' + formatVND(order.price) + '</b></div>'
+      + '<div class="cpb-row"><span>Số tiền cần thanh toán</span><b>' + formatVND(payableAmount) + '</b></div>'
       + '</div>'
       + '<button class="admin-btn primary" style="width:100%" onclick="studentMarkPaid(\'' + order.id + '\')">✓ Tôi đã thanh toán</button>';
   } else if(order.status === 'awaiting_payment' && viewerRole === 'admin'){
-    actions = '<div class="coc-note">Đang chờ affiliate thanh toán...</div>';
+    actions = '<div class="coc-note">Đang chờ affiliate thanh toán ' + formatVND(payableAmount) + '...</div>';
   } else if(order.status === 'payment_submitted' && viewerRole === 'student'){
     actions = '<div class="coc-note">⏳ Môn học sẽ được cập nhật cho người mua sau khi StudyHub xác thực giao dịch thành công.</div>';
   } else if(order.status === 'payment_submitted' && viewerRole === 'admin'){
@@ -5045,9 +5111,11 @@ async function adminApproveOrder(orderId){
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 
+  const courseLabel = (order.courses||[]).map(c=>c.code).join(', ') || order.courseCode || '';
+  const payableAmount = (typeof order.payable === 'number') ? order.payable : order.price;
   const noteText = buyerExists
-    ? ('✓ Đơn hàng ' + order.courseCode + ' đã được xác nhận. Gmail người mua đã có tài khoản StudyHub — vui lòng thanh toán để hoàn tất.')
-    : ('✓ Đơn hàng ' + order.courseCode + ' đã được xác nhận. Gmail người mua chưa có tài khoản — StudyHub sẽ mở môn sau khi người mua tự đăng ký. Vui lòng thanh toán để hoàn tất.');
+    ? ('✓ Đơn hàng ' + courseLabel + ' đã được xác nhận. Gmail người mua đã có tài khoản StudyHub — vui lòng thanh toán ' + formatVND(payableAmount) + ' để hoàn tất.')
+    : ('✓ Đơn hàng ' + courseLabel + ' đã được xác nhận. Gmail người mua chưa có tài khoản — StudyHub sẽ mở môn sau khi người mua tự đăng ký. Vui lòng thanh toán ' + formatVND(payableAmount) + ' để hoàn tất.');
 
   await postSystemChatNote(order.affiliateUid, noteText);
   showToast('Đã xác nhận đơn hàng, chờ affiliate thanh toán.','ok');
@@ -5056,13 +5124,14 @@ async function adminApproveOrder(orderId){
 async function adminRejectOrder(orderId){
   const order = affOrdersCache[orderId];
   if(!order) return;
-  if(!confirm('Từ chối đơn hàng ' + order.courseCode + ' của ' + order.buyerName + '?')) return;
+  const courseLabel = (order.courses||[]).map(c=>c.code).join(', ') || order.courseCode || '';
+  if(!confirm('Từ chối đơn hàng ' + courseLabel + ' của ' + order.buyerName + '?')) return;
 
   await db.collection('affiliateOrders').doc(orderId).update({
     status: 'rejected',
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   });
-  await postSystemChatNote(order.affiliateUid, '❌ Đơn hàng ' + order.courseCode + ' cho ' + order.buyerName + ' đã bị từ chối.');
+  await postSystemChatNote(order.affiliateUid, '❌ Đơn hàng ' + courseLabel + ' cho ' + order.buyerName + ' đã bị từ chối.');
   showToast('Đã từ chối đơn hàng.','ok');
 }
 
@@ -5070,6 +5139,7 @@ async function adminRejectOrder(orderId){
 async function studentMarkPaid(orderId){
   if(!confirm('Xác nhận bạn đã chuyển khoản thanh toán cho đơn hàng này?')) return;
   const order = affOrdersCache[orderId];
+  const courseLabel = order ? ((order.courses||[]).map(c=>c.code).join(', ') || order.courseCode) : '';
   await db.collection('affiliateOrders').doc(orderId).update({
     status: 'payment_submitted',
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -5077,40 +5147,45 @@ async function studentMarkPaid(orderId){
 
   const chatRef = db.collection('chats').doc(currentUser.user.uid);
   await chatRef.update({
-    lastMessage: '💳 Đã thanh toán đơn ' + (order?order.courseCode:'') + ', chờ xác thực',
+    lastMessage: '💳 Đã thanh toán đơn ' + courseLabel + ', chờ xác thực',
     lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
     unreadByAdmin: firebase.firestore.FieldValue.increment(1)
   });
   showToast('Đã ghi nhận thanh toán, chờ StudyHub xác thực.','ok');
 }
 
-// ── Admin: confirm payment received → unlock course for buyer if they exist ──
+// ── Admin: confirm payment received → unlock ALL courses in this order for the buyer ──
 async function adminConfirmPayment(orderId){
   const order = affOrdersCache[orderId];
   if(!order) return;
-  if(!confirm('Xác nhận đã nhận thanh toán cho đơn ' + order.courseCode + '? Môn học sẽ được mở cho người mua nếu đã có tài khoản.')) return;
+  const courseLabel = (order.courses||[]).map(c=>c.code).join(', ') || order.courseCode || '';
+  if(!confirm('Xác nhận đã nhận thanh toán cho đơn ' + courseLabel + '? Các môn học sẽ được mở cho người mua nếu đã có tài khoản.')) return;
 
   await db.collection('affiliateOrders').doc(orderId).update({
     status: 'confirmed',
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  // Try to unlock the course for the buyer if their account already exists
+  // Try to unlock ALL purchased courses for the buyer if their account already exists
   try{
     const existing = await db.collection('students').where('email','==', order.buyerEmail).limit(1).get();
     if(!existing.empty){
       const buyerDoc = existing.docs[0];
       const buyerData = buyerDoc.data();
       const courses = buyerData.courses || [];
-      if(!courses.includes(order.courseIdx)){
-        courses.push(order.courseIdx);
+      const idxsToAdd = order.courseIdxs || (order.courseIdx!==undefined ? [order.courseIdx] : []);
+      let changed = false;
+      idxsToAdd.forEach(idx=>{
+        if(!courses.includes(idx)){ courses.push(idx); changed = true; }
+      });
+      if(changed){
         courses.sort(function(a,b){return a-b;});
         await db.collection('students').doc(buyerDoc.id).update({courses: courses});
       }
     }
-  } catch(e){ console.warn('Could not auto-unlock course for buyer:', e); }
+  } catch(e){ console.warn('Could not auto-unlock courses for buyer:', e); }
 
-  await postSystemChatNote(order.affiliateUid, '🎉 Giao dịch thành công! Đơn hàng ' + order.courseCode + ' cho ' + order.buyerName + ' đã hoàn tất. Hoa hồng ' + formatVND(order.commission) + ' đã được ghi nhận.');
+  await postSystemChatNote(order.affiliateUid, '🎉 Giao dịch thành công! Đơn hàng ' + courseLabel + ' cho ' + order.buyerName + ' đã hoàn tất. Hoa hồng ' + formatVND(order.commission) + ' đã được ghi nhận.');
   showToast('Đã xác nhận giao dịch thành công!','ok');
 }
 
