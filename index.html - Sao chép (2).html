@@ -34,6 +34,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
+
+/* ─── ICON SYSTEM (outline, monochrome, inherits text color) ─── */
+.ic{display:inline-block;width:1em;height:1em;vertical-align:-0.125em;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.ic-sm{width:0.85em;height:0.85em}
+.ic-lg{width:1.3em;height:1.3em}
+.ic-xl{width:2em;height:2em}
+
 :root{
   --bg:#08090e;
   --surface:#0f1117;
@@ -794,6 +801,86 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 </style>
 </head>
 <body>
+<svg style="display:none" id="iconSpriteSheet">
+<defs>
+
+<symbol id="ic-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+<symbol id="ic-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+<symbol id="ic-arrow-left-right" viewBox="0 0 24 24"><path d="m8 3-4 4 4 4M4 7h16M16 21l4-4-4-4M20 17H4"/></symbol>
+<symbol id="ic-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+<symbol id="ic-rotate-ccw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+<symbol id="ic-refresh-cw" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></symbol>
+<symbol id="ic-shuffle" viewBox="0 0 24 24"><path d="m18 14 4 4-4 4M18 2l4 4-4 4M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22M2 6h1.973a4 4 0 0 1 3.3 1.7l5.454 8.6a4 4 0 0 0 3.3 1.7H22"/></symbol>
+<symbol id="ic-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="ic-check-circle" viewBox="0 0 24 24"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></symbol>
+<symbol id="ic-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></symbol>
+<symbol id="ic-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="ic-alert-triangle" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></symbol>
+<symbol id="ic-book-open" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></symbol>
+<symbol id="ic-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+<symbol id="ic-book-marked" viewBox="0 0 24 24"><path d="M10 2v8l3-3 3 3V2"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+<symbol id="ic-file-text" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8"/></symbol>
+<symbol id="ic-clipboard-list" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/></symbol>
+<symbol id="ic-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></symbol>
+<symbol id="ic-scroll-text" viewBox="0 0 24 24"><path d="M15 12h-5M15 8h-5M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></symbol>
+<symbol id="ic-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+<symbol id="ic-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></symbol>
+<symbol id="ic-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+<symbol id="ic-pin" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></symbol>
+<symbol id="ic-megaphone" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
+<symbol id="ic-handshake" viewBox="0 0 24 24"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></symbol>
+<symbol id="ic-message-circle" viewBox="0 0 24 24"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-1a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.717"/></symbol>
+<symbol id="ic-sparkles" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4M22 5h-4M4 17v2M5 18H3"/></symbol>
+<symbol id="ic-graduation-cap" viewBox="0 0 24 24"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></symbol>
+<symbol id="ic-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></symbol>
+<symbol id="ic-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+<symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+<symbol id="ic-party-popper" viewBox="0 0 24 24"><path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01M22 8h.01M15 2h.01M22 20h.01M22 2l-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-1.96.49c-.8.2-1.36.93-1.36 1.75v.27c0 .92-.74 1.69-1.66 1.7-1.13.01-2.04.93-2.06 2.06L15 21"/><path d="M9 10c-.66 0-1.36.13-2 .47A4 4 0 0 0 5.06 14a4.13 4.13 0 0 0-3.27 3.84"/></symbol>
+<symbol id="ic-bar-chart-3" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16M18 17V9M13 17V5M8 17v-3"/></symbol>
+<symbol id="ic-book-text" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h6M8 11h8"/></symbol>
+<symbol id="ic-trending-up" viewBox="0 0 24 24"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></symbol>
+<symbol id="ic-languages" viewBox="0 0 24 24"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></symbol>
+<symbol id="ic-shopping-bag" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></symbol>
+<symbol id="ic-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+<symbol id="ic-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="ic-eye-off" viewBox="0 0 24 24"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143M2 2l20 20"/></symbol>
+<symbol id="ic-lightbulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></symbol>
+<symbol id="ic-trash-2" viewBox="0 0 24 24"><path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/></symbol>
+<symbol id="ic-brain" viewBox="0 0 24 24"><path d="M12 18V5"/><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5M17.997 5.125a4 4 0 0 1 2.526 5.77M18 18a4 4 0 0 0 2-7.464M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517M6 18a4 4 0 0 1-2-7.464M6.003 5.125a4 4 0 0 0-2.526 5.77"/></symbol>
+<symbol id="ic-landmark" viewBox="0 0 24 24"><path d="M10 18v-7M14 18v-7M18 18v-7M3 22h18M6 18v-7M3 11l9-7 9 7M21 18H3"/></symbol>
+<symbol id="ic-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+<symbol id="ic-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+<symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+<symbol id="ic-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></symbol>
+<symbol id="ic-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="ic-pencil" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></symbol>
+<symbol id="ic-paperclip" viewBox="0 0 24 24"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></symbol>
+<symbol id="ic-pointer" viewBox="0 0 24 24"><path d="M22 14a8 8 0 0 1-8 8"/><path d="M18 11v-1a2 2 0 0 0-2-2 2 2 0 0 0-2 2M14 10V9a2 2 0 0 0-2-2 2 2 0 0 0-2 2v1M10 9.5V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v10M8 10a2 2 0 1 0-4 0v2a8 8 0 0 0 8 8h2a8 8 0 0 0 8-8 2 2 0 1 0-4 0"/></symbol>
+<symbol id="ic-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+<symbol id="ic-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+<symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+<symbol id="ic-banknote" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></symbol>
+<symbol id="ic-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></symbol>
+<symbol id="ic-tag" viewBox="0 0 24 24"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+<symbol id="ic-cake" viewBox="0 0 24 24"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20M7 8v3M12 8v3M17 8v3M7 4h.01M12 2v2M17 4h.01"/></symbol>
+<symbol id="ic-frown" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2M9 9h.01M15 9h.01"/></symbol>
+<symbol id="ic-credit-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+<symbol id="ic-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15c3.5-1.5 5.5-7 5.5-13C11.5 2.5 6 4.5 4.5 8c-1.5 3.5.5 7 5.5 7Z"/><path d="M9 12c-1-1-3-2-4-1.5-1.5.8-2 2.5-2 4s2 1.5 4 0c1-1 1.5-2.5 2-4Z"/><path d="M15 9c1 1 3 2 4 1.5 1.5-.8 2-2.5 2-4s-2-1.5-4 0c-1 1-1.5 2.5-2 4Z"/></symbol>
+<symbol id="ic-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="ic-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+<symbol id="ic-trophy" viewBox="0 0 24 24"><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0z"/><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M6 22h12"/></symbol>
+<symbol id="ic-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></symbol>
+<symbol id="ic-hand" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></symbol>
+<symbol id="ic-send" viewBox="0 0 24 24"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></symbol>
+<symbol id="ic-hourglass" viewBox="0 0 24 24"><path d="M5 22h14M5 2h14M17 22v-4.172a2 2 0 0 0-.586-1.414L13 13l-3.414 3.414A2 2 0 0 0 9 17.828V22M17 2v4.172a2 2 0 0 1-.586 1.414L13 11l-3.414-3.414A2 2 0 0 1 9 6.172V2"/></symbol>
+<symbol id="ic-layers" viewBox="0 0 24 24"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m6.08 9.69-3.5 1.6a1 1 0 0 0 0 1.82l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59"/><path d="m6.08 14.69-3.5 1.6a1 1 0 0 0 0 1.82l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59"/></symbol>
+<symbol id="ic-log-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+<symbol id="ic-badge-plus" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="M9 12h6M12 9v6"/></symbol>
+<symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+
+</defs>
+</svg>
+
 
 <!-- ══════════ LOADING ══════════ -->
 <div class="fb-loading" id="fbLoading">
@@ -820,8 +907,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       Đăng nhập bằng Google
     </button>
 
-    <div class="login-err" id="lgErr">❌ Đăng nhập thất bại. Vui lòng thử lại.</div>
-    <div class="login-hint">🔒 Chỉ tài khoản được quản trị viên phê duyệt mới truy cập được</div>
+    <div class="login-err" id="lgErr"><svg class="ic"><use href="#ic-x-circle"></use></svg> Đăng nhập thất bại. Vui lòng thử lại.</div>
+    <div class="login-hint"><svg class="ic"><use href="#ic-lock"></use></svg> Chỉ tài khoản được quản trị viên phê duyệt mới truy cập được</div>
   </div>
 </div>
 
@@ -840,13 +927,13 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         <label>Họ và tên của bạn</label>
         <input class="admin-input" id="regName" placeholder="Nguyễn Văn A…" style="width:100%"/>
       </div>
-      <div class="login-err" id="regErr" style="margin-bottom:12px">❌ Vui lòng nhập họ tên!</div>
-      <button class="login-btn" onclick="submitRegister()" style="margin-top:4px">✓ Hoàn tất đăng ký</button>
+      <div class="login-err" id="regErr" style="margin-bottom:12px"><svg class="ic"><use href="#ic-x-circle"></use></svg> Vui lòng nhập họ tên!</div>
+      <button class="login-btn" onclick="submitRegister()" style="margin-top:4px"><svg class="ic"><use href="#ic-check"></use></svg> Hoàn tất đăng ký</button>
       <div class="login-hint" style="margin-top:14px">Sau khi đăng ký, bạn sẽ vào giao diện học ngay. Quản trị viên sẽ mở khóa môn học cho bạn.</div>
     </div>
 
     <div id="regPendingArea" style="display:none;text-align:center">
-      <div style="font-size:48px;margin-bottom:12px">⏳</div>
+      <div style="font-size:48px;margin-bottom:12px"><svg class="ic"><use href="#ic-hourglass"></use></svg></div>
       <h3 style="font-size:16px;font-weight:700;margin-bottom:8px">Đang chờ phê duyệt</h3>
       <p style="font-size:13px;color:var(--muted);line-height:1.6">Tài khoản của bạn đã được đăng ký thành công.<br>Vui lòng liên hệ quản trị viên để được mở khóa môn học.</p>
       <button class="logout-btn" onclick="doLogout()" style="margin-top:20px;padding:10px 24px">Đăng xuất</button>
@@ -859,31 +946,31 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 <div class="admin-page" id="adminPage">
   <div class="admin-topbar">
     <div class="brand">StudyHub Admin</div>
-    <span class="admin-badge">⚙ Quản trị viên</span>
+    <span class="admin-badge"><svg class="ic"><use href="#ic-settings"></use></svg> Quản trị viên</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
-      <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtnAdmin" title="Đổi giao diện sáng/tối">🌙</button>
+      <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtnAdmin" title="Đổi giao diện sáng/tối"><svg class="ic"><use href="#ic-moon"></use></svg></button>
       <span style="font-size:12px;color:var(--muted)" id="adminUserLabel">—</span>
-      <button class="logout-btn" onclick="doLogout()">⎋ Đăng xuất</button>
+      <button class="logout-btn" onclick="doLogout()"><svg class="ic"><use href="#ic-log-out"></use></svg> Đăng xuất</button>
     </div>
   </div>
   <div class="admin-body">
     <!-- Sidebar -->
     <div class="admin-sidebar">
       <h3>Quản lý</h3>
-      <button class="admin-nav-btn active" onclick="showAdminTab('overview',this)">📊 Tổng quan</button>
-      <button class="admin-nav-btn" onclick="showAdminTab('students',this)">👥 Học sinh</button>
-      <button class="admin-nav-btn" onclick="showAdminTab('chat',this)">💬 Chat <span id="adminChatBadge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px;display:none">0</span></button>
+      <button class="admin-nav-btn active" onclick="showAdminTab('overview',this)"><svg class="ic"><use href="#ic-bar-chart-3"></use></svg> Tổng quan</button>
+      <button class="admin-nav-btn" onclick="showAdminTab('students',this)"><svg class="ic"><use href="#ic-users"></use></svg> Học sinh</button>
+      <button class="admin-nav-btn" onclick="showAdminTab('chat',this)"><svg class="ic"><use href="#ic-message-circle"></use></svg> Chat <span id="adminChatBadge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px;display:none">0</span></button>
       <br>
       <h3 style="margin-top:16px">Thông báo</h3>
-      <button class="admin-nav-btn" onclick="showAdminTab('announcements',this)">📢 Quản lý thông báo</button>
+      <button class="admin-nav-btn" onclick="showAdminTab('announcements',this)"><svg class="ic"><use href="#ic-megaphone"></use></svg> Quản lý thông báo</button>
       <br>
       <h3 style="margin-top:16px">Affiliate</h3>
-      <button class="admin-nav-btn" onclick="showAdminTab('affiliate',this)">🤝 Quản lý Affiliate <span id="affiliatePendingBadge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px;display:none">0</span></button>
+      <button class="admin-nav-btn" onclick="showAdminTab('affiliate',this)"><svg class="ic"><use href="#ic-handshake"></use></svg> Quản lý Affiliate <span id="affiliatePendingBadge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px;display:none">0</span></button>
       <br>
       <h3 style="margin-top:16px">Môn học</h3>
-      <button class="admin-nav-btn" onclick="showAdminTab('courses',this)">📚 Quản lý môn</button>
-      <button class="admin-nav-btn" onclick="showAdminTab('uploadCourse',this)">📤 Thêm môn học</button>
-      <button class="admin-nav-btn" onclick="showAdminTab('manageCourses',this)">🗂 Danh sách môn</button>
+      <button class="admin-nav-btn" onclick="showAdminTab('courses',this)"><svg class="ic"><use href="#ic-book-open"></use></svg> Quản lý môn</button>
+      <button class="admin-nav-btn" onclick="showAdminTab('uploadCourse',this)"><svg class="ic"><use href="#ic-upload"></use></svg> Thêm môn học</button>
+      <button class="admin-nav-btn" onclick="showAdminTab('manageCourses',this)"><svg class="ic"><use href="#ic-folder"></use></svg> Danh sách môn</button>
     </div>
 
     <!-- Content -->
@@ -897,10 +984,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <!-- STUDENTS LIST -->
       <div class="admin-section" id="tab-students">
         <div class="admin-card">
-          <h2>👥 Danh sách học sinh</h2>
+          <h2><svg class="ic"><use href="#ic-users"></use></svg> Danh sách học sinh</h2>
           <p>Quản lý tài khoản và phân quyền môn học cho từng học sinh.</p>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-            <input class="admin-search" id="stuSearch" placeholder="🔍 Tìm tên hoặc tài khoản…" oninput="renderStudentTable()"/>
+            <input class="admin-search" id="stuSearch" placeholder="<svg class="ic"><use href="#ic-search"></use></svg> Tìm tên hoặc tài khoản…" oninput="renderStudentTable()"/>
             <span style="font-size:12px;color:var(--muted)" id="stuCount"></span>
           </div>
           <div style="overflow-x:auto">
@@ -917,7 +1004,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
               <tbody id="stuTableBody"></tbody>
             </table>
             <div class="admin-empty" id="stuEmpty" style="display:none">
-              <div class="ae-icon">🔍</div>
+              <div class="ae-icon"><svg class="ic"><use href="#ic-search"></use></svg></div>
               <p>Không tìm thấy học sinh nào.</p>
             </div>
           </div>
@@ -928,16 +1015,16 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <!-- PENDING APPROVALS -->
       <div class="admin-section" id="tab-pending">
         <div class="admin-card">
-          <h2>🔔 Tài khoản chờ duyệt</h2>
+          <h2><svg class="ic"><use href="#ic-bell"></use></svg> Tài khoản chờ duyệt</h2>
           <p>Những người dùng đã đăng ký bằng Google nhưng chưa được phê duyệt.</p>
-          <div id="pendingListArea"><div class="admin-empty"><div class="ae-icon">✅</div><p>Không có tài khoản nào đang chờ duyệt.</p></div></div>
+          <div id="pendingListArea"><div class="admin-empty"><div class="ae-icon"><svg class="ic"><use href="#ic-check-circle"></use></svg></div><p>Không có tài khoản nào đang chờ duyệt.</p></div></div>
         </div>
       </div>
 
       <!-- COURSES -->
       <div class="admin-section" id="tab-courses">
         <div class="admin-card">
-          <h2>📚 Quản lý môn học</h2>
+          <h2><svg class="ic"><use href="#ic-book-open"></use></svg> Quản lý môn học</h2>
           <p>Bật/tắt quyền truy cập môn học cho từng học sinh nhanh chóng.</p>
           <div id="courseMgmtArea"></div>
         </div>
@@ -946,7 +1033,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <!-- UPLOAD NEW COURSE — INTEGRATED AI CONVERTER -->
       <div class="admin-section" id="tab-uploadCourse">
         <div class="admin-card">
-          <h2>✨ Thêm môn học mới bằng AI</h2>
+          <h2><svg class="ic"><use href="#ic-sparkles"></use></svg> Thêm môn học mới bằng AI</h2>
           <p>Upload file PDF/Word câu hỏi trắc nghiệm — AI sẽ tự đọc, nhận diện câu hỏi và đáp án đúng, rồi thêm thẳng vào StudyHub. Không cần công cụ ngoài.</p>
 
           <!-- Step 1: Provider + API Key -->
@@ -956,10 +1043,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
               <label class="conv-label">Chọn AI để phân tích</label>
               <div class="provider-tabs">
                 <button class="provider-tab active" id="provTabGemini" onclick="selectProvider('gemini')">
-                  <span class="prov-icon">✨</span> Gemini <span class="prov-free">Miễn phí</span>
+                  <span class="prov-icon"><svg class="ic"><use href="#ic-sparkles"></use></svg></span> Gemini <span class="prov-free">Miễn phí</span>
                 </button>
                 <button class="provider-tab" id="provTabClaude" onclick="selectProvider('claude')">
-                  <span class="prov-icon">🟠</span> Claude <span class="prov-paid">Trả phí</span>
+                  <span class="prov-icon"><svg class="ic"><use href="#ic-circle"></use></svg></span> Claude <span class="prov-paid">Trả phí</span>
                 </button>
               </div>
 
@@ -967,7 +1054,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
                 <label class="conv-label" style="margin-top:14px">Gemini API Key</label>
                 <div style="display:flex;gap:8px">
                   <input type="password" id="convGeminiKey" class="admin-input" placeholder="AIza..." style="flex:1"/>
-                  <button class="admin-btn secondary" onclick="toggleKeyVis('convGeminiKey','geminiEyeBtn')" id="geminiEyeBtn">👁</button>
+                  <button class="admin-btn secondary" onclick="toggleKeyVis('convGeminiKey','geminiEyeBtn')" id="geminiEyeBtn"><svg class="ic"><use href="#ic-eye"></use></svg></button>
                 </div>
                 <div class="conv-hint">Lấy miễn phí tại <strong>aistudio.google.com/apikey</strong> — không cần thẻ tín dụng.</div>
               </div>
@@ -976,12 +1063,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
                 <label class="conv-label" style="margin-top:14px">Claude API Key</label>
                 <div style="display:flex;gap:8px">
                   <input type="password" id="convApiKey" class="admin-input" placeholder="sk-ant-api03-..." style="flex:1"/>
-                  <button class="admin-btn secondary" onclick="toggleKeyVis('convApiKey','convToggleKeyBtn')" id="convToggleKeyBtn">👁</button>
+                  <button class="admin-btn secondary" onclick="toggleKeyVis('convApiKey','convToggleKeyBtn')" id="convToggleKeyBtn"><svg class="ic"><use href="#ic-eye"></use></svg></button>
                 </div>
                 <div class="conv-hint">Cần nạp credit tại <strong>console.anthropic.com</strong> để sử dụng.</div>
               </div>
 
-              <div class="conv-hint" style="margin-top:10px">🔒 Key được lưu trên máy bạn, chỉ dùng để gọi AI phân tích — không gửi lên server StudyHub.</div>
+              <div class="conv-hint" style="margin-top:10px"><svg class="ic"><use href="#ic-lock"></use></svg> Key được lưu trên máy bạn, chỉ dùng để gọi AI phân tích — không gửi lên server StudyHub.</div>
             </div>
           </div>
 
@@ -991,9 +1078,9 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
             <div class="conv-step-body">
               <label class="conv-label">File câu hỏi (PDF / Word / TXT)</label>
               <div class="course-drop-zone" id="courseDropZone" onclick="document.getElementById('convFileInput').click()">
-                <div style="font-size:32px;margin-bottom:8px">📄</div>
+                <div style="font-size:32px;margin-bottom:8px"><svg class="ic"><use href="#ic-file"></use></svg></div>
                 <div style="font-size:13px;font-weight:600;margin-bottom:4px">Kéo thả file vào đây hoặc nhấn để chọn</div>
-                <div style="font-size:11px;color:var(--muted)">PDF, DOCX, hoặc TXT — đáp án nên đánh dấu rõ (✓, *, in đậm...)</div>
+                <div style="font-size:11px;color:var(--muted)">PDF, DOCX, hoặc TXT — đáp án nên đánh dấu rõ (<svg class="ic"><use href="#ic-check"></use></svg>, *, in đậm...)</div>
                 <input type="file" id="convFileInput" accept=".pdf,.docx,.txt" style="display:none"/>
               </div>
               <div id="convFileChipArea"></div>
@@ -1020,19 +1107,19 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
               <div class="admin-form-row" style="grid-template-columns:1fr 1fr;margin-top:12px">
                 <div class="admin-input-wrap">
                   <label>Icon (emoji)</label>
-                  <input type="text" id="convCourseIcon" class="admin-input" placeholder="📘" value="📘" maxlength="4"/>
+                  <input type="text" id="convCourseIcon" class="admin-input" placeholder="<svg class="ic"><use href="#ic-book-marked"></use></svg>" value="<svg class="ic"><use href="#ic-book-marked"></use></svg>" maxlength="4"/>
                 </div>
                 <div class="admin-input-wrap">
                   <label>Màu chủ đề</label>
                   <select id="convCourseColor" class="admin-input">
-                    <option value="#6366f1">🟣 Indigo</option>
-                    <option value="#0ea5e9">🔵 Sky</option>
-                    <option value="#10b981">🟢 Emerald</option>
-                    <option value="#f97316">🟠 Orange</option>
-                    <option value="#a855f7">🟣 Purple</option>
-                    <option value="#ec4899">🩷 Pink</option>
-                    <option value="#eab308">🟡 Yellow</option>
-                    <option value="#06b6d4">🩵 Cyan</option>
+                    <option value="#6366f1"><svg class="ic"><use href="#ic-circle"></use></svg> Indigo</option>
+                    <option value="#0ea5e9"><svg class="ic"><use href="#ic-circle"></use></svg> Sky</option>
+                    <option value="#10b981"><svg class="ic"><use href="#ic-circle"></use></svg> Emerald</option>
+                    <option value="#f97316"><svg class="ic"><use href="#ic-circle"></use></svg> Orange</option>
+                    <option value="#a855f7"><svg class="ic"><use href="#ic-circle"></use></svg> Purple</option>
+                    <option value="#ec4899"><svg class="ic"><use href="#ic-circle"></use></svg> Pink</option>
+                    <option value="#eab308"><svg class="ic"><use href="#ic-circle"></use></svg> Yellow</option>
+                    <option value="#06b6d4"><svg class="ic"><use href="#ic-circle"></use></svg> Cyan</option>
                   </select>
                 </div>
               </div>
@@ -1043,7 +1130,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
           <div class="conv-step">
             <div class="conv-step-num">4</div>
             <div class="conv-step-body">
-              <button class="admin-btn primary" id="convStartBtn" onclick="startAIConversion()" style="width:100%;padding:13px;font-size:14px">✨ Phân tích bằng AI</button>
+              <button class="admin-btn primary" id="convStartBtn" onclick="startAIConversion()" style="width:100%;padding:13px;font-size:14px"><svg class="ic"><use href="#ic-sparkles"></use></svg> Phân tích bằng AI</button>
 
               <div id="convProgressArea" style="display:none;margin-top:16px">
                 <div class="conv-progress-bar"><div class="conv-progress-fill" id="convProgressFill"></div></div>
@@ -1058,22 +1145,22 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
         <!-- RESULT PREVIEW -->
         <div class="admin-card" id="convResultArea" style="display:none">
-          <h2>✅ Kết quả phân tích</h2>
+          <h2><svg class="ic"><use href="#ic-check-circle"></use></svg> Kết quả phân tích</h2>
           <div class="conv-result-stats">
             <div class="conv-r-stat"><div class="rn" id="convRsTotal" style="color:var(--acc1)">0</div><div class="rl">Câu hỏi</div></div>
             <div class="conv-r-stat"><div class="rn" id="convRsConfident" style="color:var(--green)">0</div><div class="rl">Đáp án rõ ràng</div></div>
             <div class="conv-r-stat"><div class="rn" id="convRsCourse" style="color:var(--gold)">—</div><div class="rl">Mã môn</div></div>
           </div>
           <div class="conv-preview-box" id="convPreviewBox"></div>
-          <button class="admin-btn primary" onclick="confirmAddCourse()" style="width:100%">✓ Xác nhận thêm môn học vào StudyHub</button>
-          <button class="admin-btn secondary" onclick="cancelCourseUpload()" style="width:100%;margin-top:8px">✕ Hủy, làm lại</button>
+          <button class="admin-btn primary" onclick="confirmAddCourse()" style="width:100%"><svg class="ic"><use href="#ic-check"></use></svg> Xác nhận thêm môn học vào StudyHub</button>
+          <button class="admin-btn secondary" onclick="cancelCourseUpload()" style="width:100%;margin-top:8px"><svg class="ic"><use href="#ic-x"></use></svg> Hủy, làm lại</button>
         </div>
       </div>
 
       <!-- MANAGE EXISTING COURSES (delete) -->
       <div class="admin-section" id="tab-manageCourses">
         <div class="admin-card">
-          <h2>🗂 Danh sách môn học</h2>
+          <h2><svg class="ic"><use href="#ic-folder"></use></svg> Danh sách môn học</h2>
           <p>Xem toàn bộ môn học hiện có trong StudyHub. Các môn do bạn thêm vào có thể xóa được.</p>
           <div id="courseListArea"></div>
         </div>
@@ -1085,7 +1172,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
           <div class="admin-chat-list" id="adminChatList"></div>
           <div class="admin-chat-main" id="adminChatMain">
             <div class="admin-chat-empty-main">
-              <div class="acem-icon">💬</div>
+              <div class="acem-icon"><svg class="ic"><use href="#ic-message-circle"></use></svg></div>
               <p>Chọn một học sinh để xem hội thoại</p>
             </div>
           </div>
@@ -1095,8 +1182,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <!-- ANNOUNCEMENTS MANAGEMENT -->
       <div class="admin-section" id="tab-announcements">
         <div class="admin-card">
-          <h2>📢 Đăng thông báo mới</h2>
-          <p>Thông báo sẽ hiển thị ngay cho tất cả học sinh trong tab "🔔 Thông báo".</p>
+          <h2><svg class="ic"><use href="#ic-megaphone"></use></svg> Đăng thông báo mới</h2>
+          <p>Thông báo sẽ hiển thị ngay cho tất cả học sinh trong tab "<svg class="ic"><use href="#ic-bell"></use></svg> Thông báo".</p>
           <div class="aff-err" id="annErr"></div>
           <div class="admin-form">
             <div class="admin-input-wrap">
@@ -1111,22 +1198,22 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
               <div class="admin-input-wrap">
                 <label>Loại thông báo</label>
                 <select class="admin-input" id="annType">
-                  <option value="update">🆕 Cập nhật / Tính năng mới</option>
-                  <option value="event">🎉 Sự kiện / Chương trình</option>
-                  <option value="course">📚 Môn học mới</option>
-                  <option value="notice">📌 Thông báo chung</option>
+                  <option value="update"><svg class="ic"><use href="#ic-badge-plus"></use></svg> Cập nhật / Tính năng mới</option>
+                  <option value="event"><svg class="ic"><use href="#ic-party-popper"></use></svg> Sự kiện / Chương trình</option>
+                  <option value="course"><svg class="ic"><use href="#ic-book-open"></use></svg> Môn học mới</option>
+                  <option value="notice"><svg class="ic"><use href="#ic-pin"></use></svg> Thông báo chung</option>
                 </select>
               </div>
               <div class="admin-input-wrap">
                 <label>&nbsp;</label>
-                <button class="admin-btn primary" onclick="publishAnnouncement()" style="width:100%">📤 Đăng thông báo</button>
+                <button class="admin-btn primary" onclick="publishAnnouncement()" style="width:100%"><svg class="ic"><use href="#ic-upload"></use></svg> Đăng thông báo</button>
               </div>
             </div>
           </div>
         </div>
 
         <div class="admin-card">
-          <h2>📋 Danh sách thông báo đã đăng</h2>
+          <h2><svg class="ic"><use href="#ic-clipboard-list"></use></svg> Danh sách thông báo đã đăng</h2>
           <div id="announcementsAdminList"></div>
         </div>
       </div>
@@ -1140,12 +1227,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
           <div class="a-stat"><div class="a-num" id="affOvCommission" style="color:var(--gold)">0đ</div><div class="a-lbl">Tổng hoa hồng</div></div>
         </div>
         <div class="admin-card">
-          <h2>🤝 Quản lý chương trình Affiliate</h2>
+          <h2><svg class="ic"><use href="#ic-handshake"></use></svg> Quản lý chương trình Affiliate</h2>
           <p>Xem xét và phê duyệt các đơn đăng ký tham gia Affiliate từ học sinh.</p>
           <div class="affiliate-tabs">
-            <button class="aff-tab active" onclick="filterAffiliateApps('pending',this)">⏳ Chờ duyệt <span id="affTabPendingCount">0</span></button>
-            <button class="aff-tab" onclick="filterAffiliateApps('approved',this)">✅ Đã duyệt <span id="affTabApprovedCount">0</span></button>
-            <button class="aff-tab" onclick="filterAffiliateApps('rejected',this)">❌ Đã từ chối <span id="affTabRejectedCount">0</span></button>
+            <button class="aff-tab active" onclick="filterAffiliateApps('pending',this)"><svg class="ic"><use href="#ic-hourglass"></use></svg> Chờ duyệt <span id="affTabPendingCount">0</span></button>
+            <button class="aff-tab" onclick="filterAffiliateApps('approved',this)"><svg class="ic"><use href="#ic-check-circle"></use></svg> Đã duyệt <span id="affTabApprovedCount">0</span></button>
+            <button class="aff-tab" onclick="filterAffiliateApps('rejected',this)"><svg class="ic"><use href="#ic-x-circle"></use></svg> Đã từ chối <span id="affTabRejectedCount">0</span></button>
             <button class="aff-tab" onclick="filterAffiliateApps('all',this)">Tất cả</button>
           </div>
           <div id="affiliateAppsList"></div>
@@ -1162,25 +1249,25 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <nav class="topnav">
     <div class="brand">StudyHub</div>
     <div class="nav-main-tabs">
-      <button class="nav-main-tab active" id="navTabHome" onclick="switchMainView('home')">🏠 Trang chủ</button>
-      <button class="nav-main-tab" id="navTabAnnounce" onclick="switchMainView('announcements')">🔔 Thông báo<span class="chat-unread-badge" id="announceUnreadBadge" style="display:none">0</span></button>
-      <button class="nav-main-tab" id="navTabStudy" onclick="switchMainView('study')">📚 Học tập</button>
+      <button class="nav-main-tab active" id="navTabHome" onclick="switchMainView('home')"><svg class="ic"><use href="#ic-home"></use></svg> Trang chủ</button>
+      <button class="nav-main-tab" id="navTabAnnounce" onclick="switchMainView('announcements')"><svg class="ic"><use href="#ic-bell"></use></svg> Thông báo<span class="chat-unread-badge" id="announceUnreadBadge" style="display:none">0</span></button>
+      <button class="nav-main-tab" id="navTabStudy" onclick="switchMainView('study')"><svg class="ic"><use href="#ic-book-open"></use></svg> Học tập</button>
     </div>
     <div class="nav-courses" id="navCourses" style="display:none">
-      <button class="nav-btn active" data-course="0" onclick="selectCourse(0)">📊 MKG101</button>
-      <button class="nav-btn" data-course="1" onclick="selectCourse(1)">📒 ACC101</button>
-      <button class="nav-btn" data-course="2" onclick="selectCourse(2)">📈 ECO111</button>
-      <button class="nav-btn" data-course="3" onclick="selectCourse(3)">🎓 SSA101</button>
-      <button class="nav-btn" data-course="4" onclick="selectCourse(4)">🇬🇧 ENG111</button>
+      <button class="nav-btn active" data-course="0" onclick="selectCourse(0)"><svg class="ic"><use href="#ic-bar-chart-3"></use></svg> MKG101</button>
+      <button class="nav-btn" data-course="1" onclick="selectCourse(1)"><svg class="ic"><use href="#ic-book-text"></use></svg> ACC101</button>
+      <button class="nav-btn" data-course="2" onclick="selectCourse(2)"><svg class="ic"><use href="#ic-trending-up"></use></svg> ECO111</button>
+      <button class="nav-btn" data-course="3" onclick="selectCourse(3)"><svg class="ic"><use href="#ic-graduation-cap"></use></svg> SSA101</button>
+      <button class="nav-btn" data-course="4" onclick="selectCourse(4)"><svg class="ic"><use href="#ic-languages"></use></svg> ENG111</button>
     </div>
     <div class="nav-right">
-      <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtnStudent" title="Đổi giao diện sáng/tối">🌙</button>
-      <button class="affiliate-fab-btn" onclick="openAffiliatePanel()" title="Affiliate cùng StudyHub">🤝</button>
+      <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtnStudent" title="Đổi giao diện sáng/tối"><svg class="ic"><use href="#ic-moon"></use></svg></button>
+      <button class="affiliate-fab-btn" onclick="openAffiliatePanel()" title="Affiliate cùng StudyHub"><svg class="ic"><use href="#ic-handshake"></use></svg></button>
       <button class="chat-fab-btn" onclick="openStudentChat()" title="Chat với StudyHub Assistant">
-        💬<span class="chat-unread-badge" id="studentChatBadge" style="display:none">0</span>
+        <svg class="ic"><use href="#ic-message-circle"></use></svg><span class="chat-unread-badge" id="studentChatBadge" style="display:none">0</span>
       </button>
       <div class="user-chip"><span class="dot"></span><span id="userLabel">—</span></div>
-      <button class="logout-btn" onclick="doLogout()">⎋ Thoát</button>
+      <button class="logout-btn" onclick="doLogout()"><svg class="ic"><use href="#ic-log-out"></use></svg> Thoát</button>
     </div>
   </nav>
 
@@ -1192,18 +1279,18 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="chat-panel">
       <div class="chat-panel-header">
         <div class="chat-header-info">
-          <div class="chat-avatar-circle">🎓</div>
+          <div class="chat-avatar-circle"><svg class="ic"><use href="#ic-graduation-cap"></use></svg></div>
           <div>
             <div class="chat-header-title">StudyHub Assistant</div>
             <div class="chat-header-sub" id="studentChatStatus">Hỗ trợ học tập</div>
           </div>
         </div>
-        <button class="chat-close-btn" onclick="closeStudentChat()">✕</button>
+        <button class="chat-close-btn" onclick="closeStudentChat()"><svg class="ic"><use href="#ic-x"></use></svg></button>
       </div>
       <div class="chat-messages" id="studentChatMessages"></div>
       <div class="chat-input-area">
         <textarea class="chat-text-input" id="studentChatInput" placeholder="Nhập tin nhắn..." rows="1" onkeydown="handleChatInputKey(event,'student')" oninput="autoGrowChatInput(this)"></textarea>
-        <button class="chat-send-btn" onclick="sendChatMessage('student')">➤</button>
+        <button class="chat-send-btn" onclick="sendChatMessage('student')"><svg class="ic"><use href="#ic-send"></use></svg></button>
       </div>
     </div>
   </div>
@@ -1213,13 +1300,13 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="chat-panel affiliate-panel">
       <div class="chat-panel-header">
         <div class="chat-header-info">
-          <div class="chat-avatar-circle" style="background:linear-gradient(135deg,#f59e0b,#ec4899)">🤝</div>
+          <div class="chat-avatar-circle" style="background:linear-gradient(135deg,#f59e0b,#ec4899)"><svg class="ic"><use href="#ic-handshake"></use></svg></div>
           <div>
             <div class="chat-header-title">Affiliate cùng StudyHub</div>
             <div class="chat-header-sub" style="color:var(--muted)" id="affiliateHeaderSub">Chương trình hợp tác</div>
           </div>
         </div>
-        <button class="chat-close-btn" onclick="closeAffiliatePanel()">✕</button>
+        <button class="chat-close-btn" onclick="closeAffiliatePanel()"><svg class="ic"><use href="#ic-x"></use></svg></button>
       </div>
       <div class="affiliate-body" id="affiliateBody"></div>
     </div>
@@ -1228,13 +1315,21 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 <script>
 // ═══════════════════════════════════════
+//  ICON HELPER — returns inline SVG <use> markup for a Lucide-style icon
+//  usage: icon('check') or icon('star','ic-lg')
+// ═══════════════════════════════════════
+function icon(name, cls){
+  return `<svg class="ic ${cls||''}"><use href="#ic-${name}"></use></svg>`;
+}
+
+// ═══════════════════════════════════════
 //  DATA
 // ═══════════════════════════════════════
 const COURSES = [
   {
     id: 0, code: 'MKG101', name: 'Marketing Căn Bản',
     color: 'var(--acc1)', colorName: '#6366f1', badge: 'rgba(99,102,241,.15)', textBadge: '#818cf8',
-    icon: '📊', emoji: '📊',
+    icon: '<svg class="ic"><use href="#ic-bar-chart-3"></use></svg>', emoji: '<svg class="ic"><use href="#ic-bar-chart-3"></use></svg>',
     questions: [
 {q:"Which term is defined as 'a group of people working together in a structured and coordinated fashion to achieve a set of goals'?",opts:["Organizing","Management","Organization","Efficiency"],ans:2},
   {q:"Which term is defined as 'the process of planning, organizing, leading, and controlling an organization's resources to achieve its goals'?",opts:["Efficiency","Interpersonal skills","Management","Conceptual skills"],ans:2},
@@ -1590,7 +1685,7 @@ const COURSES = [
   {
     id: 1, code: 'ACC101', name: 'Kế Toán Căn Bản',
     color: 'var(--acc2)', colorName: '#0ea5e9', badge: 'rgba(14,165,233,.15)', textBadge: '#38bdf8',
-    icon: '📒', emoji: '📒',
+    icon: '<svg class="ic"><use href="#ic-book-text"></use></svg>', emoji: '<svg class="ic"><use href="#ic-book-text"></use></svg>',
     questions: [
 {q:"At the beginning of January, Thomas Law Center's ledger reflected a normal balance of $52,000 for accounts receivable. During January, the company collected $14,800 from customers on account and provided additional services to customers on account totaling $12,500. Additionally, one customer paid Thomas $5,000 for services to be provided in the future. At the end of January, the balance in the accounts receivable account should be:",opts:["$54,700","$49,700","$47,000","$64,500"],ans:1},
   {q:"When bonds are issued at a premium, the stated interest rate is:",opts:["Lower than the market rate","Equal to the market rate","Higher than the market rate","Unrelated to the market rate"],ans:2},
@@ -2004,7 +2099,7 @@ const COURSES = [
   {
     id: 2, code: 'ECO111', name: 'Kinh Tế Vi Mô',
     color: 'var(--acc3)', colorName: '#10b981', badge: 'rgba(16,185,129,.15)', textBadge: '#34d399',
-    icon: '📈', emoji: '📈',
+    icon: '<svg class="ic"><use href="#ic-trending-up"></use></svg>', emoji: '<svg class="ic"><use href="#ic-trending-up"></use></svg>',
     questions: [
 {q:"Farmer John sells wheat in a competitive market. Mr. John will optimize his profit by choosing:",opts:["To produce the quantity at which AVC is minimized","To produce the quantity at which AFC is minimized","To produce the quantity at which market price equals his marginal cost of production","To produce at the quantity at which market price exceeds his marginal cost of production"],ans:2},
   {q:"In a monopoly, the firm's demand curve is:",opts:["Perfectly elastic","Downward sloping","Horizontal","Vertical"],ans:1},
@@ -2309,7 +2404,7 @@ const COURSES = [
   {
     id: 3, code: 'SSA101', name: 'Student Success & AI',
     color: 'var(--acc4)', colorName: '#f97316', badge: 'rgba(249,115,22,.15)', textBadge: '#fb923c',
-    icon: '🎓', emoji: '🎓',
+    icon: '<svg class="ic"><use href="#ic-graduation-cap"></use></svg>', emoji: '<svg class="ic"><use href="#ic-graduation-cap"></use></svg>',
     questions: [
     {q:"What is the recommended task regarding reading before a class session begins?",opts:["Read the summary of the chapter only to save time","Wait until after the lecture to read so you understand the context better","Read the assigned material to make the lecture and complex concepts easier to follow","Skim the bolded terms and look at the graphics"],ans:2},
     {q:"During a class, what type of questions should a student ask to engage in critical thinking?",opts:["Questions about the format of the final exam","Questions that distract the professor to use up class time","Questions for clarification on areas that are confusing","Questions about grades"],ans:2},
@@ -2408,88 +2503,88 @@ const COURSES = [
   {
     id: 4, code: 'ENG111', name: 'Ngữ Pháp Tiếng Anh',
     color: 'var(--acc5)', colorName: '#a855f7', badge: 'rgba(168,85,247,.15)', textBadge: '#c084fc',
-    icon: '🇬🇧', emoji: '🇬🇧',
+    icon: '<svg class="ic"><use href="#ic-languages"></use></svg>', emoji: '<svg class="ic"><use href="#ic-languages"></use></svg>',
     questions: [
-    {q:"I want ______ a new phone.",opts:["buy","to buy","buying","bought"],ans:1,exp:'"want" luôn đi với to V → want to do something\n✔ want to buy  ✗ want buying'},
-    {q:"She refused ______ the invitation.",opts:["accept","to accept","accepting","accepted"],ans:1,exp:'"refuse" = từ chối → luôn dùng to V'},
-    {q:"He managed ______ the test successfully.",opts:["pass","passing","to pass","passed"],ans:2,exp:'"manage" = xoay sở làm được → manage to V'},
-    {q:"They decided ______ early.",opts:["leave","leaving","to leave","left"],ans:2,exp:'"decide" → luôn đi với to V'},
-    {q:"We agreed ______ the contract.",opts:["sign","signing","to sign","signed"],ans:2,exp:'"agree" → agree to V'},
-    {q:"I hope ______ you again soon.",opts:["see","seeing","to see","saw"],ans:2,exp:'"hope" → luôn to V'},
-    {q:"She promised ______ me later.",opts:["call","to call","calling","called"],ans:1,exp:'"promise" → to V'},
-    {q:"They plan ______ a trip.",opts:["take","taking","to take","took"],ans:2,exp:'"plan" → to V'},
-    {q:"He failed ______ the exam.",opts:["pass","to pass","passing","passed"],ans:1,exp:'"fail" → fail to V'},
-    {q:"We expect ______ good results.",opts:["get","getting","to get","got"],ans:2,exp:'"expect" → to V\n💡 Nhóm to V: want, decide, plan, agree, hope, expect, promise, manage, fail'},
-    {q:"I enjoy ______ music.",opts:["listen","listening","to listen","listened"],ans:1,exp:'"enjoy" → luôn V-ing'},
-    {q:"She avoided ______ him.",opts:["meet","meeting","to meet","met"],ans:1,exp:'"avoid" = tránh → V-ing'},
-    {q:"They suggested ______ a meeting.",opts:["have","having","to have","had"],ans:1,exp:'"suggest" → luôn V-ing'},
-    {q:"He admitted ______ the mistake.",opts:["make","to make","making","made"],ans:2,exp:'"admit" = thừa nhận → V-ing'},
-    {q:"We finished ______ dinner.",opts:["eat","eating","to eat","ate"],ans:1,exp:'"finish" = kết thúc → V-ing'},
-    {q:"I don't mind ______ here.",opts:["stay","staying","to stay","stayed"],ans:1,exp:'"mind" → V-ing'},
-    {q:"She considered ______ abroad.",opts:["study","studying","to study","studied"],ans:1,exp:'"consider" → V-ing'},
-    {q:"He kept ______ questions.",opts:["ask","asking","to ask","asked"],ans:1,exp:'"keep" = keep doing → tiếp tục → V-ing'},
-    {q:"They postponed ______ the event.",opts:["hold","holding","to hold","held"],ans:1,exp:'"postpone" = hoãn → V-ing'},
-    {q:"I miss ______ my old friends.",opts:["see","seeing","to see","saw"],ans:1,exp:'"miss" = nhớ → V-ing\n💡 Nhóm V-ing: enjoy, avoid, suggest, admit, finish, mind, consider, keep, postpone, miss'},
-    {q:"I look forward to ______ you.",opts:["see","seeing","to see","seen"],ans:1,exp:'"look forward to" = mong chờ\n⚠️ "to" ở đây là GIỚI TỪ → phải dùng V-ing, không phải to V!'},
-    {q:"She is used to ______ early.",opts:["wake","waking","to wake","woke"],ans:1,exp:'"be used to" = quen với → V-ing'},
-    {q:"He is good at ______ English.",opts:["speak","speaking","to speak","spoke"],ans:1,exp:'"good at" → giới từ → + V-ing'},
-    {q:"I can't stand ______ noise.",opts:["hear","hearing","to hear","heard"],ans:1,exp:'"can\'t stand" = không chịu được → V-ing'},
-    {q:"There is no use ______ him.",opts:["help","helping","to help","helped"],ans:1,exp:'"no use" = vô ích → V-ing'},
-    {q:"She attempted ______ the door, but it was locked.",opts:["open","opening","to open","opened"],ans:2,exp:'"attempt" = cố gắng → attempt to V'},
-    {q:"He arranged ______ a meeting with the manager.",opts:["have","having","to have","had"],ans:2,exp:'"arrange" = sắp xếp → to V'},
-    {q:"They offered ______ us with the project.",opts:["help","helping","to help","helped"],ans:2,exp:'"offer" = đề nghị → offer to V'},
-    {q:"She refused ______ the truth.",opts:["tell","telling","to tell","told"],ans:2,exp:'"refuse" → to V'},
-    {q:"He learned ______ English very quickly.",opts:["speak","speaking","to speak","spoke"],ans:2,exp:'"learn" = học cách → to V'},
-    {q:"We chose ______ at home.",opts:["stay","staying","to stay","stayed"],ans:2,exp:'"choose" = chọn → to V'},
-    {q:"She intends ______ a new business.",opts:["start","starting","to start","started"],ans:2,exp:'"intend" = dự định → to V'},
-    {q:"He seemed ______ tired after work.",opts:["be","being","to be","been"],ans:2,exp:'"seem" = có vẻ → to V'},
-    {q:"They permitted him ______ early.",opts:["leave","leaving","to leave","left"],ans:2,exp:'"permit" = cho phép → permit sb to V'},
-    {q:"She can't afford ______ a car.",opts:["buy","buying","to buy","bought"],ans:2,exp:'"afford" = đủ khả năng → to V'},
-    {q:"She has the ability ______ problems quickly.",opts:["solve","solving","to solve","solved"],ans:2,exp:'"ability to V" = khả năng làm gì → Noun + to V'},
-    {q:"They have no right ______ that decision.",opts:["make","making","to make","made"],ans:2,exp:'"right to V" → Noun + to V'},
-    {q:"We need a way ______ this issue.",opts:["fix","fixing","to fix","fixed"],ans:2,exp:'"way to V" → Noun + to V'},
-    {q:"This is a good chance ______ success.",opts:["achieve","achieving","to achieve","achieved"],ans:2,exp:'"chance/opportunity to V" → Noun + to V'},
-    {q:"He made a decision ______ the job.",opts:["quit","quitting","to quit","quit"],ans:2,exp:'"make a decision to V" → Noun + to V'},
-    {q:"She is eager ______ new things.",opts:["learn","learning","to learn","learned"],ans:2,exp:'"eager to V" → Adjective + to V'},
-    {q:"He is likely ______ late.",opts:["arrive","arriving","to arrive","arrived"],ans:2,exp:'"likely to V" → Adjective + to V'},
-    {q:"They are ready ______ the test.",opts:["take","taking","to take","took"],ans:2,exp:'"ready to V" → Adjective + to V'},
-    {q:"She is willing ______ you.",opts:["help","helping","to help","helped"],ans:2,exp:'"willing to V" → Adjective + to V'},
-    {q:"This problem is difficult ______.",opts:["solve","solving","to solve","solved"],ans:2,exp:'"adj + to V" (easy/difficult/hard/impossible) → Adjective + to V'},
-    {q:"He has difficulty ______ English.",opts:["learn","learning","to learn","learned"],ans:1,exp:'"have difficulty + V-ing" → cố định'},
-    {q:"She spends a lot of time ______ books.",opts:["read","reading","to read","readed"],ans:1,exp:'"spend time + V-ing" → cố định'},
-    {q:"It's no use ______ him.",opts:["ask","asking","to ask","asked"],ans:1,exp:'"no use + V-ing" → cố định'},
-    {q:"This book is worth ______.",opts:["read","reading","to read","readed"],ans:1,exp:'"worth + V-ing" → cố định'},
-    {q:"I feel like ______ a movie.",opts:["watch","watching","to watch","watched"],ans:1,exp:'"feel like + V-ing" → cố định'},
-    {q:"She can't help ______.",opts:["laugh","laughing","to laugh","laughed"],ans:1,exp:'"can\'t help + V-ing" → không nhịn được → cố định'},
-    {q:"He is devoted to ______ his job.",opts:["do","doing","to do","did"],ans:1,exp:'"devoted to" → "to" là giới từ → V-ing'},
-    {q:"They are accustomed to ______ early.",opts:["wake","waking","to wake","woke"],ans:1,exp:'"accustomed to" → "to" là giới từ → V-ing'},
-    {q:"She is busy ______ dinner.",opts:["cook","cooking","to cook","cooked"],ans:1,exp:'"busy + V-ing" → cố định'},
-    {q:"We studied hard with a view to ______ the exam.",opts:["pass","passing","to pass","passed"],ans:1,exp:'"with a view to" = với mục đích → "to" là giới từ → V-ing'},
-    {q:"I wish ______ more time to relax.",opts:["have","having","to have","had"],ans:2,exp:'"wish to V" khi mang nghĩa mong muốn làm gì → to V'},
-    {q:"They proposed ______ a new plan.",opts:["make","making","to make","made"],ans:2,exp:'"propose to V" → to V'},
-    {q:"She asked ______ the door.",opts:["open","opening","to open","opened"],ans:2,exp:'"ask to V" (ask someone to do something) → to V'},
-    {q:"He is able ______ the task.",opts:["do","doing","to do","did"],ans:2,exp:'"be able to V" → to V'},
-    {q:"She is pleased ______ you.",opts:["meet","meeting","to meet","met"],ans:2,exp:'"pleased to V" → Adjective + to V'},
-    {q:"We are about ______.",opts:["leave","leaving","to leave","left"],ans:2,exp:'"be about to V" = sắp sửa → to V'},
-    {q:"I really appreciate ______ your help.",opts:["have","having","to have","had"],ans:1,exp:'"appreciate" → luôn V-ing'},
-    {q:"He denied ______ the money.",opts:["take","taking","to take","took"],ans:1,exp:'"deny" → V-ing'},
-    {q:"She imagined ______ a famous singer.",opts:["become","becoming","to become","became"],ans:1,exp:'"imagine" → V-ing'},
-    {q:"I recall ______ him before.",opts:["see","seeing","to see","saw"],ans:1,exp:'"recall" = nhớ đã làm → V-ing'},
-    {q:"The job involves ______ a lot of travel.",opts:["do","doing","to do","did"],ans:1,exp:'"involve" → V-ing'},
-    {q:"She is bad at ______ math.",opts:["do","doing","to do","did"],ans:1,exp:'"bad at" → giới từ → V-ing'},
-    {q:"They are interested in ______ English.",opts:["learn","learning","to learn","learned"],ans:1,exp:'"interested in" → giới từ → V-ing'},
-    {q:"He is fond of ______ music.",opts:["listen","listening","to listen","listened"],ans:1,exp:'"fond of" → giới từ → V-ing'},
-    {q:"She insisted on ______ early.",opts:["leave","leaving","to leave","left"],ans:1,exp:'"insist on" → giới từ → V-ing'},
-    {q:"He stopped ______ when he saw the teacher.",opts:["talk","talking","to talk","talked"],ans:1,exp:'⚠️ ĐỘNG TỪ KÉP:\nstop + V-ing = dừng hẳn hành động đang làm\n→ Anh ấy dừng nói chuyện (vì thấy giáo viên)'},
-    {q:"He stopped ______ to ask for directions.",opts:["talk","talking","to talk","talked"],ans:2,exp:'⚠️ ĐỘNG TỪ KÉP:\nstop + to V = dừng lại ĐỂ làm việc khác\n→ Anh ấy dừng lại ĐỂ hỏi đường'},
-    {q:"I remember ______ him yesterday.",opts:["meet","meeting","to meet","met"],ans:1,exp:'⚠️ ĐỘNG TỪ KÉP:\nremember + V-ing = nhớ đã làm (việc đã xảy ra)'},
-    {q:"Remember ______ the door before leaving.",opts:["lock","locking","to lock","locked"],ans:2,exp:'⚠️ ĐỘNG TỪ KÉP:\nremember + to V = nhớ phải làm (việc chưa làm)'},
-    {q:"She tried ______ the door, but it didn't work.",opts:["open","opening","to open","opened"],ans:1,exp:'⚠️ ĐỘNG TỪ KÉP:\ntry + V-ing = thử một cách nào đó\n→ Cô thử mở cửa (nhưng không được)'},
-    {q:"She tried ______ harder to pass the exam.",opts:["study","studying","to study","studied"],ans:2,exp:'⚠️ ĐỘNG TỪ KÉP:\ntry + to V = cố gắng làm gì\n→ Cô cố gắng học chăm hơn'},
-    {q:"I regret ______ that you failed.",opts:["tell","telling","to tell","told"],ans:2,exp:'⚠️ ĐỘNG TỪ KÉP:\nregret + to V = lấy làm tiếc phải thông báo điều không vui'},
-    {q:"I regret ______ so much time.",opts:["waste","wasting","to waste","wasted"],ans:1,exp:'⚠️ ĐỘNG TỪ KÉP:\nregret + V-ing = hối hận vì đã làm việc gì'},
-    {q:"He went on ______ after a short break.",opts:["work","working","to work","worked"],ans:1,exp:'⚠️ ĐỘNG TỪ KÉP:\ngo on + V-ing = tiếp tục làm việc đó'},
-    {q:"He went on ______ about his success.",opts:["talk","talking","to talk","talked"],ans:2,exp:'⚠️ ĐỘNG TỪ KÉP:\ngo on + to V = chuyển sang làm việc khác tiếp theo'}
+    {q:"I want ______ a new phone.",opts:["buy","to buy","buying","bought"],ans:1,exp:'"want" luôn đi với to V <svg class="ic"><use href="#ic-arrow-right"></use></svg> want to do something\n<svg class="ic"><use href="#ic-check"></use></svg> want to buy  <svg class="ic"><use href="#ic-x"></use></svg> want buying'},
+    {q:"She refused ______ the invitation.",opts:["accept","to accept","accepting","accepted"],ans:1,exp:'"refuse" = từ chối <svg class="ic"><use href="#ic-arrow-right"></use></svg> luôn dùng to V'},
+    {q:"He managed ______ the test successfully.",opts:["pass","passing","to pass","passed"],ans:2,exp:'"manage" = xoay sở làm được <svg class="ic"><use href="#ic-arrow-right"></use></svg> manage to V'},
+    {q:"They decided ______ early.",opts:["leave","leaving","to leave","left"],ans:2,exp:'"decide" <svg class="ic"><use href="#ic-arrow-right"></use></svg> luôn đi với to V'},
+    {q:"We agreed ______ the contract.",opts:["sign","signing","to sign","signed"],ans:2,exp:'"agree" <svg class="ic"><use href="#ic-arrow-right"></use></svg> agree to V'},
+    {q:"I hope ______ you again soon.",opts:["see","seeing","to see","saw"],ans:2,exp:'"hope" <svg class="ic"><use href="#ic-arrow-right"></use></svg> luôn to V'},
+    {q:"She promised ______ me later.",opts:["call","to call","calling","called"],ans:1,exp:'"promise" <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"They plan ______ a trip.",opts:["take","taking","to take","took"],ans:2,exp:'"plan" <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"He failed ______ the exam.",opts:["pass","to pass","passing","passed"],ans:1,exp:'"fail" <svg class="ic"><use href="#ic-arrow-right"></use></svg> fail to V'},
+    {q:"We expect ______ good results.",opts:["get","getting","to get","got"],ans:2,exp:'"expect" <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V\n<svg class="ic"><use href="#ic-lightbulb"></use></svg> Nhóm to V: want, decide, plan, agree, hope, expect, promise, manage, fail'},
+    {q:"I enjoy ______ music.",opts:["listen","listening","to listen","listened"],ans:1,exp:'"enjoy" <svg class="ic"><use href="#ic-arrow-right"></use></svg> luôn V-ing'},
+    {q:"She avoided ______ him.",opts:["meet","meeting","to meet","met"],ans:1,exp:'"avoid" = tránh <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"They suggested ______ a meeting.",opts:["have","having","to have","had"],ans:1,exp:'"suggest" <svg class="ic"><use href="#ic-arrow-right"></use></svg> luôn V-ing'},
+    {q:"He admitted ______ the mistake.",opts:["make","to make","making","made"],ans:2,exp:'"admit" = thừa nhận <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"We finished ______ dinner.",opts:["eat","eating","to eat","ate"],ans:1,exp:'"finish" = kết thúc <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"I don't mind ______ here.",opts:["stay","staying","to stay","stayed"],ans:1,exp:'"mind" <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"She considered ______ abroad.",opts:["study","studying","to study","studied"],ans:1,exp:'"consider" <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"He kept ______ questions.",opts:["ask","asking","to ask","asked"],ans:1,exp:'"keep" = keep doing <svg class="ic"><use href="#ic-arrow-right"></use></svg> tiếp tục <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"They postponed ______ the event.",opts:["hold","holding","to hold","held"],ans:1,exp:'"postpone" = hoãn <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"I miss ______ my old friends.",opts:["see","seeing","to see","saw"],ans:1,exp:'"miss" = nhớ <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing\n<svg class="ic"><use href="#ic-lightbulb"></use></svg> Nhóm V-ing: enjoy, avoid, suggest, admit, finish, mind, consider, keep, postpone, miss'},
+    {q:"I look forward to ______ you.",opts:["see","seeing","to see","seen"],ans:1,exp:'"look forward to" = mong chờ\n<svg class="ic"><use href="#ic-alert-triangle"></use></svg> "to" ở đây là GIỚI TỪ <svg class="ic"><use href="#ic-arrow-right"></use></svg> phải dùng V-ing, không phải to V!'},
+    {q:"She is used to ______ early.",opts:["wake","waking","to wake","woke"],ans:1,exp:'"be used to" = quen với <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"He is good at ______ English.",opts:["speak","speaking","to speak","spoke"],ans:1,exp:'"good at" <svg class="ic"><use href="#ic-arrow-right"></use></svg> giới từ <svg class="ic"><use href="#ic-arrow-right"></use></svg> + V-ing'},
+    {q:"I can't stand ______ noise.",opts:["hear","hearing","to hear","heard"],ans:1,exp:'"can\'t stand" = không chịu được <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"There is no use ______ him.",opts:["help","helping","to help","helped"],ans:1,exp:'"no use" = vô ích <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"She attempted ______ the door, but it was locked.",opts:["open","opening","to open","opened"],ans:2,exp:'"attempt" = cố gắng <svg class="ic"><use href="#ic-arrow-right"></use></svg> attempt to V'},
+    {q:"He arranged ______ a meeting with the manager.",opts:["have","having","to have","had"],ans:2,exp:'"arrange" = sắp xếp <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"They offered ______ us with the project.",opts:["help","helping","to help","helped"],ans:2,exp:'"offer" = đề nghị <svg class="ic"><use href="#ic-arrow-right"></use></svg> offer to V'},
+    {q:"She refused ______ the truth.",opts:["tell","telling","to tell","told"],ans:2,exp:'"refuse" <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"He learned ______ English very quickly.",opts:["speak","speaking","to speak","spoke"],ans:2,exp:'"learn" = học cách <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"We chose ______ at home.",opts:["stay","staying","to stay","stayed"],ans:2,exp:'"choose" = chọn <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"She intends ______ a new business.",opts:["start","starting","to start","started"],ans:2,exp:'"intend" = dự định <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"He seemed ______ tired after work.",opts:["be","being","to be","been"],ans:2,exp:'"seem" = có vẻ <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"They permitted him ______ early.",opts:["leave","leaving","to leave","left"],ans:2,exp:'"permit" = cho phép <svg class="ic"><use href="#ic-arrow-right"></use></svg> permit sb to V'},
+    {q:"She can't afford ______ a car.",opts:["buy","buying","to buy","bought"],ans:2,exp:'"afford" = đủ khả năng <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"She has the ability ______ problems quickly.",opts:["solve","solving","to solve","solved"],ans:2,exp:'"ability to V" = khả năng làm gì <svg class="ic"><use href="#ic-arrow-right"></use></svg> Noun + to V'},
+    {q:"They have no right ______ that decision.",opts:["make","making","to make","made"],ans:2,exp:'"right to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> Noun + to V'},
+    {q:"We need a way ______ this issue.",opts:["fix","fixing","to fix","fixed"],ans:2,exp:'"way to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> Noun + to V'},
+    {q:"This is a good chance ______ success.",opts:["achieve","achieving","to achieve","achieved"],ans:2,exp:'"chance/opportunity to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> Noun + to V'},
+    {q:"He made a decision ______ the job.",opts:["quit","quitting","to quit","quit"],ans:2,exp:'"make a decision to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> Noun + to V'},
+    {q:"She is eager ______ new things.",opts:["learn","learning","to learn","learned"],ans:2,exp:'"eager to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> Adjective + to V'},
+    {q:"He is likely ______ late.",opts:["arrive","arriving","to arrive","arrived"],ans:2,exp:'"likely to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> Adjective + to V'},
+    {q:"They are ready ______ the test.",opts:["take","taking","to take","took"],ans:2,exp:'"ready to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> Adjective + to V'},
+    {q:"She is willing ______ you.",opts:["help","helping","to help","helped"],ans:2,exp:'"willing to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> Adjective + to V'},
+    {q:"This problem is difficult ______.",opts:["solve","solving","to solve","solved"],ans:2,exp:'"adj + to V" (easy/difficult/hard/impossible) <svg class="ic"><use href="#ic-arrow-right"></use></svg> Adjective + to V'},
+    {q:"He has difficulty ______ English.",opts:["learn","learning","to learn","learned"],ans:1,exp:'"have difficulty + V-ing" <svg class="ic"><use href="#ic-arrow-right"></use></svg> cố định'},
+    {q:"She spends a lot of time ______ books.",opts:["read","reading","to read","readed"],ans:1,exp:'"spend time + V-ing" <svg class="ic"><use href="#ic-arrow-right"></use></svg> cố định'},
+    {q:"It's no use ______ him.",opts:["ask","asking","to ask","asked"],ans:1,exp:'"no use + V-ing" <svg class="ic"><use href="#ic-arrow-right"></use></svg> cố định'},
+    {q:"This book is worth ______.",opts:["read","reading","to read","readed"],ans:1,exp:'"worth + V-ing" <svg class="ic"><use href="#ic-arrow-right"></use></svg> cố định'},
+    {q:"I feel like ______ a movie.",opts:["watch","watching","to watch","watched"],ans:1,exp:'"feel like + V-ing" <svg class="ic"><use href="#ic-arrow-right"></use></svg> cố định'},
+    {q:"She can't help ______.",opts:["laugh","laughing","to laugh","laughed"],ans:1,exp:'"can\'t help + V-ing" <svg class="ic"><use href="#ic-arrow-right"></use></svg> không nhịn được <svg class="ic"><use href="#ic-arrow-right"></use></svg> cố định'},
+    {q:"He is devoted to ______ his job.",opts:["do","doing","to do","did"],ans:1,exp:'"devoted to" <svg class="ic"><use href="#ic-arrow-right"></use></svg> "to" là giới từ <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"They are accustomed to ______ early.",opts:["wake","waking","to wake","woke"],ans:1,exp:'"accustomed to" <svg class="ic"><use href="#ic-arrow-right"></use></svg> "to" là giới từ <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"She is busy ______ dinner.",opts:["cook","cooking","to cook","cooked"],ans:1,exp:'"busy + V-ing" <svg class="ic"><use href="#ic-arrow-right"></use></svg> cố định'},
+    {q:"We studied hard with a view to ______ the exam.",opts:["pass","passing","to pass","passed"],ans:1,exp:'"with a view to" = với mục đích <svg class="ic"><use href="#ic-arrow-right"></use></svg> "to" là giới từ <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"I wish ______ more time to relax.",opts:["have","having","to have","had"],ans:2,exp:'"wish to V" khi mang nghĩa mong muốn làm gì <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"They proposed ______ a new plan.",opts:["make","making","to make","made"],ans:2,exp:'"propose to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"She asked ______ the door.",opts:["open","opening","to open","opened"],ans:2,exp:'"ask to V" (ask someone to do something) <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"He is able ______ the task.",opts:["do","doing","to do","did"],ans:2,exp:'"be able to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"She is pleased ______ you.",opts:["meet","meeting","to meet","met"],ans:2,exp:'"pleased to V" <svg class="ic"><use href="#ic-arrow-right"></use></svg> Adjective + to V'},
+    {q:"We are about ______.",opts:["leave","leaving","to leave","left"],ans:2,exp:'"be about to V" = sắp sửa <svg class="ic"><use href="#ic-arrow-right"></use></svg> to V'},
+    {q:"I really appreciate ______ your help.",opts:["have","having","to have","had"],ans:1,exp:'"appreciate" <svg class="ic"><use href="#ic-arrow-right"></use></svg> luôn V-ing'},
+    {q:"He denied ______ the money.",opts:["take","taking","to take","took"],ans:1,exp:'"deny" <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"She imagined ______ a famous singer.",opts:["become","becoming","to become","became"],ans:1,exp:'"imagine" <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"I recall ______ him before.",opts:["see","seeing","to see","saw"],ans:1,exp:'"recall" = nhớ đã làm <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"The job involves ______ a lot of travel.",opts:["do","doing","to do","did"],ans:1,exp:'"involve" <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"She is bad at ______ math.",opts:["do","doing","to do","did"],ans:1,exp:'"bad at" <svg class="ic"><use href="#ic-arrow-right"></use></svg> giới từ <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"They are interested in ______ English.",opts:["learn","learning","to learn","learned"],ans:1,exp:'"interested in" <svg class="ic"><use href="#ic-arrow-right"></use></svg> giới từ <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"He is fond of ______ music.",opts:["listen","listening","to listen","listened"],ans:1,exp:'"fond of" <svg class="ic"><use href="#ic-arrow-right"></use></svg> giới từ <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"She insisted on ______ early.",opts:["leave","leaving","to leave","left"],ans:1,exp:'"insist on" <svg class="ic"><use href="#ic-arrow-right"></use></svg> giới từ <svg class="ic"><use href="#ic-arrow-right"></use></svg> V-ing'},
+    {q:"He stopped ______ when he saw the teacher.",opts:["talk","talking","to talk","talked"],ans:1,exp:'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> ĐỘNG TỪ KÉP:\nstop + V-ing = dừng hẳn hành động đang làm\n<svg class="ic"><use href="#ic-arrow-right"></use></svg> Anh ấy dừng nói chuyện (vì thấy giáo viên)'},
+    {q:"He stopped ______ to ask for directions.",opts:["talk","talking","to talk","talked"],ans:2,exp:'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> ĐỘNG TỪ KÉP:\nstop + to V = dừng lại ĐỂ làm việc khác\n<svg class="ic"><use href="#ic-arrow-right"></use></svg> Anh ấy dừng lại ĐỂ hỏi đường'},
+    {q:"I remember ______ him yesterday.",opts:["meet","meeting","to meet","met"],ans:1,exp:'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> ĐỘNG TỪ KÉP:\nremember + V-ing = nhớ đã làm (việc đã xảy ra)'},
+    {q:"Remember ______ the door before leaving.",opts:["lock","locking","to lock","locked"],ans:2,exp:'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> ĐỘNG TỪ KÉP:\nremember + to V = nhớ phải làm (việc chưa làm)'},
+    {q:"She tried ______ the door, but it didn't work.",opts:["open","opening","to open","opened"],ans:1,exp:'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> ĐỘNG TỪ KÉP:\ntry + V-ing = thử một cách nào đó\n<svg class="ic"><use href="#ic-arrow-right"></use></svg> Cô thử mở cửa (nhưng không được)'},
+    {q:"She tried ______ harder to pass the exam.",opts:["study","studying","to study","studied"],ans:2,exp:'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> ĐỘNG TỪ KÉP:\ntry + to V = cố gắng làm gì\n<svg class="ic"><use href="#ic-arrow-right"></use></svg> Cô cố gắng học chăm hơn'},
+    {q:"I regret ______ that you failed.",opts:["tell","telling","to tell","told"],ans:2,exp:'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> ĐỘNG TỪ KÉP:\nregret + to V = lấy làm tiếc phải thông báo điều không vui'},
+    {q:"I regret ______ so much time.",opts:["waste","wasting","to waste","wasted"],ans:1,exp:'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> ĐỘNG TỪ KÉP:\nregret + V-ing = hối hận vì đã làm việc gì'},
+    {q:"He went on ______ after a short break.",opts:["work","working","to work","worked"],ans:1,exp:'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> ĐỘNG TỪ KÉP:\ngo on + V-ing = tiếp tục làm việc đó'},
+    {q:"He went on ______ about his success.",opts:["talk","talking","to talk","talked"],ans:2,exp:'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> ĐỘNG TỪ KÉP:\ngo on + to V = chuyển sang làm việc khác tiếp theo'}
     ]
   }
 ]
@@ -2510,8 +2605,8 @@ function buildCourseObject(meta, idx){
     colorName: meta.color,
     badge: meta.color + '26', // ~15% opacity hex suffix
     textBadge: meta.color,
-    icon: meta.icon || '📘',
-    emoji: meta.icon || '📘',
+    icon: meta.icon || '<svg class="ic"><use href="#ic-book-marked"></use></svg>',
+    emoji: meta.icon || '<svg class="ic"><use href="#ic-book-marked"></use></svg>',
     isCustom: true,
     customId: meta._docId || null,
     questions: (meta.questions||[]).map(q=>({
@@ -2531,7 +2626,7 @@ async function loadCustomCourses(){
       data._docId = doc.id;
       const newIdx = COURSES.length;
       COURSES.push(buildCourseObject(data, newIdx));
-      COURSE_META.push({code:data.code, color:data.color, label:`${data.icon||'📘'} ${data.code}`});
+      COURSE_META.push({code:data.code, color:data.color, label:`${data.icon||'<svg class="ic"><use href="#ic-book-marked"></use></svg>'} ${data.code}`});
     });
   }catch(e){
     console.warn('Could not load custom courses:', e);
@@ -2564,15 +2659,15 @@ let auth, db;
 }).catch(err=>{
   console.error('Firebase SDK load failed:', err);
   document.getElementById('fbLoading').innerHTML =
-    '<div style="text-align:center;color:#ef4444;padding:40px"><div style="font-size:48px;margin-bottom:16px">⚠️</div><p style="font-size:15px;font-weight:600">Không thể kết nối Firebase</p><p style="font-size:13px;color:#6b6884;margin-top:8px">Vui lòng kiểm tra kết nối mạng và thử lại.</p><button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;background:#6366f1;border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer">↺ Thử lại</button></div>';
+    '<div style="text-align:center;color:#ef4444;padding:40px"><div style="font-size:48px;margin-bottom:16px"><svg class="ic"><use href="#ic-alert-triangle"></use></svg></div><p style="font-size:15px;font-weight:600">Không thể kết nối Firebase</p><p style="font-size:13px;color:#6b6884;margin-top:8px">Vui lòng kiểm tra kết nối mạng và thử lại.</p><button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;background:#6366f1;border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer"><svg class="ic"><use href="#ic-rotate-ccw"></use></svg> Thử lại</button></div>';
 });
 
 const COURSE_META = [
-  {code:'MKG101', color:'#6366f1', label:'📊 MKG101'},
-  {code:'ACC101', color:'#0ea5e9', label:'📒 ACC101'},
-  {code:'ECO111', color:'#10b981', label:'📈 ECO111'},
-  {code:'SSA101', color:'#f97316', label:'🎓 SSA101'},
-  {code:'ENG111', color:'#a855f7', label:'🇬🇧 ENG111'},
+  {code:'MKG101', color:'#6366f1', label:'<svg class="ic"><use href="#ic-bar-chart-3"></use></svg> MKG101'},
+  {code:'ACC101', color:'#0ea5e9', label:'<svg class="ic"><use href="#ic-book-text"></use></svg> ACC101'},
+  {code:'ECO111', color:'#10b981', label:'<svg class="ic"><use href="#ic-trending-up"></use></svg> ECO111'},
+  {code:'SSA101', color:'#f97316', label:'<svg class="ic"><use href="#ic-graduation-cap"></use></svg> SSA101'},
+  {code:'ENG111', color:'#a855f7', label:'<svg class="ic"><use href="#ic-languages"></use></svg> ENG111'},
 ];
 
 let currentUser = null;
@@ -2630,7 +2725,7 @@ auth.onAuthStateChanged(async user => {
   const snap = await docRef.get();
 
   if(!snap.exists){
-    // Chưa đăng ký → show register form
+    // Chưa đăng ký <svg class="ic"><use href="#ic-arrow-right"></use></svg> show register form
     document.getElementById('regAvatar').src = user.photoURL || '';
     document.getElementById('regEmailDisplay').textContent = user.email;
     document.getElementById('regErr').classList.remove('show');
@@ -2638,7 +2733,7 @@ auth.onAuthStateChanged(async user => {
     return;
   }
 
-  // ── Đã đăng ký → vào học luôn ──
+  // ── Đã đăng ký <svg class="ic"><use href="#ic-arrow-right"></use></svg> vào học luôn ──
   const data = snap.data();
   enterStudentApp(user, data, docRef);
 }); // end onAuthStateChanged
@@ -2656,7 +2751,7 @@ function enterStudentApp(user, data, docRef){
   // Mặc định vào Trang chủ khi đăng nhập (không tự nhảy vào môn học nữa)
   switchMainView('home');
 
-  // Realtime: admin cấp/thu môn → cập nhật ngay
+  // Realtime: admin cấp/thu môn <svg class="ic"><use href="#ic-arrow-right"></use></svg> cập nhật ngay
   unsubscribeStudent = docRef.onSnapshot(s => {
     if(!s.exists) return;
     const nd = s.data();
@@ -2688,7 +2783,7 @@ async function submitRegister(){
   errEl.classList.remove('show');
 
   const btn = document.querySelector('#regFormArea .login-btn');
-  if(btn){ btn.textContent = '⏳ Đang tạo tài khoản…'; btn.disabled = true; }
+  if(btn){ btn.innerHTML = '<svg class="ic"><use href="#ic-hourglass"></use></svg> Đang tạo tài khoản…'; btn.disabled = true; }
 
   const user = auth.currentUser;
   if(!user) return;
@@ -2705,9 +2800,9 @@ async function submitRegister(){
     const data = (await docRef.get()).data();
     enterStudentApp(user, data, docRef);
   } catch(e){
-    errEl.textContent = '❌ Lỗi: '+e.message;
+    errEl.innerHTML = '<svg class="ic"><use href="#ic-x-circle"></use></svg> Lỗi: '+e.message;
     errEl.classList.add('show');
-    if(btn){ btn.textContent = '✓ Hoàn tất đăng ký'; btn.disabled = false; }
+    if(btn){ btn.innerHTML = '<svg class="ic"><use href="#ic-check"></use></svg> Hoàn tất đăng ký'; btn.disabled = false; }
   }
 }
 
@@ -2833,8 +2928,8 @@ function renderOverview(){
       <div class="a-stat"><div class="a-num" style="color:var(--acc1)">${totalEnroll}</div><div class="a-lbl">Lượt mở môn</div></div>
     </div>
     <div class="admin-card">
-      <h2 style="font-size:16px;margin-bottom:16px">📋 Danh sách học sinh</h2>
-      ${total === 0 ? '<div class="admin-empty"><div class="ae-icon">👥</div><p>Chưa có học sinh nào đăng ký.</p></div>' : `
+      <h2 style="font-size:16px;margin-bottom:16px"><svg class="ic"><use href="#ic-clipboard-list"></use></svg> Danh sách học sinh</h2>
+      ${total === 0 ? '<div class="admin-empty"><div class="ae-icon"><svg class="ic"><use href="#ic-users"></use></svg></div><p>Chưa có học sinh nào đăng ký.</p></div>' : `
       <table class="admin-table">
         <thead><tr><th>#</th><th>Họ tên</th><th>Email</th><th>Môn học</th></tr></thead>
         <tbody>
@@ -2877,7 +2972,7 @@ function renderStudentTable(){
     <td style="color:var(--muted);font-size:12px">${i+1}</td>
     <td>
       <div style="display:flex;align-items:center;gap:10px">
-        ${s.photoURL?`<img src="${s.photoURL}" style="width:32px;height:32px;border-radius:50%;border:2px solid var(--border)">`:'<div style="width:32px;height:32px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:14px">👤</div>'}
+        ${s.photoURL?`<img src="${s.photoURL}" style="width:32px;height:32px;border-radius:50%;border:2px solid var(--border)">`:'<div style="width:32px;height:32px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:14px"><svg class="ic"><use href="#ic-user"></use></svg></div>'}
         <div><div class="stu-name">${s.name||'—'}</div><div class="stu-account">${s.email||''}</div></div>
       </div>
     </td>
@@ -2894,8 +2989,8 @@ function renderStudentTable(){
     </td>
     <td>
       <div style="display:flex;gap:6px">
-        <button class="admin-btn secondary" onclick="editStudentName('${s.uid}','${(s.name||'').replace(/'/g,"\'")}')">✏️</button>
-        <button class="admin-btn danger" onclick="removeStudent('${s.uid}','${(s.name||'').replace(/'/g,"\'")}')">🗑</button>
+        <button class="admin-btn secondary" onclick="editStudentName('${s.uid}','${(s.name||'').replace(/'/g,"\'")}')"><svg class="ic"><use href="#ic-pencil"></use></svg></button>
+        <button class="admin-btn danger" onclick="removeStudent('${s.uid}','${(s.name||'').replace(/'/g,"\'")}')"><svg class="ic"><use href="#ic-trash-2"></use></svg></button>
       </div>
     </td>
   </tr>`).join('');
@@ -2935,19 +3030,19 @@ async function removeStudent(uid, name){
 function renderPendingList(){
   const area = document.getElementById('pendingListArea');
   if(adminPending.length===0){
-    area.innerHTML='<div class="admin-empty"><div class="ae-icon">✅</div><p>Không có tài khoản nào đang chờ duyệt.</p></div>';
+    area.innerHTML='<div class="admin-empty"><div class="ae-icon"><svg class="ic"><use href="#ic-check-circle"></use></svg></div><p>Không có tài khoản nào đang chờ duyệt.</p></div>';
     return;
   }
   area.innerHTML = adminPending.map(s=>`
     <div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)">
-      ${s.photoURL?`<img src="${s.photoURL}" style="width:44px;height:44px;border-radius:50%;border:2px solid var(--border)">`:'<div style="width:44px;height:44px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:20px">👤</div>'}
+      ${s.photoURL?`<img src="${s.photoURL}" style="width:44px;height:44px;border-radius:50%;border:2px solid var(--border)">`:'<div style="width:44px;height:44px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:20px"><svg class="ic"><use href="#ic-user"></use></svg></div>'}
       <div style="flex:1">
         <div style="font-weight:700;margin-bottom:2px">${s.name||'—'}</div>
         <div style="font-size:12px;color:var(--muted)">${s.email||''}</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="admin-btn primary" onclick="approveStudent('${s.uid}')" style="padding:7px 14px;font-size:12px">✓ Duyệt</button>
-        <button class="admin-btn danger" onclick="rejectStudent('${s.uid}','${(s.name||'').replace(/'/g,"\'")}')">✗ Từ chối</button>
+        <button class="admin-btn primary" onclick="approveStudent('${s.uid}')" style="padding:7px 14px;font-size:12px"><svg class="ic"><use href="#ic-check"></use></svg> Duyệt</button>
+        <button class="admin-btn danger" onclick="rejectStudent('${s.uid}','${(s.name||'').replace(/'/g,"\'")}')"><svg class="ic"><use href="#ic-x"></use></svg> Từ chối</button>
       </div>
     </div>`).join('');
 }
@@ -2981,7 +3076,7 @@ function renderCourseMgmt(){
           <span class="course-pill ${(s.courses||[]).includes(ci)?'unlocked':'locked'}"
             style="${(s.courses||[]).includes(ci)?'background:'+cm.color:''};padding:6px 14px;font-size:12px"
             onclick="toggleCourse('${s.uid}',${ci})">
-            ${s.name||s.email} ${(s.courses||[]).includes(ci)?'✓':'✗'}
+            ${s.name||s.email} ${(s.courses||[]).includes(ci)?'<svg class="ic"><use href="#ic-check"></use></svg>':'<svg class="ic"><use href="#ic-x"></use></svg>'}
           </span>`).join('')}
       </div>
     </div>`).join('<hr style="border-color:var(--border);margin:20px 0">');
@@ -2989,7 +3084,7 @@ function renderCourseMgmt(){
 
 // ═══════════════════════════════════════
 //  INTEGRATED AI COURSE CONVERTER
-//  PDF/Word/Text → Claude or Gemini API → Questions → Firestore → live
+//  PDF/Word/Text <svg class="ic"><use href="#ic-arrow-right"></use></svg> Claude or Gemini API <svg class="ic"><use href="#ic-arrow-right"></use></svg> Questions <svg class="ic"><use href="#ic-arrow-right"></use></svg> Firestore <svg class="ic"><use href="#ic-arrow-right"></use></svg> live
 // ═══════════════════════════════════════
 let convUploadedFile = null;
 let pendingCourseUpload = null;
@@ -3022,8 +3117,8 @@ function selectProvider(provider){
 function toggleKeyVis(inputId, btnId){
   const inp = document.getElementById(inputId);
   const btn = document.getElementById(btnId);
-  if(inp.type==='password'){ inp.type='text'; btn.textContent='🙈'; }
-  else { inp.type='password'; btn.textContent='👁'; }
+  if(inp.type==='password'){ inp.type='text'; btn.innerHTML=icon('eye-off'); }
+  else { inp.type='password'; btn.innerHTML=icon('eye'); }
 }
 
 // ── Drag & drop file ──
@@ -3048,8 +3143,8 @@ function handleConvFile(file){
   convUploadedFile = file;
   document.getElementById('convFileChipArea').innerHTML = `
     <div class="conv-file-chip">
-      📎 ${file.name} <span style="color:var(--muted)">(${(file.size/1024).toFixed(0)} KB)</span>
-      <span class="cfc-remove" onclick="removeConvFile()">✕</span>
+      <svg class="ic"><use href="#ic-paperclip"></use></svg> ${file.name} <span style="color:var(--muted)">(${(file.size/1024).toFixed(0)} KB)</span>
+      <span class="cfc-remove" onclick="removeConvFile()"><svg class="ic"><use href="#ic-x"></use></svg></span>
     </div>`;
 }
 function removeConvFile(){
@@ -3092,7 +3187,7 @@ function updateConvProgress(pct, text){
 }
 function showConvError(msg){
   const box = document.getElementById('convErrBox');
-  box.textContent = '❌ ' + msg;
+  box.innerHTML = '<svg class="ic"><use href="#ic-x-circle"></use></svg> ' + msg;
   box.classList.add('show');
 }
 function hideConvError(){
@@ -3107,7 +3202,7 @@ async function startAIConversion(){
     : document.getElementById('convGeminiKey').value.trim();
   const courseCode = document.getElementById('convCourseCode').value.trim().toUpperCase();
   const courseName = document.getElementById('convCourseName').value.trim();
-  const courseIcon = document.getElementById('convCourseIcon').value.trim() || '📘';
+  const courseIcon = document.getElementById('convCourseIcon').value.trim() || '<svg class="ic"><use href="#ic-book-marked"></use></svg>';
   const courseColor = document.getElementById('convCourseColor').value;
   const pastedText = document.getElementById('convPasteText').value.trim();
 
@@ -3160,7 +3255,7 @@ async function startAIConversion(){
     showConvError(err.message || 'Có lỗi xảy ra trong quá trình xử lý.');
   } finally{
     btn.disabled = false;
-    btn.innerHTML = '✨ Phân tích bằng AI';
+    btn.innerHTML = '<svg class="ic"><use href="#ic-sparkles"></use></svg> Phân tích bằng AI';
     setTimeout(()=>{ document.getElementById('convProgressArea').style.display = 'none'; }, 1200);
   }
 }
@@ -3171,10 +3266,10 @@ function buildExtractionPrompt(textChunk){
 
 QUAN TRỌNG:
 - Mỗi câu hỏi PHẢI có đầy đủ phần câu hỏi và các lựa chọn (options)
-- Phải xác định CHÍNH XÁC đáp án đúng dựa trên các dấu hiệu như: ✓, *, in đậm, gạch chân, "Đáp án:", "Answer:", hoặc bất kỳ dấu hiệu đánh dấu nào khác trong văn bản
+- Phải xác định CHÍNH XÁC đáp án đúng dựa trên các dấu hiệu như: <svg class="ic"><use href="#ic-check"></use></svg>, *, in đậm, gạch chân, "Đáp án:", "Answer:", hoặc bất kỳ dấu hiệu đánh dấu nào khác trong văn bản
 - Nếu một câu hỏi KHÔNG có dấu hiệu đáp án đúng rõ ràng, vẫn trích xuất câu đó nhưng đặt "ans": -1 và "uncertain": true
 - Giữ nguyên ngôn ngữ gốc của câu hỏi (không dịch)
-- Bỏ qua các ký tự đánh dấu (✓, *, A., B., 1., etc.) khỏi nội dung text cuối cùng
+- Bỏ qua các ký tự đánh dấu (<svg class="ic"><use href="#ic-check"></use></svg>, *, A., B., 1., etc.) khỏi nội dung text cuối cùng
 - Nếu có giải thích (explanation) đi kèm câu hỏi, hãy trích xuất vào trường "exp"
 
 Trả về DUY NHẤT một JSON array hợp lệ, không có markdown code block, không có text giải thích thêm, theo format:
@@ -3344,9 +3439,9 @@ function showConvResult(data){
   const labels = ['A','B','C','D','E'];
   document.getElementById('convPreviewBox').innerHTML = data.questions.slice(0,8).map((q,i)=>`
     <div class="conv-preview-q">
-      <div class="pq-num">CÂU ${i+1} ${q.uncertain?'⚠️ <span style="color:var(--gold)">Chưa rõ đáp án</span>':''}</div>
+      <div class="pq-num">CÂU ${i+1} ${q.uncertain?'<svg class="ic"><use href="#ic-alert-triangle"></use></svg> <span style="color:var(--gold)">Chưa rõ đáp án</span>':''}</div>
       <div class="pq-text">${q.q}</div>
-      ${q.opts.map((o,oi)=>`<div class="pq-opt ${oi===q.ans?'correct':''}">${labels[oi]}. ${o}${oi===q.ans?' ✓':''}</div>`).join('')}
+      ${q.opts.map((o,oi)=>`<div class="pq-opt ${oi===q.ans?'correct':''}">${labels[oi]}. ${o}${oi===q.ans?' <svg class="ic"><use href="#ic-check"></use></svg>':''}</div>`).join('')}
     </div>`).join('') + (data.questions.length>8 ? `<div style="text-align:center;padding:10px;color:var(--muted);font-size:11px">... và ${data.questions.length-8} câu khác</div>` : '');
 
   document.getElementById('convResultArea').style.display = '';
@@ -3373,7 +3468,7 @@ async function confirmAddCourse(){
     const docRef = await db.collection('customCourses').add({
       code: data.code,
       name: data.name,
-      icon: data.icon || '📘',
+      icon: data.icon || '<svg class="ic"><use href="#ic-book-marked"></use></svg>',
       color: data.color || '#6366f1',
       questions: data.questions,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -3382,7 +3477,7 @@ async function confirmAddCourse(){
     data._docId = docRef.id;
     const newIdx = COURSES.length;
     COURSES.push(buildCourseObject(data, newIdx));
-    COURSE_META.push({code:data.code, color:data.color||'#6366f1', label:`${data.icon||'📘'} ${data.code}`});
+    COURSE_META.push({code:data.code, color:data.color||'#6366f1', label:`${data.icon||'<svg class="ic"><use href="#ic-book-marked"></use></svg>'} ${data.code}`});
 
     showToast(`Đã thêm môn "${data.name}" (${data.questions.length} câu) vào StudyHub!`,'ok');
     cancelCourseUpload();
@@ -3403,7 +3498,7 @@ function renderCourseListAdmin(){
         <div style="font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace">${c.code} · ${c.questions.length} câu hỏi ${c.isCustom?'· <span style="color:#f59e0b">Tự thêm</span>':'· <span style="color:var(--green)">Có sẵn</span>'}</div>
       </div>
       <div style="font-size:12px;color:var(--muted)">${adminStudents.filter(s=>(s.courses||[]).includes(i)).length} học sinh</div>
-      ${c.isCustom ? `<button class="admin-btn danger" onclick="deleteCustomCourse(${i},'${c.customId}','${c.name.replace(/'/g,"\\'")}')">🗑 Xóa</button>` : '<span style="font-size:11px;color:var(--muted2);padding:6px 12px">Mặc định</span>'}
+      ${c.isCustom ? `<button class="admin-btn danger" onclick="deleteCustomCourse(${i},'${c.customId}','${c.name.replace(/'/g,"\\'")}')"><svg class="ic"><use href="#ic-trash-2"></use></svg> Xóa</button>` : '<span style="font-size:11px;color:var(--muted2);padding:6px 12px">Mặc định</span>'}
     </div>`).join('');
 }
 
@@ -3450,7 +3545,7 @@ function showToast(msg,type='ok'){
   if(toastTimer)clearTimeout(toastTimer);
   const t=document.createElement('div');
   t.className='toast '+type;
-  t.innerHTML=(type==='ok'?'✅ ':'❌ ')+msg;
+  t.innerHTML=(type==='ok'?'<svg class="ic"><use href="#ic-check-circle"></use></svg> ':'<svg class="ic"><use href="#ic-x-circle"></use></svg> ')+msg;
   document.body.appendChild(t);
   toastTimer=setTimeout(()=>t.remove(),3000);
 }
@@ -3521,20 +3616,20 @@ function showCourseHome(){
     <div class="mode-grid">
       <div class="mode-card" onclick="startFlashcard()" style="--c:${c.colorName}">
         <div class="mode-card::after" style="background:linear-gradient(135deg,${c.badge},transparent)"></div>
-        <span class="mode-icon">🃏</span>
-        <span class="mode-arrow">↗</span>
+        <span class="mode-icon"><svg class="ic"><use href="#ic-layers"></use></svg></span>
+        <span class="mode-arrow"><svg class="ic"><use href="#ic-arrow-up-right"></use></svg></span>
         <h3>Thẻ Ghi Nhớ</h3>
         <p>Lật thẻ để ôn từng khái niệm. Xem câu hỏi rồi tự đánh giá bản thân.</p>
       </div>
       <div class="mode-card" onclick="startLearn()" style="--c:${c.colorName}">
-        <span class="mode-icon">🧠</span>
-        <span class="mode-arrow">↗</span>
+        <span class="mode-icon"><svg class="ic"><use href="#ic-brain"></use></svg></span>
+        <span class="mode-arrow"><svg class="ic"><use href="#ic-arrow-up-right"></use></svg></span>
         <h3>Học</h3>
         <p>Làm câu hỏi trắc nghiệm tuần tự. Phản hồi tức thì sau mỗi câu.</p>
       </div>
       <div class="mode-card" onclick="startTest()" style="--c:${c.colorName}">
-        <span class="mode-icon">📝</span>
-        <span class="mode-arrow">↗</span>
+        <span class="mode-icon"><svg class="ic"><use href="#ic-file-text"></use></svg></span>
+        <span class="mode-arrow"><svg class="ic"><use href="#ic-arrow-up-right"></use></svg></span>
         <h3>Kiểm Tra Thử</h3>
         <p>40 câu ngẫu nhiên · Có tính giờ · Kết quả & review chi tiết.</p>
       </div>
@@ -3568,8 +3663,8 @@ function renderFC(){
   document.getElementById('mainArea').innerHTML = `
   <div class="flashcard-view">
     <div class="fc-header">
-      <button class="back-btn" onclick="showCourseHome()">← Về trang chủ</button>
-      <h3>🃏 Thẻ Ghi Nhớ</h3>
+      <button class="back-btn" onclick="showCourseHome()"><svg class="ic"><use href="#ic-arrow-left"></use></svg> Về trang chủ</button>
+      <h3><svg class="ic"><use href="#ic-layers"></use></svg> Thẻ Ghi Nhớ</h3>
       <span class="fc-progress-text">${fc.idx+1} / ${total}</span>
     </div>
     <div class="fc-progress-bar"><div class="fc-progress-fill" style="width:${pct}%;background:${c.color}"></div></div>
@@ -3588,19 +3683,19 @@ function renderFC(){
       </div>
     </div>
 
-    <div class="card-flip-hint">👆 Nhấn vào thẻ để lật · dùng ← → để di chuyển</div>
+    <div class="card-flip-hint"><svg class="ic"><use href="#ic-pointer"></use></svg> Nhấn vào thẻ để lật · dùng <svg class="ic"><use href="#ic-arrow-left"></use></svg> <svg class="ic"><use href="#ic-arrow-right"></use></svg> để di chuyển</div>
 
     <div class="fc-controls">
-      <button class="fc-btn" onclick="fcNav(-1)" ${fc.idx===0?'disabled':''}>← Trước</button>
-      <button class="fc-btn primary" onclick="flipCard()">🔄 Lật Thẻ</button>
-      <button class="fc-btn" onclick="fcNav(1)" ${fc.idx===total-1?'disabled':''}>Tiếp →</button>
+      <button class="fc-btn" onclick="fcNav(-1)" ${fc.idx===0?'disabled':''}><svg class="ic"><use href="#ic-arrow-left"></use></svg> Trước</button>
+      <button class="fc-btn primary" onclick="flipCard()"><svg class="ic"><use href="#ic-refresh-cw"></use></svg> Lật Thẻ</button>
+      <button class="fc-btn" onclick="fcNav(1)" ${fc.idx===total-1?'disabled':''}>Tiếp <svg class="ic"><use href="#ic-arrow-right"></use></svg></button>
     </div>
 
     <div class="fc-shuffle-row">
       <button class="fc-btn" onclick="fcShuffle()" style="font-size:13px;padding:10px 16px">
-        ${fc.shuffled?'📋 Về thứ tự':'🔀 Xáo trộn'}
+        ${fc.shuffled?'<svg class="ic"><use href="#ic-clipboard-list"></use></svg> Về thứ tự':'<svg class="ic"><use href="#ic-shuffle"></use></svg> Xáo trộn'}
       </button>
-      <button class="fc-btn" onclick="fc.idx=0;fc.flipped=false;renderFC()" style="font-size:13px;padding:10px 16px">↺ Bắt đầu lại</button>
+      <button class="fc-btn" onclick="fc.idx=0;fc.flipped=false;renderFC()" style="font-size:13px;padding:10px 16px"><svg class="ic"><use href="#ic-rotate-ccw"></use></svg> Bắt đầu lại</button>
     </div>
   </div>`;
 
@@ -3641,7 +3736,7 @@ function fcShuffle(){
 //
 //  Cơ chế vòng học:
 //  • Chia câu thành NHÓM (mỗi nhóm 7 câu)
-//  • Mỗi nhóm: học lần đầu → câu sai retake ngay
+//  • Mỗi nhóm: học lần đầu <svg class="ic"><use href="#ic-arrow-right"></use></svg> câu sai retake ngay
 //  • Sau mỗi nhóm: ôn nhanh nhóm trước (5 câu)
 //  • Câu trả lời đúng 2 lần liên tiếp = "mastered"
 //  • Hoàn tất khi tất cả câu đều mastered
@@ -3724,7 +3819,7 @@ function beginNewGroup(){
 /* ── sau khi xong phase 'new': retake câu sai ── */
 function beginRetryPhase(){
   if(lrn.newWrong.length === 0){
-    // Không có câu sai → chuyển sang ôn nhóm trước
+    // Không có câu sai <svg class="ic"><use href="#ic-arrow-right"></use></svg> chuyển sang ôn nhóm trước
     afterRetry();
     return;
   }
@@ -3734,7 +3829,7 @@ function beginRetryPhase(){
   renderLearnQ();
 }
 
-/* ── sau khi retry xong → ôn nhanh câu từ nhóm trước ── */
+/* ── sau khi retry xong <svg class="ic"><use href="#ic-arrow-right"></use></svg> ôn nhanh câu từ nhóm trước ── */
 function afterRetry(){
   // Cộng groupStart lên để sang nhóm tiếp theo
   lrn.groupStart += LRN_GROUP;
@@ -3752,7 +3847,7 @@ function afterRetry(){
     lrn.roundNum++;
     renderLearnQ();
   } else {
-    // Không có gì để ôn → học tiếp nhóm mới
+    // Không có gì để ôn <svg class="ic"><use href="#ic-arrow-right"></use></svg> học tiếp nhóm mới
     beginNewGroup();
   }
 }
@@ -3770,13 +3865,13 @@ function endLearnSession(){
 
   document.getElementById('mainArea').innerHTML = `
   <div class="completion-screen show">
-    <div class="comp-trophy">🏆</div>
+    <div class="comp-trophy"><svg class="ic"><use href="#ic-trophy"></use></svg></div>
     <div class="comp-score">${pct}%</div>
     <h2 style="font-size:22px;font-weight:800;margin-bottom:6px">Đã thuộc ${masteredCount}/${total} câu!</h2>
     <p style="color:var(--muted);margin-bottom:24px">${c.code} · ${lrn.totalCorrect} đúng · ${lrn.totalWrong} sai</p>
     <div class="results-actions">
-      <button class="ra-btn primary" onclick="startLearn()">🔄 Học lại từ đầu</button>
-      <button class="ra-btn secondary" onclick="showCourseHome()">← Về trang chủ</button>
+      <button class="ra-btn primary" onclick="startLearn()"><svg class="ic"><use href="#ic-refresh-cw"></use></svg> Học lại từ đầu</button>
+      <button class="ra-btn secondary" onclick="showCourseHome()"><svg class="ic"><use href="#ic-arrow-left"></use></svg> Về trang chủ</button>
     </div>
   </div>`;
   for(let i=0;i<50;i++) setTimeout(()=>confetti(true), i*40);
@@ -3803,10 +3898,10 @@ function renderLearnQ(){
 
   // Badge phase
   const phaseLabel = lrn.phase==='new'
-    ? `📖 Học mới · Nhóm ${Math.floor(lrn.groupStart/LRN_GROUP)+1}`
+    ? `<svg class="ic"><use href="#ic-book"></use></svg> Học mới · Nhóm ${Math.floor(lrn.groupStart/LRN_GROUP)+1}`
     : lrn.phase==='retry'
-    ? '🔁 Ôn lại câu sai'
-    : `⭐ Ôn tổng hợp · Vòng ${lrn.roundNum}`;
+    ? '<svg class="ic"><use href="#ic-repeat"></use></svg> Ôn lại câu sai'
+    : `<svg class="ic"><use href="#ic-star"></use></svg> Ôn tổng hợp · Vòng ${lrn.roundNum}`;
   const phaseColor = lrn.phase==='new'
     ? c.color
     : lrn.phase==='retry'
@@ -3822,16 +3917,16 @@ function renderLearnQ(){
   const qTotal   = lrn.queue.length;
   const streak   = lrn.streaks[qIdx] || 0;
   const streakHTML = streak>0
-    ? `<span class="lrn-streak">🔥 ${streak} lần đúng</span>`
+    ? `<span class="lrn-streak"><svg class="ic"><use href="#ic-flame"></use></svg> ${streak} lần đúng</span>`
     : '';
 
   document.getElementById('mainArea').innerHTML = `
   <div class="learn-view">
     <div class="lrn-header">
-      <button class="back-btn" onclick="showCourseHome()">← Về trang chủ</button>
-      <h3>🧠 Học</h3>
-      <div class="ls-chip">✅ <span class="ls-num" style="color:var(--green)">${lrn.totalCorrect}</span></div>
-      <div class="ls-chip">❌ <span class="ls-num" style="color:var(--red)">${lrn.totalWrong}</span></div>
+      <button class="back-btn" onclick="showCourseHome()"><svg class="ic"><use href="#ic-arrow-left"></use></svg> Về trang chủ</button>
+      <h3><svg class="ic"><use href="#ic-brain"></use></svg> Học</h3>
+      <div class="ls-chip"><svg class="ic"><use href="#ic-check-circle"></use></svg> <span class="ls-num" style="color:var(--green)">${lrn.totalCorrect}</span></div>
+      <div class="ls-chip"><svg class="ic"><use href="#ic-x-circle"></use></svg> <span class="ls-num" style="color:var(--red)">${lrn.totalWrong}</span></div>
     </div>
 
     <div class="lrn-mastered-text">
@@ -3865,7 +3960,7 @@ function renderLearnQ(){
       </div>
     </div>
     <button class="next-btn" id="nextLrnBtn" style="background:linear-gradient(135deg,${phaseColor},${phaseColor}99)" onclick="advanceLrn()">
-      Câu tiếp theo →
+      Câu tiếp theo <svg class="ic"><use href="#ic-arrow-right"></use></svg>
     </button>
   </div>`;
 
@@ -3889,10 +3984,10 @@ function checkLearnQ(sel, correct, qIdx, btn){
     fb.className='feedback-box show-ok';
     fbT.className='fb-title ok';
     const isMastered = lrn.mastered.has(qIdx);
-    fbT.textContent = isMastered ? '⭐ Đã thuộc!' : '✅ Chính xác!';
+    fbT.innerHTML = isMastered ? '<svg class="ic"><use href="#ic-star"></use></svg> Đã thuộc!' : '<svg class="ic"><use href="#ic-check-circle"></use></svg> Chính xác!';
     const enc=['Tuyệt vời!','Xuất sắc!','Chính xác!','Perfect!','Đúng rồi!'];
-    fbB.textContent = isMastered
-      ? `Bạn đã trả lời đúng ${LRN_MASTER_NEED} lần liên tiếp — câu này được đánh dấu thuộc! 🎯`
+    fbB.innerHTML = isMastered
+      ? `Bạn đã trả lời đúng ${LRN_MASTER_NEED} lần liên tiếp — câu này được đánh dấu thuộc! <svg class="ic"><use href="#ic-target"></use></svg>`
       : enc[Math.floor(Math.random()*enc.length)];
     confetti();
   } else {
@@ -3904,7 +3999,7 @@ function checkLearnQ(sel, correct, qIdx, btn){
     btn.classList.add('wrong-opt');
     document.querySelectorAll('.opt-btn')[correct].classList.add('show-ans');
     fb.className='feedback-box show-err';
-    fbT.className='fb-title err'; fbT.textContent='❌ Chưa đúng!';
+    fbT.className='fb-title err'; fbT.innerHTML='<svg class="ic"><use href="#ic-x-circle"></use></svg> Chưa đúng!';
     fbB.innerHTML=`Đáp án đúng: <strong style="color:var(--green)">${labels[correct]}. ${lrn.allQs[qIdx].opts[correct]}</strong> — Sẽ được ôn lại!`;
   }
   // Show explanation if available
@@ -3913,7 +4008,7 @@ function checkLearnQ(sel, correct, qIdx, btn){
     const expDiv = document.createElement('div');
     expDiv.className = 'exp-box ' + (sel===correct ? 'exp-ok' : 'exp-err');
     const expHtml = expQ.exp.split('\n').join('<br>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-    expDiv.innerHTML = `<div class="exp-title ${sel===correct?'ok':'err'}">💡 Giải thích</div><div class="exp-body">${expHtml}</div>`;
+    expDiv.innerHTML = `<div class="exp-title ${sel===correct?'ok':'err'}"><svg class="ic"><use href="#ic-lightbulb"></use></svg> Giải thích</div><div class="exp-body">${expHtml}</div>`;
     document.getElementById('fb').after(expDiv);
   }
 
@@ -3970,9 +4065,9 @@ function renderTest(){
   document.getElementById('mainArea').innerHTML = `
   <div class="test-view">
     <div class="test-header">
-      <button class="back-btn" onclick="abortTest()">← Thoát</button>
-      <h3>📝 Kiểm Tra Thử · ${c.code}</h3>
-      <div class="ls-chip">✅ ${answered}/${TEST_COUNT}</div>
+      <button class="back-btn" onclick="abortTest()"><svg class="ic"><use href="#ic-arrow-left"></use></svg> Thoát</button>
+      <h3><svg class="ic"><use href="#ic-file-text"></use></svg> Kiểm Tra Thử · ${c.code}</h3>
+      <div class="ls-chip"><svg class="ic"><use href="#ic-check-circle"></use></svg> ${answered}/${TEST_COUNT}</div>
       <div class="timer-chip" id="timerEl" style="${test.timeLeft<=120?'color:var(--red)':''}">${formatTime(test.timeLeft)}</div>
     </div>
 
@@ -3996,8 +4091,8 @@ function renderTest(){
     </div>
 
     <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="fc-btn" onclick="jumpTestQ(test.curQ-1)" ${test.curQ===0?'disabled':''} style="flex:1">← Trước</button>
-      <button class="fc-btn" onclick="jumpTestQ(test.curQ+1)" ${test.curQ===TEST_COUNT-1?'disabled':''} style="flex:1">Tiếp →</button>
+      <button class="fc-btn" onclick="jumpTestQ(test.curQ-1)" ${test.curQ===0?'disabled':''} style="flex:1"><svg class="ic"><use href="#ic-arrow-left"></use></svg> Trước</button>
+      <button class="fc-btn" onclick="jumpTestQ(test.curQ+1)" ${test.curQ===TEST_COUNT-1?'disabled':''} style="flex:1">Tiếp <svg class="ic"><use href="#ic-arrow-right"></use></svg></button>
     </div>
     <button class="submit-test-btn" onclick="submitTest(false)" style="background:linear-gradient(135deg,${c.color},${c.colorName}80);margin-top:12px">
       Nộp Bài (${answered}/${TEST_COUNT} câu đã chọn)
@@ -4057,7 +4152,7 @@ function showTestResults(){
   function buildReviewCard(item){
     const {q, userAns, idx, status} = item;
     const badgeClass = status==='correct'?'ok':status==='wrong'?'err':'skip';
-    const badgeText = status==='correct'?'✓ Đúng':status==='wrong'?'✗ Sai':'— Bỏ qua';
+    const badgeText = status==='correct'?'<svg class="ic"><use href="#ic-check"></use></svg> Đúng':status==='wrong'?'<svg class="ic"><use href="#ic-x"></use></svg> Sai':'— Bỏ qua';
     const cardClass = status==='correct'?'rv-correct-item':status==='wrong'?'rv-wrong-item':'rv-skip-item';
 
     const optsHTML = q.opts.map((opt,oi)=>{
@@ -4084,7 +4179,7 @@ function showTestResults(){
 
   document.getElementById('mainArea').innerHTML = `
   <div class="results-view">
-    <div class="results-trophy">${pct>=80?'🏆':pct>=60?'📊':'📚'}</div>
+    <div class="results-trophy">${pct>=80?'<svg class="ic"><use href="#ic-trophy"></use></svg>':pct>=60?'<svg class="ic"><use href="#ic-bar-chart-3"></use></svg>':'<svg class="ic"><use href="#ic-book-open"></use></svg>'}</div>
     <div class="results-score">${pct}%</div>
     <div class="results-grade" style="color:${gradeColor}">${grade}</div>
     <div class="results-sub">Bài kiểm tra ${c.code} · ${TEST_COUNT} câu</div>
@@ -4096,16 +4191,16 @@ function showTestResults(){
     </div>
 
     <div class="results-actions">
-      <button class="ra-btn primary" onclick="startTest()">🔄 Kiểm tra lại</button>
-      <button class="ra-btn secondary" onclick="showCourseHome()">← Về trang chủ</button>
+      <button class="ra-btn primary" onclick="startTest()"><svg class="ic"><use href="#ic-refresh-cw"></use></svg> Kiểm tra lại</button>
+      <button class="ra-btn secondary" onclick="showCourseHome()"><svg class="ic"><use href="#ic-arrow-left"></use></svg> Về trang chủ</button>
     </div>
 
     <div class="review-list">
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;text-align:left">📋 Chi tiết tất cả ${TEST_COUNT} câu</h3>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;text-align:left"><svg class="ic"><use href="#ic-clipboard-list"></use></svg> Chi tiết tất cả ${TEST_COUNT} câu</h3>
       <div class="review-tabs">
         <button class="rv-tab active-all" onclick="filterReview('all',this)">Tất cả (${TEST_COUNT})</button>
-        <button class="rv-tab" onclick="filterReview('correct',this)">✓ Đúng (${correct})</button>
-        <button class="rv-tab" onclick="filterReview('wrong',this)">✗ Sai (${wrong})</button>
+        <button class="rv-tab" onclick="filterReview('correct',this)"><svg class="ic"><use href="#ic-check"></use></svg> Đúng (${correct})</button>
+        <button class="rv-tab" onclick="filterReview('wrong',this)"><svg class="ic"><use href="#ic-x"></use></svg> Sai (${wrong})</button>
         ${skipped>0?`<button class="rv-tab" onclick="filterReview('skip',this)">— Bỏ qua (${skipped})</button>`:''}
       </div>
       <div id="reviewItems">${allHTML}</div>
@@ -4162,10 +4257,10 @@ function getCurrentTheme(){
 
 function syncThemeToggleIcons(){
   const isLight = getCurrentTheme() === 'light';
-  const icon = isLight ? '☀️' : '🌙';
+  const iconHtml = isLight ? icon('sun') : icon('moon');
   ['themeToggleBtnAdmin','themeToggleBtnStudent','themeToggleBtnLogin'].forEach(id=>{
     const btn = document.getElementById(id);
-    if(btn) btn.textContent = icon;
+    if(btn) btn.innerHTML = iconHtml;
   });
 }
 
@@ -4196,10 +4291,10 @@ document.addEventListener('DOMContentLoaded', syncThemeToggleIcons);
 syncThemeToggleIcons();
 
 // ═══════════════════════════════════════
-//  CHAT SYSTEM — Student ↔ Admin (text only)
+//  CHAT SYSTEM — Student <svg class="ic"><use href="#ic-arrow-left-right"></use></svg> Admin (text only)
 //  Firestore model:
-//    chats/{studentUid}                → {studentName, studentEmail, lastMessage, lastTimestamp, unreadByAdmin, unreadByStudent}
-//    chats/{studentUid}/messages/{id}  → {senderRole:'student'|'admin', text, timestamp}
+//    chats/{studentUid}                <svg class="ic"><use href="#ic-arrow-right"></use></svg> {studentName, studentEmail, lastMessage, lastTimestamp, unreadByAdmin, unreadByStudent}
+//    chats/{studentUid}/messages/{id}  <svg class="ic"><use href="#ic-arrow-right"></use></svg> {senderRole:'student'|'admin', text, timestamp}
 // ═══════════════════════════════════════
 
 function formatChatTime(ts){
@@ -4271,7 +4366,7 @@ function renderStudentChatMessages(messages){
 
   if(messages.length === 0){
     box.innerHTML = `<div class="chat-empty-state">
-      <div class="ces-icon">👋</div>
+      <div class="ces-icon"><svg class="ic"><use href="#ic-hand"></use></svg></div>
       <p>Xin chào! Bạn có thắc mắc gì về môn học hoặc tài khoản? Nhắn cho StudyHub Assistant nhé.</p>
     </div>`;
     return;
@@ -4416,7 +4511,7 @@ function renderAdminChatList(){
 
   if(adminChatConversations.length === 0){
     list.innerHTML = `<div class="admin-chat-list-empty">
-      <div style="font-size:36px;margin-bottom:10px">💬</div>
+      <div style="font-size:36px;margin-bottom:10px"><svg class="ic"><use href="#ic-message-circle"></use></svg></div>
       <p style="font-size:13px">Chưa có học sinh nào nhắn tin.</p>
     </div>`;
     return;
@@ -4427,7 +4522,7 @@ function renderAdminChatList(){
     const initial = (c.studentName||c.studentEmail||'?').charAt(0).toUpperCase();
     const isAffiliate = affiliateApprovedUids.has(c.uid);
     return `<div class="admin-chat-list-item ${c.uid===activeChatStudentUid?'active':''}" onclick="openAdminChatThread('${c.uid}')">
-      <div class="acl-avatar ${isAffiliate?'affiliate-ring':''}" title="${isAffiliate?'Đối tác Affiliate':''}">${initial}${isAffiliate?'<span class="affiliate-star-badge">★</span>':''}</div>
+      <div class="acl-avatar ${isAffiliate?'affiliate-ring':''}" title="${isAffiliate?'Đối tác Affiliate':''}">${initial}${isAffiliate?'<span class="affiliate-star-badge"><svg class="ic"><use href="#ic-star"></use></svg></span>':''}</div>
       <div class="acl-info">
         <div class="acl-name">${escapeHtml(c.studentName || c.studentEmail || 'Học sinh')}</div>
         <div class="acl-preview">${escapeHtml(c.lastMessage || 'Chưa có tin nhắn')}</div>
@@ -4454,7 +4549,7 @@ function openAdminChatThread(studentUid){
   const isAffiliateThread = affiliateApprovedUids.has(studentUid);
   main.innerHTML = `
     <div class="admin-chat-main-header">
-      <div class="chat-avatar-circle ${isAffiliateThread?'affiliate-ring':''}" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">${(conv?.studentName||'?').charAt(0).toUpperCase()}${isAffiliateThread?'<span class="affiliate-star-badge">★</span>':''}</div>
+      <div class="chat-avatar-circle ${isAffiliateThread?'affiliate-ring':''}" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">${(conv?.studentName||'?').charAt(0).toUpperCase()}${isAffiliateThread?'<span class="affiliate-star-badge"><svg class="ic"><use href="#ic-star"></use></svg></span>':''}</div>
       <div>
         <div class="chat-header-title">${escapeHtml(conv?.studentName || 'Học sinh')} ${isAffiliateThread?'<span style="font-size:10px;color:var(--gold);font-weight:800;margin-left:4px">AFFILIATE</span>':''}</div>
         <div class="chat-header-sub" style="color:var(--muted)">${escapeHtml(conv?.studentEmail || '')}</div>
@@ -4463,7 +4558,7 @@ function openAdminChatThread(studentUid){
     <div class="chat-messages" id="adminChatMessages"></div>
     <div class="chat-input-area">
       <textarea class="chat-text-input" id="adminChatInput" placeholder="Nhập tin nhắn..." rows="1" onkeydown="handleChatInputKey(event,'admin')" oninput="autoGrowChatInput(this)"></textarea>
-      <button class="chat-send-btn" onclick="sendChatMessage('admin')">➤</button>
+      <button class="chat-send-btn" onclick="sendChatMessage('admin')"><svg class="ic"><use href="#ic-send"></use></svg></button>
     </div>`;
 
   if(adminChatMsgUnsub) adminChatMsgUnsub();
@@ -4483,7 +4578,7 @@ function renderAdminChatMessages(messages){
 
   if(messages.length === 0){
     box.innerHTML = `<div class="chat-empty-state">
-      <div class="ces-icon">💬</div>
+      <div class="ces-icon"><svg class="ic"><use href="#ic-message-circle"></use></svg></div>
       <p>Chưa có tin nhắn nào trong hội thoại này.</p>
     </div>`;
     return;
@@ -4555,51 +4650,51 @@ function renderAffiliateTerms(){
 
   body.innerHTML = `
     <div class="aff-hero">
-      <div class="aff-hero-badge">✨ Cơ hội thu nhập thêm</div>
+      <div class="aff-hero-badge"><svg class="ic"><use href="#ic-sparkles"></use></svg> Cơ hội thu nhập thêm</div>
       <h3>Kiếm tiền cùng StudyHub —<br>giới thiệu càng nhiều, nhận càng nhiều!</h3>
       <p>Bạn đang học tốt một môn nào đó? Hãy chia sẻ StudyHub đến bạn bè, vừa giúp họ học tốt hơn, vừa giúp bạn có thêm thu nhập mỗi tháng — hoàn toàn linh hoạt thời gian, làm khi nào bạn rảnh.</p>
     </div>
     <div class="aff-section">
-      <div class="aff-section-title">📋 Chi tiết chương trình</div>
+      <div class="aff-section-title"><svg class="ic"><use href="#ic-clipboard-list"></use></svg> Chi tiết chương trình</div>
 
       <div class="aff-terms-block">
         <div class="aff-terms-row">
-          <span class="atr-icon">💵</span>
+          <span class="atr-icon"><svg class="ic"><use href="#ic-banknote"></use></svg></span>
           <div>
             <div class="atr-title">Đơn giá mỗi môn học</div>
             <div class="atr-desc">Mỗi môn học trên StudyHub có giá <b>50.000đ</b>.</div>
           </div>
         </div>
         <div class="aff-terms-row">
-          <span class="atr-icon">💰</span>
+          <span class="atr-icon"><svg class="ic"><use href="#ic-wallet"></use></svg></span>
           <div>
             <div class="atr-title">Hoa hồng 40%</div>
             <div class="atr-desc">Mỗi đơn giới thiệu thành công, bạn nhận <b>20.000đ</b> (40% × 50.000đ).</div>
           </div>
         </div>
         <div class="aff-terms-row">
-          <span class="atr-icon">⏰</span>
+          <span class="atr-icon"><svg class="ic"><use href="#ic-clock"></use></svg></span>
           <div>
             <div class="atr-title">Thời gian linh hoạt</div>
             <div class="atr-desc">Không ràng buộc ca làm, giới thiệu bất cứ khi nào bạn muốn.</div>
           </div>
         </div>
         <div class="aff-terms-row">
-          <span class="atr-icon">🔄</span>
+          <span class="atr-icon"><svg class="ic"><use href="#ic-refresh-cw"></use></svg></span>
           <div>
             <div class="atr-title">Quy trình báo bán hàng</div>
             <div class="atr-desc">Sau khi được duyệt, bạn chọn môn học đã giới thiệu thành công, nhập tên & Gmail người mua, gửi báo cáo cho StudyHub qua khung chat.</div>
           </div>
         </div>
         <div class="aff-terms-row">
-          <span class="atr-icon">🏦</span>
+          <span class="atr-icon"><svg class="ic"><use href="#ic-landmark"></use></svg></span>
           <div>
             <div class="atr-title">Thanh toán hoa hồng</div>
             <div class="atr-desc">Sau khi StudyHub xác nhận đơn hàng hợp lệ, bạn thanh toán phí môn học hộ người mua qua chuyển khoản, StudyHub xác nhận giao dịch và mở môn học cho người được giới thiệu.</div>
           </div>
         </div>
         <div class="aff-terms-row">
-          <span class="atr-icon">🏷️</span>
+          <span class="atr-icon"><svg class="ic"><use href="#ic-tag"></use></svg></span>
           <div>
             <div class="atr-title">Huy hiệu Affiliate</div>
             <div class="atr-desc">Tài khoản của bạn sẽ có vòng viền đặc biệt quanh ảnh đại diện trong khung chat, giúp StudyHub nhận diện đối tác chính thức.</div>
@@ -4613,7 +4708,7 @@ function renderAffiliateTerms(){
           <span>Tôi đã đọc và đồng ý với các điều khoản của chương trình Affiliate StudyHub</span>
         </label>
       </div>
-      <button class="aff-submit-btn" id="affAgreeBtn" disabled onclick="renderAffiliateForm()">✓ Đồng ý & Tiếp tục đăng ký</button>
+      <button class="aff-submit-btn" id="affAgreeBtn" disabled onclick="renderAffiliateForm()"><svg class="ic"><use href="#ic-check"></use></svg> Đồng ý & Tiếp tục đăng ký</button>
     </div>`;
 }
 
@@ -4624,7 +4719,7 @@ function renderAffiliateForm(prefill){
 
   body.innerHTML = `
     <div class="aff-section">
-      <div class="aff-section-title">📝 Thông tin đăng ký</div>
+      <div class="aff-section-title"><svg class="ic"><use href="#ic-file-text"></use></svg> Thông tin đăng ký</div>
       <div class="aff-err" id="affFormErr"></div>
       <div class="aff-field">
         <label>Họ và tên</label>
@@ -4638,7 +4733,7 @@ function renderAffiliateForm(prefill){
         <label>Chuyên ngành</label>
         <input type="text" id="affMajor" placeholder="Marketing, Kế toán, CNTT..." value="${prefill&&prefill.major ? escapeHtml(prefill.major) : ''}"/>
       </div>
-      <button class="aff-submit-btn" id="affSubmitBtn" onclick="submitAffiliateApp()">✓ Gửi đơn đăng ký</button>
+      <button class="aff-submit-btn" id="affSubmitBtn" onclick="submitAffiliateApp()"><svg class="ic"><use href="#ic-check"></use></svg> Gửi đơn đăng ký</button>
     </div>`;
 }
 
@@ -4650,7 +4745,7 @@ async function submitAffiliateApp(){
   const errEl = document.getElementById('affFormErr');
 
   if(!name || !dob || !major){
-    errEl.textContent = '❌ Vui lòng điền đầy đủ Họ tên, Ngày sinh và Chuyên ngành.';
+    errEl.innerHTML = '<svg class="ic"><use href="#ic-x-circle"></use></svg> Vui lòng điền đầy đủ Họ tên, Ngày sinh và Chuyên ngành.';
     errEl.classList.add('show');
     return;
   }
@@ -4658,7 +4753,7 @@ async function submitAffiliateApp(){
 
   const btn = document.getElementById('affSubmitBtn');
   btn.disabled = true;
-  btn.textContent = '⏳ Đang gửi...';
+  btn.innerHTML = '<svg class="ic"><use href="#ic-hourglass"></use></svg> Đang gửi...';
 
   try{
     const uid = currentUser.user.uid;
@@ -4677,7 +4772,7 @@ async function submitAffiliateApp(){
 
     // Auto-post a system notice into the chat thread so admin sees it right away
     const chatRef = db.collection('chats').doc(uid);
-    const noticeText = `🤝 PHIẾU ĐĂNG KÝ AFFILIATE\n\n${studentName} đã gửi đơn đăng ký tham gia chương trình Affiliate StudyHub.\n\n📋 Họ tên: ${name}\n🎂 Ngày sinh: ${dob}\n🎓 Chuyên ngành: ${major}\n\nVui lòng vào tab "🤝 Quản lý Affiliate" để xem chi tiết và phê duyệt.`;
+    const noticeText = `<svg class="ic"><use href="#ic-handshake"></use></svg> PHIẾU ĐĂNG KÝ AFFILIATE\n\n${studentName} đã gửi đơn đăng ký tham gia chương trình Affiliate StudyHub.\n\n<svg class="ic"><use href="#ic-clipboard-list"></use></svg> Họ tên: ${name}\n<svg class="ic"><use href="#ic-cake"></use></svg> Ngày sinh: ${dob}\n<svg class="ic"><use href="#ic-graduation-cap"></use></svg> Chuyên ngành: ${major}\n\nVui lòng vào tab "<svg class="ic"><use href="#ic-handshake"></use></svg> Quản lý Affiliate" để xem chi tiết và phê duyệt.`;
     await chatRef.collection('messages').add({
       senderRole: 'system',
       text: noticeText,
@@ -4685,7 +4780,7 @@ async function submitAffiliateApp(){
     });
     await chatRef.set({
       studentName, studentEmail,
-      lastMessage: '🤝 Đã gửi phiếu đăng ký Affiliate',
+      lastMessage: '<svg class="ic"><use href="#ic-handshake"></use></svg> Đã gửi phiếu đăng ký Affiliate',
       lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
       unreadByAdmin: firebase.firestore.FieldValue.increment(1),
       unreadByStudent: 0
@@ -4693,10 +4788,10 @@ async function submitAffiliateApp(){
 
     showToast('Đã gửi đơn đăng ký Affiliate!','ok');
   } catch(e){
-    errEl.textContent = '❌ Lỗi: '+e.message;
+    errEl.innerHTML = '<svg class="ic"><use href="#ic-x-circle"></use></svg> Lỗi: '+e.message;
     errEl.classList.add('show');
     btn.disabled = false;
-    btn.textContent = '✓ Gửi đơn đăng ký';
+    btn.innerHTML = '<svg class="ic"><use href="#ic-check"></use></svg> Gửi đơn đăng ký';
   }
 }
 
@@ -4709,11 +4804,11 @@ function renderAffiliateStatus(app){
     const safeApp = JSON.stringify({name:app.name, dob:app.dob, major:app.major}).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     body.innerHTML = `
       <div class="aff-status-view">
-        <div class="aff-badge-pill rejected">❌ Đã từ chối</div>
-        <div class="aff-status-icon">😔</div>
+        <div class="aff-badge-pill rejected"><svg class="ic"><use href="#ic-x-circle"></use></svg> Đã từ chối</div>
+        <div class="aff-status-icon"><svg class="ic"><use href="#ic-frown"></use></svg></div>
         <div class="aff-status-title">Đơn đăng ký chưa được duyệt</div>
         <div class="aff-status-desc">Rất tiếc, đơn đăng ký Affiliate của bạn chưa được phê duyệt lần này. Bạn có thể chỉnh sửa thông tin và gửi lại đơn mới bất cứ lúc nào.</div>
-        <button class="aff-submit-btn" onclick='renderAffiliateForm(${safeApp})'>↺ Gửi lại đơn đăng ký</button>
+        <button class="aff-submit-btn" onclick='renderAffiliateForm(${safeApp})'><svg class="ic"><use href="#ic-rotate-ccw"></use></svg> Gửi lại đơn đăng ký</button>
       </div>`;
     return;
   }
@@ -4722,8 +4817,8 @@ function renderAffiliateStatus(app){
   document.getElementById('affiliateHeaderSub').textContent = 'Đang chờ duyệt';
   body.innerHTML = `
     <div class="aff-status-view">
-      <div class="aff-badge-pill pending">⏳ Chờ duyệt</div>
-      <div class="aff-status-icon">📨</div>
+      <div class="aff-badge-pill pending"><svg class="ic"><use href="#ic-hourglass"></use></svg> Chờ duyệt</div>
+      <div class="aff-status-icon"><svg class="ic"><use href="#ic-mail"></use></svg></div>
       <div class="aff-status-title">Phiếu đăng ký đã được gửi!</div>
       <div class="aff-status-desc">StudyHub đang xem xét đơn đăng ký của bạn. Bạn sẽ nhận được thông báo ngay khi có kết quả. Thông tin phiếu đăng ký:</div>
       <div class="aff-status-card">
@@ -4804,23 +4899,23 @@ function renderAffiliateAppsList(){
 
   const area = document.getElementById('affiliateAppsList');
   if(list.length === 0){
-    area.innerHTML = '<div class="admin-empty"><div class="ae-icon">🤝</div><p>Không có đơn đăng ký nào ở mục này.</p></div>';
+    area.innerHTML = '<div class="admin-empty"><div class="ae-icon"><svg class="ic"><use href="#ic-handshake"></use></svg></div><p>Không có đơn đăng ký nào ở mục này.</p></div>';
     return;
   }
 
-  const statusLabel = {pending:'⏳ Chờ duyệt', approved:'✅ Đã duyệt', rejected:'❌ Đã từ chối'};
+  const statusLabel = {pending:'<svg class="ic"><use href="#ic-hourglass"></use></svg> Chờ duyệt', approved:'<svg class="ic"><use href="#ic-check-circle"></use></svg> Đã duyệt', rejected:'<svg class="ic"><use href="#ic-x-circle"></use></svg> Đã từ chối'};
 
   area.innerHTML = list.map(function(a){
     const initial = (a.studentName||a.studentEmail||'?').charAt(0).toUpperCase();
     const safeName = (a.studentName||'').replace(/'/g,"\\'");
     const actions = a.status === 'pending'
       ? '<div class="aff-app-actions">'
-        + '<button class="admin-btn primary" onclick="approveAffiliateApp(\'' + a.uid + '\')">✓ Phê duyệt</button>'
-        + '<button class="admin-btn danger" onclick="rejectAffiliateApp(\'' + a.uid + '\',\'' + safeName + '\')">✗ Từ chối</button>'
+        + '<button class="admin-btn primary" onclick="approveAffiliateApp(\'' + a.uid + '\')"><svg class="ic"><use href="#ic-check"></use></svg> Phê duyệt</button>'
+        + '<button class="admin-btn danger" onclick="rejectAffiliateApp(\'' + a.uid + '\',\'' + safeName + '\')"><svg class="ic"><use href="#ic-x"></use></svg> Từ chối</button>'
         + '</div>'
       : a.status === 'approved'
-        ? '<div class="aff-app-actions"><button class="admin-btn danger" onclick="rejectAffiliateApp(\'' + a.uid + '\',\'' + safeName + '\')">✗ Thu hồi phê duyệt</button></div>'
-        : '<div class="aff-app-actions"><button class="admin-btn primary" onclick="approveAffiliateApp(\'' + a.uid + '\')">✓ Phê duyệt</button></div>';
+        ? '<div class="aff-app-actions"><button class="admin-btn danger" onclick="rejectAffiliateApp(\'' + a.uid + '\',\'' + safeName + '\')"><svg class="ic"><use href="#ic-x"></use></svg> Thu hồi phê duyệt</button></div>'
+        : '<div class="aff-app-actions"><button class="admin-btn primary" onclick="approveAffiliateApp(\'' + a.uid + '\')"><svg class="ic"><use href="#ic-check"></use></svg> Phê duyệt</button></div>';
 
     // Sales stats for approved affiliates, computed from the live orders cache
     let salesBlock = '';
@@ -4907,7 +5002,7 @@ function renderAffiliateDashboard(appData){
 
   body.innerHTML = `
     <div class="aff-section" style="padding-bottom:0">
-      <div class="aff-badge-pill approved" style="margin-bottom:14px">✅ Đối tác Affiliate</div>
+      <div class="aff-badge-pill approved" style="margin-bottom:14px"><svg class="ic"><use href="#ic-check-circle"></use></svg> Đối tác Affiliate</div>
       <div class="aff-dash-stats" id="affDashStats">
         <div class="ads-stat"><div class="ads-num" id="adsOrderCount">0</div><div class="ads-lbl">Môn đã bán</div></div>
         <div class="ads-stat"><div class="ads-num" id="adsRevenue">0đ</div><div class="ads-lbl">Doanh thu</div></div>
@@ -4916,7 +5011,7 @@ function renderAffiliateDashboard(appData){
     </div>
 
     <div class="aff-section">
-      <div class="aff-section-title">🛍️ Báo bán hàng mới</div>
+      <div class="aff-section-title"><svg class="ic"><use href="#ic-shopping-bag"></use></svg> Báo bán hàng mới</div>
       <div class="aff-err" id="affOrderErr"></div>
       <div class="aff-field">
         <label>Môn học đã giới thiệu thành công (chọn 1 hoặc nhiều môn)</label>
@@ -4935,13 +5030,13 @@ function renderAffiliateDashboard(appData){
         <label>Gmail người mua</label>
         <input type="email" id="affBuyerEmail" placeholder="email@gmail.com"/>
       </div>
-      <button class="aff-submit-btn" id="affOrderSubmitBtn" onclick="submitAffiliateOrder()">📨 Gửi báo cáo cho StudyHub</button>
+      <button class="aff-submit-btn" id="affOrderSubmitBtn" onclick="submitAffiliateOrder()"><svg class="ic"><use href="#ic-mail"></use></svg> Gửi báo cáo cho StudyHub</button>
       <div class="aff-hint">Sau khi gửi, một thẻ đơn hàng sẽ xuất hiện trong khung chat để StudyHub xác nhận.</div>
     </div>
 
     <div class="aff-section">
-      <div class="aff-section-title">📜 Lịch sử đơn hàng</div>
-      <div id="affOrderHistory"><div class="admin-empty" style="padding:24px"><div class="ae-icon">📭</div><p>Chưa có đơn hàng nào.</p></div></div>
+      <div class="aff-section-title"><svg class="ic"><use href="#ic-scroll-text"></use></svg> Lịch sử đơn hàng</div>
+      <div id="affOrderHistory"><div class="admin-empty" style="padding:24px"><div class="ae-icon"><svg class="ic"><use href="#ic-inbox"></use></svg></div><p>Chưa có đơn hàng nào.</p></div></div>
     </div>`;
 
   // Populate course checkboxes from live COURSES array
@@ -4998,18 +5093,18 @@ function renderAffiliateOwnStats(orders){
 }
 
 const AFF_STATUS_LABEL = {
-  pending_admin: {label:'⏳ Chờ StudyHub xác nhận', cls:'pending'},
-  rejected: {label:'❌ Đã từ chối', cls:'rejected'},
-  awaiting_payment: {label:'🏦 Chờ bạn thanh toán', cls:'pending'},
-  payment_submitted: {label:'🔎 Chờ StudyHub xác thực', cls:'pending'},
-  confirmed: {label:'✅ Hoàn tất', cls:'approved'}
+  pending_admin: {label:'<svg class="ic"><use href="#ic-hourglass"></use></svg> Chờ StudyHub xác nhận', cls:'pending'},
+  rejected: {label:'<svg class="ic"><use href="#ic-x-circle"></use></svg> Đã từ chối', cls:'rejected'},
+  awaiting_payment: {label:'<svg class="ic"><use href="#ic-landmark"></use></svg> Chờ bạn thanh toán', cls:'pending'},
+  payment_submitted: {label:'<svg class="ic"><use href="#ic-search"></use></svg> Chờ StudyHub xác thực', cls:'pending'},
+  confirmed: {label:'<svg class="ic"><use href="#ic-check-circle"></use></svg> Hoàn tất', cls:'approved'}
 };
 
 function renderAffiliateOwnHistory(orders){
   const area = document.getElementById('affOrderHistory');
   if(!area) return;
   if(orders.length === 0){
-    area.innerHTML = '<div class="admin-empty" style="padding:24px"><div class="ae-icon">📭</div><p>Chưa có đơn hàng nào.</p></div>';
+    area.innerHTML = '<div class="admin-empty" style="padding:24px"><div class="ae-icon"><svg class="ic"><use href="#ic-inbox"></use></svg></div><p>Chưa có đơn hàng nào.</p></div>';
     return;
   }
   orders.sort(function(a,b){
@@ -5039,17 +5134,17 @@ async function submitAffiliateOrder(){
   const errEl = document.getElementById('affOrderErr');
 
   if(courseIdxs.length === 0){
-    errEl.textContent = '❌ Vui lòng chọn ít nhất một môn học.';
+    errEl.innerHTML = '<svg class="ic"><use href="#ic-x-circle"></use></svg> Vui lòng chọn ít nhất một môn học.';
     errEl.classList.add('show');
     return;
   }
   if(!buyerName || !buyerEmail){
-    errEl.textContent = '❌ Vui lòng điền đầy đủ tên và Gmail người mua.';
+    errEl.innerHTML = '<svg class="ic"><use href="#ic-x-circle"></use></svg> Vui lòng điền đầy đủ tên và Gmail người mua.';
     errEl.classList.add('show');
     return;
   }
   if(!buyerEmail.includes('@') || !buyerEmail.endsWith('.com')){
-    errEl.textContent = '❌ Vui lòng nhập đúng định dạng Gmail.';
+    errEl.innerHTML = '<svg class="ic"><use href="#ic-x-circle"></use></svg> Vui lòng nhập đúng định dạng Gmail.';
     errEl.classList.add('show');
     return;
   }
@@ -5057,7 +5152,7 @@ async function submitAffiliateOrder(){
 
   const btn = document.getElementById('affOrderSubmitBtn');
   btn.disabled = true;
-  btn.textContent = '⏳ Đang gửi...';
+  btn.innerHTML = '<svg class="ic"><use href="#ic-hourglass"></use></svg> Đang gửi...';
 
   try{
     const selectedCourses = courseIdxs.map(i=>({idx:i, code:COURSES[i].code, name:COURSES[i].name}));
@@ -5086,12 +5181,12 @@ async function submitAffiliateOrder(){
     await chatRef.collection('messages').add({
       senderRole: 'affiliate-order',
       orderId: orderRef.id,
-      text: '🛍️ Đơn hàng mới: ' + courseLabel + ' cho ' + buyerName,
+      text: '<svg class="ic"><use href="#ic-shopping-bag"></use></svg> Đơn hàng mới: ' + courseLabel + ' cho ' + buyerName,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
     await chatRef.set({
       studentName: affiliateName, studentEmail: affiliateEmail,
-      lastMessage: '🛍️ Báo bán hàng: ' + courseLabel,
+      lastMessage: '<svg class="ic"><use href="#ic-shopping-bag"></use></svg> Báo bán hàng: ' + courseLabel,
       lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
       unreadByAdmin: firebase.firestore.FieldValue.increment(1),
       unreadByStudent: 0
@@ -5103,11 +5198,11 @@ async function submitAffiliateOrder(){
     document.getElementById('affBuyerEmail').value = '';
     showToast('Đã gửi báo cáo bán hàng!','ok');
   } catch(e){
-    errEl.textContent = '❌ Lỗi: '+e.message;
+    errEl.innerHTML = '<svg class="ic"><use href="#ic-x-circle"></use></svg> Lỗi: '+e.message;
     errEl.classList.add('show');
   } finally{
     btn.disabled = false;
-    btn.textContent = '📨 Gửi báo cáo cho StudyHub';
+    btn.innerHTML = '<svg class="ic"><use href="#ic-mail"></use></svg> Gửi báo cáo cho StudyHub';
   }
 }
 
@@ -5115,7 +5210,7 @@ async function submitAffiliateOrder(){
 // Pass viewerRole = 'student' | 'admin' so action buttons differ per side.
 function renderOrderCardHTML(order, viewerRole){
   if(!order){
-    return '<div class="chat-order-card"><div class="coc-note">⏳ Đang tải thông tin đơn hàng...</div></div>';
+    return '<div class="chat-order-card"><div class="coc-note"><svg class="ic"><use href="#ic-hourglass"></use></svg> Đang tải thông tin đơn hàng...</div></div>';
   }
 
   const st = AFF_STATUS_LABEL[order.status] || {label:order.status, cls:'pending'};
@@ -5125,7 +5220,7 @@ function renderOrderCardHTML(order, viewerRole){
 
   const header = ''
     + '<div class="coc-header">'
-    + '<span class="coc-icon">🛍️</span>'
+    + '<span class="coc-icon"><svg class="ic"><use href="#ic-shopping-bag"></use></svg></span>'
     + '<div class="coc-title">Đơn hàng Affiliate</div>'
     + '<span class="aff-app-status ' + st.cls + '" style="margin-left:auto">' + st.label + '</span>'
     + '</div>'
@@ -5141,8 +5236,8 @@ function renderOrderCardHTML(order, viewerRole){
 
   if(order.status === 'pending_admin' && viewerRole === 'admin'){
     actions = '<div class="coc-actions">'
-      + '<button class="admin-btn primary" onclick="adminApproveOrder(\'' + order.id + '\')">✓ Xác nhận đơn</button>'
-      + '<button class="admin-btn danger" onclick="adminRejectOrder(\'' + order.id + '\')">✗ Từ chối</button>'
+      + '<button class="admin-btn primary" onclick="adminApproveOrder(\'' + order.id + '\')"><svg class="ic"><use href="#ic-check"></use></svg> Xác nhận đơn</button>'
+      + '<button class="admin-btn danger" onclick="adminRejectOrder(\'' + order.id + '\')"><svg class="ic"><use href="#ic-x"></use></svg> Từ chối</button>'
       + '</div>';
   } else if(order.status === 'pending_admin' && viewerRole === 'student'){
     actions = '<div class="coc-note">Đang chờ StudyHub xác nhận đơn hàng...</div>';
@@ -5151,23 +5246,23 @@ function renderOrderCardHTML(order, viewerRole){
   } else if(order.status === 'awaiting_payment' && viewerRole === 'student'){
     actions = ''
       + '<div class="coc-payment-box">'
-      + '<div class="cpb-title">🏦 Thông tin chuyển khoản</div>'
+      + '<div class="cpb-title"><svg class="ic"><use href="#ic-landmark"></use></svg> Thông tin chuyển khoản</div>'
       + '<div class="cpb-row"><span>Ngân hàng</span><b>MB Bank</b></div>'
       + '<div class="cpb-row"><span>Số tài khoản</span><b>' + MB_BANK_ACCOUNT + '</b></div>'
       + '<div class="cpb-row"><span>Chủ tài khoản</span><b>' + MB_BANK_NAME + '</b></div>'
       + '<div class="cpb-row"><span>Số tiền cần thanh toán</span><b>' + formatVND(payableAmount) + '</b></div>'
       + '</div>'
-      + '<button class="admin-btn primary" style="width:100%" onclick="studentMarkPaid(\'' + order.id + '\')">✓ Tôi đã thanh toán</button>';
+      + '<button class="admin-btn primary" style="width:100%" onclick="studentMarkPaid(\'' + order.id + '\')"><svg class="ic"><use href="#ic-check"></use></svg> Tôi đã thanh toán</button>';
   } else if(order.status === 'awaiting_payment' && viewerRole === 'admin'){
     actions = '<div class="coc-note">Đang chờ affiliate thanh toán ' + formatVND(payableAmount) + '...</div>';
   } else if(order.status === 'payment_submitted' && viewerRole === 'student'){
-    actions = '<div class="coc-note">⏳ Môn học sẽ được cập nhật cho người mua sau khi StudyHub xác thực giao dịch thành công.</div>';
+    actions = '<div class="coc-note"><svg class="ic"><use href="#ic-hourglass"></use></svg> Môn học sẽ được cập nhật cho người mua sau khi StudyHub xác thực giao dịch thành công.</div>';
   } else if(order.status === 'payment_submitted' && viewerRole === 'admin'){
     actions = '<div class="coc-actions">'
-      + '<button class="admin-btn primary" onclick="adminConfirmPayment(\'' + order.id + '\')">✓ Xác nhận đã nhận tiền</button>'
+      + '<button class="admin-btn primary" onclick="adminConfirmPayment(\'' + order.id + '\')"><svg class="ic"><use href="#ic-check"></use></svg> Xác nhận đã nhận tiền</button>'
       + '</div>';
   } else if(order.status === 'confirmed'){
-    actions = '<div class="coc-note" style="color:var(--green)">🎉 Giao dịch thành công! Môn học đã/sẽ được cập nhật cho người mua.</div>';
+    actions = '<div class="coc-note" style="color:var(--green)"><svg class="ic"><use href="#ic-party-popper"></use></svg> Giao dịch thành công! Môn học đã/sẽ được cập nhật cho người mua.</div>';
   }
 
   return '<div class="chat-order-card">' + header + actions + '</div>';
@@ -5230,8 +5325,8 @@ async function adminApproveOrder(orderId){
   const courseLabel = (order.courses||[]).map(c=>c.code).join(', ') || order.courseCode || '';
   const payableAmount = (typeof order.payable === 'number') ? order.payable : order.price;
   const noteText = buyerExists
-    ? ('✓ Đơn hàng ' + courseLabel + ' đã được xác nhận. Gmail người mua đã có tài khoản StudyHub — vui lòng thanh toán ' + formatVND(payableAmount) + ' để hoàn tất.')
-    : ('✓ Đơn hàng ' + courseLabel + ' đã được xác nhận. Gmail người mua chưa có tài khoản — StudyHub sẽ mở môn sau khi người mua tự đăng ký. Vui lòng thanh toán ' + formatVND(payableAmount) + ' để hoàn tất.');
+    ? ('<svg class="ic"><use href="#ic-check"></use></svg> Đơn hàng ' + courseLabel + ' đã được xác nhận. Gmail người mua đã có tài khoản StudyHub — vui lòng thanh toán ' + formatVND(payableAmount) + ' để hoàn tất.')
+    : ('<svg class="ic"><use href="#ic-check"></use></svg> Đơn hàng ' + courseLabel + ' đã được xác nhận. Gmail người mua chưa có tài khoản — StudyHub sẽ mở môn sau khi người mua tự đăng ký. Vui lòng thanh toán ' + formatVND(payableAmount) + ' để hoàn tất.');
 
   await postSystemChatNote(order.affiliateUid, noteText);
   showToast('Đã xác nhận đơn hàng, chờ affiliate thanh toán.','ok');
@@ -5247,7 +5342,7 @@ async function adminRejectOrder(orderId){
     status: 'rejected',
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   });
-  await postSystemChatNote(order.affiliateUid, '❌ Đơn hàng ' + courseLabel + ' cho ' + order.buyerName + ' đã bị từ chối.');
+  await postSystemChatNote(order.affiliateUid, '<svg class="ic"><use href="#ic-x-circle"></use></svg> Đơn hàng ' + courseLabel + ' cho ' + order.buyerName + ' đã bị từ chối.');
   showToast('Đã từ chối đơn hàng.','ok');
 }
 
@@ -5263,14 +5358,14 @@ async function studentMarkPaid(orderId){
 
   const chatRef = db.collection('chats').doc(currentUser.user.uid);
   await chatRef.update({
-    lastMessage: '💳 Đã thanh toán đơn ' + courseLabel + ', chờ xác thực',
+    lastMessage: '<svg class="ic"><use href="#ic-credit-card"></use></svg> Đã thanh toán đơn ' + courseLabel + ', chờ xác thực',
     lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
     unreadByAdmin: firebase.firestore.FieldValue.increment(1)
   });
   showToast('Đã ghi nhận thanh toán, chờ StudyHub xác thực.','ok');
 }
 
-// ── Admin: confirm payment received → unlock ALL courses in this order for the buyer ──
+// ── Admin: confirm payment received <svg class="ic"><use href="#ic-arrow-right"></use></svg> unlock ALL courses in this order for the buyer ──
 async function adminConfirmPayment(orderId){
   const order = affOrdersCache[orderId];
   if(!order) return;
@@ -5301,7 +5396,7 @@ async function adminConfirmPayment(orderId){
     }
   } catch(e){ console.warn('Could not auto-unlock courses for buyer:', e); }
 
-  await postSystemChatNote(order.affiliateUid, '🎉 Giao dịch thành công! Đơn hàng ' + courseLabel + ' cho ' + order.buyerName + ' đã hoàn tất. Hoa hồng ' + formatVND(order.commission) + ' đã được ghi nhận.');
+  await postSystemChatNote(order.affiliateUid, '<svg class="ic"><use href="#ic-party-popper"></use></svg> Giao dịch thành công! Đơn hàng ' + courseLabel + ' cho ' + order.buyerName + ' đã hoàn tất. Hoa hồng ' + formatVND(order.commission) + ' đã được ghi nhận.');
   showToast('Đã xác nhận giao dịch thành công!','ok');
 }
 
@@ -5351,12 +5446,12 @@ function switchMainView(view){
     if(courses.length === 0){
       document.getElementById('mainArea').innerHTML = `
       <div style="text-align:center;padding:80px 20px;animation:fadeUp .4s ease">
-        <div style="font-size:64px;margin-bottom:16px">📚</div>
+        <div style="font-size:64px;margin-bottom:16px"><svg class="ic"><use href="#ic-book-open"></use></svg></div>
         <h2 style="font-size:22px;font-weight:800;margin-bottom:10px">Chưa có môn học nào</h2>
         <p style="color:var(--muted);font-size:15px;line-height:1.7;max-width:420px;margin:0 auto 24px">
           Tài khoản của bạn chưa được cấp môn học. Vui lòng liên hệ quản trị viên qua khung chat để được mở môn.
         </p>
-        <button class="home-cta-btn primary" onclick="openStudentChat()">💬 Liên hệ StudyHub Assistant</button>
+        <button class="home-cta-btn primary" onclick="openStudentChat()"><svg class="ic"><use href="#ic-message-circle"></use></svg> Liên hệ StudyHub Assistant</button>
       </div>`;
     } else {
       selectCourse(courses[0]);
@@ -5386,29 +5481,29 @@ function renderHomePage(){
 
   document.getElementById('mainArea').innerHTML = `
     <div class="home-hero">
-      <h1>Chào mừng${name ? ', ' + escapeHtml(name) : ''}! 👋</h1>
+      <h1>Chào mừng${name ? ', ' + escapeHtml(name) : ''}! <svg class="ic"><use href="#ic-hand"></use></svg></h1>
       <p>StudyHub là nền tảng ôn luyện trắc nghiệm thông minh, giúp bạn ghi nhớ kiến thức nhanh hơn và tự tin hơn trước mỗi kỳ thi — học theo cách khoa học, không còn học vẹt.</p>
       <div class="home-hero-cta">
-        <button class="home-cta-btn primary" onclick="switchMainView('study')">📚 Vào học ngay</button>
-        <button class="home-cta-btn secondary" onclick="switchMainView('announcements')">🔔 Xem thông báo mới</button>
+        <button class="home-cta-btn primary" onclick="switchMainView('study')"><svg class="ic"><use href="#ic-book-open"></use></svg> Vào học ngay</button>
+        <button class="home-cta-btn secondary" onclick="switchMainView('announcements')"><svg class="ic"><use href="#ic-bell"></use></svg> Xem thông báo mới</button>
       </div>
     </div>
 
     <div class="home-section">
-      <div class="home-section-title">✨ StudyHub giúp bạn học như thế nào?</div>
+      <div class="home-section-title"><svg class="ic"><use href="#ic-sparkles"></use></svg> StudyHub giúp bạn học như thế nào?</div>
       <div class="home-grid">
         <div class="home-feature-card">
-          <div class="hfc-icon">🃏</div>
+          <div class="hfc-icon"><svg class="ic"><use href="#ic-layers"></use></svg></div>
           <h3>Thẻ ghi nhớ (Flashcard)</h3>
           <p>Lật từng thẻ câu hỏi để làm quen kiến thức một cách nhẹ nhàng, phù hợp khi mới bắt đầu ôn một môn.</p>
         </div>
         <div class="home-feature-card">
-          <div class="hfc-icon">🧠</div>
+          <div class="hfc-icon"><svg class="ic"><use href="#ic-brain"></use></svg></div>
           <h3>Học theo phương pháp lặp lại ngắt quãng</h3>
           <p>Câu nào trả lời sai sẽ tự động quay lại để bạn ôn ngay, câu đã thuộc sẽ được nhắc lại định kỳ để nhớ lâu hơn.</p>
         </div>
         <div class="home-feature-card">
-          <div class="hfc-icon">📝</div>
+          <div class="hfc-icon"><svg class="ic"><use href="#ic-file-text"></use></svg></div>
           <h3>Kiểm tra thử có giới hạn thời gian</h3>
           <p>Làm bài thi thử với số câu và thời gian giống thật, có thống kê chi tiết để biết mình còn yếu phần nào.</p>
         </div>
@@ -5416,11 +5511,11 @@ function renderHomePage(){
     </div>
 
     <div class="home-section">
-      <div class="home-section-title">🚀 Bắt đầu chỉ với 3 bước</div>
+      <div class="home-section-title"><svg class="ic"><use href="#ic-rocket"></use></svg> Bắt đầu chỉ với 3 bước</div>
       <div class="home-steps">
         <div class="home-step">
           <div class="hs-num">1</div>
-          <div><h4>Chọn môn học</h4><p>Vào tab "📚 Học tập" và chọn môn bạn muốn ôn luyện trong danh sách đã được mở.</p></div>
+          <div><h4>Chọn môn học</h4><p>Vào tab "<svg class="ic"><use href="#ic-book-open"></use></svg> Học tập" và chọn môn bạn muốn ôn luyện trong danh sách đã được mở.</p></div>
         </div>
         <div class="home-step">
           <div class="hs-num">2</div>
@@ -5434,7 +5529,7 @@ function renderHomePage(){
     </div>
 
     <div class="home-section">
-      <div class="home-section-title">📚 Môn học của bạn</div>
+      <div class="home-section-title"><svg class="ic"><use href="#ic-book-open"></use></svg> Môn học của bạn</div>
       <div class="home-courses-strip">${courseStripHTML}</div>
     </div>`;
 }
@@ -5448,10 +5543,10 @@ let announceBadgeUnsub = null;
 let cachedAnnouncements = [];
 
 const ANNOUNCE_TYPE_META = {
-  update: {label:'🆕 Cập nhật', cls:'update'},
-  event:  {label:'🎉 Sự kiện', cls:'event'},
-  course: {label:'📚 Môn học mới', cls:'course'},
-  notice: {label:'📌 Thông báo', cls:'notice'}
+  update: {label:'<svg class="ic"><use href="#ic-badge-plus"></use></svg> Cập nhật', cls:'update'},
+  event:  {label:'<svg class="ic"><use href="#ic-party-popper"></use></svg> Sự kiện', cls:'event'},
+  course: {label:'<svg class="ic"><use href="#ic-book-open"></use></svg> Môn học mới', cls:'course'},
+  notice: {label:'<svg class="ic"><use href="#ic-pin"></use></svg> Thông báo', cls:'notice'}
 };
 
 function formatAnnounceTime(ts){
@@ -5464,9 +5559,9 @@ function formatAnnounceTime(ts){
 function renderAnnouncementsFeed(){
   const area = document.getElementById('mainArea');
   area.innerHTML = `
-    <div class="home-section-title" style="margin-bottom:20px">🔔 Thông báo từ StudyHub</div>
+    <div class="home-section-title" style="margin-bottom:20px"><svg class="ic"><use href="#ic-bell"></use></svg> Thông báo từ StudyHub</div>
     <div class="announce-feed" id="announceFeedList">
-      <div class="announce-empty"><div class="ae-icon-big">⏳</div><p>Đang tải thông báo...</p></div>
+      <div class="announce-empty"><div class="ae-icon-big"><svg class="ic"><use href="#ic-hourglass"></use></svg></div><p>Đang tải thông báo...</p></div>
     </div>`;
 
   if(announceUnsub) announceUnsub();
@@ -5481,7 +5576,7 @@ function paintAnnouncementsFeed(){
   if(!listEl) return;
 
   if(cachedAnnouncements.length === 0){
-    listEl.innerHTML = '<div class="announce-empty"><div class="ae-icon-big">📭</div><p>Chưa có thông báo nào.</p></div>';
+    listEl.innerHTML = '<div class="announce-empty"><div class="ae-icon-big"><svg class="ic"><use href="#ic-inbox"></use></svg></div><p>Chưa có thông báo nào.</p></div>';
     return;
   }
 
@@ -5532,7 +5627,7 @@ async function publishAnnouncement(){
   const errEl = document.getElementById('annErr');
 
   if(!title || !content){
-    errEl.textContent = '❌ Vui lòng điền đầy đủ tiêu đề và nội dung.';
+    errEl.innerHTML = '<svg class="ic"><use href="#ic-x-circle"></use></svg> Vui lòng điền đầy đủ tiêu đề và nội dung.';
     errEl.classList.add('show');
     return;
   }
@@ -5547,7 +5642,7 @@ async function publishAnnouncement(){
     document.getElementById('annContent').value = '';
     showToast('Đã đăng thông báo!','ok');
   } catch(e){
-    errEl.textContent = '❌ Lỗi: '+e.message;
+    errEl.innerHTML = '<svg class="ic"><use href="#ic-x-circle"></use></svg> Lỗi: '+e.message;
     errEl.classList.add('show');
   }
 }
@@ -5568,7 +5663,7 @@ function renderAnnouncementsAdminList(list){
   if(!area) return;
 
   if(list.length === 0){
-    area.innerHTML = '<div class="admin-empty"><div class="ae-icon">📭</div><p>Chưa đăng thông báo nào.</p></div>';
+    area.innerHTML = '<div class="admin-empty"><div class="ae-icon"><svg class="ic"><use href="#ic-inbox"></use></svg></div><p>Chưa đăng thông báo nào.</p></div>';
     return;
   }
 
@@ -5582,7 +5677,7 @@ function renderAnnouncementsAdminList(list){
       + '<div class="aai-content">' + escapeHtml(a.content) + '</div>'
       + '<div class="aai-meta">' + formatAnnounceTime(a.createdAt) + '</div>'
       + '</div>'
-      + '<button class="admin-btn danger" onclick="deleteAnnouncement(\'' + a.id + '\',\'' + safeTitle + '\')">🗑</button>'
+      + '<button class="admin-btn danger" onclick="deleteAnnouncement(\'' + a.id + '\',\'' + safeTitle + '\')"><svg class="ic"><use href="#ic-trash-2"></use></svg></button>'
       + '</div>';
   }).join('');
 }
