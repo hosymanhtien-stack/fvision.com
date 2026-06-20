@@ -124,6 +124,11 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .topnav{position:sticky;top:0;z-index:50;background:rgba(8,9,14,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:0;height:60px}
 .brand{font-size:17px;font-weight:800;background:linear-gradient(90deg,var(--acc1),var(--acc2),var(--acc3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-right:32px;white-space:nowrap}
 .nav-courses{display:flex;gap:4px;flex:1}
+.nav-main-tabs{display:flex;gap:4px;flex:1}
+.nav-main-tab{position:relative;background:none;border:none;padding:8px 16px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.nav-main-tab:hover{color:var(--text);background:var(--card)}
+.nav-main-tab.active{color:var(--text);background:rgba(99,102,241,.15)}
+.nav-main-tab .chat-unread-badge{position:static;margin-left:2px;border:none}
 .nav-btn{background:none;border:none;padding:8px 16px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);transition:all .2s;white-space:nowrap}
 .nav-btn:hover{color:var(--text);background:var(--card)}
 .nav-btn.active{color:var(--text)}
@@ -599,6 +604,75 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .cpb-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:3px 0}
 .cpb-row b{color:var(--text)}
 
+/* ═══════════════════════════════════════
+   HOME PAGE & ANNOUNCEMENTS
+═══════════════════════════════════════ */
+
+/* ── Home page (student landing) ── */
+.home-hero{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(14,165,233,.10),rgba(16,185,129,.08));border:1px solid var(--border);border-radius:24px;padding:44px 36px;margin-bottom:28px;text-align:center;position:relative;overflow:hidden}
+.home-hero::before{content:'';position:absolute;top:-40%;right:-10%;width:300px;height:300px;background:radial-gradient(circle,rgba(99,102,241,.15),transparent 70%);pointer-events:none}
+.home-hero h1{font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:12px;background:linear-gradient(90deg,var(--acc1),var(--acc2),var(--acc3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.home-hero p{font-size:14.5px;color:var(--muted);line-height:1.7;max-width:560px;margin:0 auto 22px}
+.home-hero-cta{display:inline-flex;gap:10px}
+.home-cta-btn{padding:12px 26px;border-radius:12px;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+.home-cta-btn.primary{background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff}
+.home-cta-btn.primary:hover{opacity:.9;transform:translateY(-1px)}
+.home-cta-btn.secondary{background:var(--card);border:1px solid var(--border);color:var(--text)}
+
+.home-section{margin-bottom:32px}
+.home-section-title{font-size:17px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.home-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.home-feature-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 20px;transition:all .2s}
+.home-feature-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.home-feature-card .hfc-icon{font-size:28px;margin-bottom:12px}
+.home-feature-card h3{font-size:14.5px;font-weight:700;margin-bottom:8px}
+.home-feature-card p{font-size:12.5px;color:var(--muted);line-height:1.6}
+
+.home-steps{display:flex;flex-direction:column;gap:14px}
+.home-step{display:flex;gap:16px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px}
+.home-step .hs-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--acc1),var(--acc2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
+.home-step h4{font-size:13.5px;font-weight:700;margin-bottom:4px}
+.home-step p{font-size:12.5px;color:var(--muted);line-height:1.6}
+
+.home-courses-strip{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px}
+.home-course-chip{flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 20px;min-width:160px;cursor:pointer;transition:all .2s}
+.home-course-chip:hover{border-color:var(--border2);transform:translateY(-2px)}
+.home-course-chip .hcc-icon{font-size:24px;margin-bottom:8px}
+.home-course-chip .hcc-code{font-size:13px;font-weight:800;margin-bottom:2px}
+.home-course-chip .hcc-name{font-size:11.5px;color:var(--muted)}
+
+@media(max-width:900px){
+  .home-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .home-grid{grid-template-columns:1fr}
+  .home-hero{padding:32px 22px}
+  .home-hero h1{font-size:22px}
+}
+
+/* ── Announcements feed (student) ── */
+.announce-feed{display:flex;flex-direction:column;gap:16px;max-width:720px}
+.announce-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px 24px;animation:fadeUp .3s ease}
+.announce-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.announce-type-badge{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:5px 12px;border-radius:20px}
+.announce-type-badge.update{background:rgba(99,102,241,.15);color:#818cf8}
+.announce-type-badge.event{background:rgba(236,72,153,.15);color:#ec4899}
+.announce-type-badge.course{background:rgba(16,185,129,.15);color:#34d399}
+.announce-type-badge.notice{background:rgba(245,158,11,.15);color:var(--gold)}
+.announce-time{font-size:11.5px;color:var(--muted2);margin-left:auto}
+.announce-title{font-size:16px;font-weight:800;margin-bottom:8px}
+.announce-content{font-size:13.5px;color:var(--muted);line-height:1.7;white-space:pre-line}
+.announce-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.announce-empty .ae-icon-big{font-size:56px;margin-bottom:16px;opacity:.5}
+
+/* ── Announcements admin list ── */
+.announce-admin-item{display:flex;align-items:flex-start;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}
+.announce-admin-item:last-child{border-bottom:none}
+.aai-body{flex:1;min-width:0}
+.aai-title{font-size:13.5px;font-weight:700;margin-bottom:4px}
+.aai-content{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:6px;white-space:pre-line}
+.aai-meta{font-size:11px;color:var(--muted2)}
+
 .aff-section{padding:20px 22px}
 .aff-section-title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
@@ -799,6 +873,9 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <button class="admin-nav-btn active" onclick="showAdminTab('overview',this)">📊 Tổng quan</button>
       <button class="admin-nav-btn" onclick="showAdminTab('students',this)">👥 Học sinh</button>
       <button class="admin-nav-btn" onclick="showAdminTab('chat',this)">💬 Chat <span id="adminChatBadge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px;display:none">0</span></button>
+      <br>
+      <h3 style="margin-top:16px">Thông báo</h3>
+      <button class="admin-nav-btn" onclick="showAdminTab('announcements',this)">📢 Quản lý thông báo</button>
       <br>
       <h3 style="margin-top:16px">Affiliate</h3>
       <button class="admin-nav-btn" onclick="showAdminTab('affiliate',this)">🤝 Quản lý Affiliate <span id="affiliatePendingBadge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px;display:none">0</span></button>
@@ -1015,6 +1092,45 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         </div>
       </div>
 
+      <!-- ANNOUNCEMENTS MANAGEMENT -->
+      <div class="admin-section" id="tab-announcements">
+        <div class="admin-card">
+          <h2>📢 Đăng thông báo mới</h2>
+          <p>Thông báo sẽ hiển thị ngay cho tất cả học sinh trong tab "🔔 Thông báo".</p>
+          <div class="aff-err" id="annErr"></div>
+          <div class="admin-form">
+            <div class="admin-input-wrap">
+              <label>Tiêu đề</label>
+              <input class="admin-input" id="annTitle" placeholder="Ví dụ: Ra mắt môn học mới!"/>
+            </div>
+            <div class="admin-input-wrap">
+              <label>Nội dung</label>
+              <textarea class="admin-input" id="annContent" placeholder="Nội dung chi tiết thông báo..." style="min-height:110px;resize:vertical;font-family:inherit"></textarea>
+            </div>
+            <div class="admin-form-row" style="grid-template-columns:1fr 1fr">
+              <div class="admin-input-wrap">
+                <label>Loại thông báo</label>
+                <select class="admin-input" id="annType">
+                  <option value="update">🆕 Cập nhật / Tính năng mới</option>
+                  <option value="event">🎉 Sự kiện / Chương trình</option>
+                  <option value="course">📚 Môn học mới</option>
+                  <option value="notice">📌 Thông báo chung</option>
+                </select>
+              </div>
+              <div class="admin-input-wrap">
+                <label>&nbsp;</label>
+                <button class="admin-btn primary" onclick="publishAnnouncement()" style="width:100%">📤 Đăng thông báo</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <h2>📋 Danh sách thông báo đã đăng</h2>
+          <div id="announcementsAdminList"></div>
+        </div>
+      </div>
+
       <!-- AFFILIATE MANAGEMENT -->
       <div class="admin-section" id="tab-affiliate">
         <div class="admin-stats" id="affiliateOverviewStats" style="margin-bottom:20px">
@@ -1045,7 +1161,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   <!-- TOP NAV -->
   <nav class="topnav">
     <div class="brand">StudyHub</div>
-    <div class="nav-courses">
+    <div class="nav-main-tabs">
+      <button class="nav-main-tab active" id="navTabHome" onclick="switchMainView('home')">🏠 Trang chủ</button>
+      <button class="nav-main-tab" id="navTabAnnounce" onclick="switchMainView('announcements')">🔔 Thông báo<span class="chat-unread-badge" id="announceUnreadBadge" style="display:none">0</span></button>
+      <button class="nav-main-tab" id="navTabStudy" onclick="switchMainView('study')">📚 Học tập</button>
+    </div>
+    <div class="nav-courses" id="navCourses" style="display:none">
       <button class="nav-btn active" data-course="0" onclick="selectCourse(0)">📊 MKG101</button>
       <button class="nav-btn" data-course="1" onclick="selectCourse(1)">📒 ACC101</button>
       <button class="nav-btn" data-course="2" onclick="selectCourse(2)">📈 ECO111</button>
@@ -2530,26 +2651,10 @@ function enterStudentApp(user, data, docRef){
   renderStudentNav(data);
   showScreen('app');
   watchStudentChatBadge(user.uid);
+  watchAnnouncementsBadge();
 
-  // Nếu chưa có môn nào → hiện thông báo chờ admin cấp
-  if(!data.courses || data.courses.length === 0){
-    document.getElementById('mainArea').innerHTML = `
-    <div style="text-align:center;padding:80px 20px;animation:fadeUp .4s ease">
-      <div style="font-size:64px;margin-bottom:16px">📚</div>
-      <h2 style="font-size:22px;font-weight:800;margin-bottom:10px">Chào mừng, ${data.name}!</h2>
-      <p style="color:var(--muted);font-size:15px;line-height:1.7;max-width:420px;margin:0 auto 24px">
-        Tài khoản của bạn đã được tạo thành công.<br>
-        Vui lòng liên hệ quản trị viên để được cấp môn học.
-      </p>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 28px;display:inline-block">
-        <div style="font-size:13px;color:var(--muted);margin-bottom:8px">GMAIL CỦA BẠN</div>
-        <div style="font-weight:700;color:var(--text)">${user.email}</div>
-      </div>
-    </div>`;
-  } else {
-    const firstCourse = data.courses[0];
-    selectCourse(firstCourse);
-  }
+  // Mặc định vào Trang chủ khi đăng nhập (không tự nhảy vào môn học nữa)
+  switchMainView('home');
 
   // Realtime: admin cấp/thu môn → cập nhật ngay
   unsubscribeStudent = docRef.onSnapshot(s => {
@@ -2560,9 +2665,7 @@ function enterStudentApp(user, data, docRef){
     if(oldCourses !== newCourses){
       currentUser.data = nd;
       renderStudentNav(nd);
-      if((nd.courses||[]).length > 0 && (currentUser.data.courses||[]).length === 0){
-        selectCourse(nd.courses[0]);
-      }
+      if(currentView === 'home') renderHomePage(); // refresh course strip if visible
       showToast('Môn học của bạn vừa được cập nhật!','ok');
     }
   });
@@ -2612,6 +2715,9 @@ async function submitRegister(){
 function doLogout(){
   if(!confirm('Đăng xuất khỏi StudyHub?')) return;
   if(unsubscribeStudent){ unsubscribeStudent(); }
+  if(announceUnsub){ announceUnsub(); announceUnsub=null; }
+  if(announceBadgeUnsub){ announceBadgeUnsub(); announceBadgeUnsub=null; }
+  currentView = 'home';
   auth.signOut();
 }
 
@@ -2705,6 +2811,9 @@ function initAdminPanel(){
 
   // Affiliate applications watcher — also starts immediately for the sidebar badge
   initAdminAffiliateWatcher();
+
+  // Announcements watcher for the admin management list
+  initAdminAnnouncementsWatcher();
 }
 
 function renderOverview(){
@@ -3361,8 +3470,15 @@ const session = COURSES.map(()=>({learned:0, correct:0, wrong:0}));
 // ═══════════════════════════════════════
 function selectCourse(idx){
   activeCourse = idx;
+  currentView = 'study';
+  document.querySelectorAll('.nav-main-tab').forEach(t=>t.classList.remove('active'));
+  const studyTab = document.getElementById('navTabStudy');
+  if(studyTab) studyTab.classList.add('active');
+  const coursesNav = document.getElementById('navCourses');
+  if(coursesNav) coursesNav.style.display = 'flex';
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector(`.nav-btn[data-course="${idx}"]`).classList.add('active');
+  const btn = document.querySelector(`.nav-btn[data-course="${idx}"]`);
+  if(btn) btn.classList.add('active');
   showCourseHome();
 }
 
@@ -5202,6 +5318,279 @@ async function postSystemChatNote(studentUid, text){
     lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
     unreadByStudent: firebase.firestore.FieldValue.increment(1)
   });
+}
+
+
+// ═══════════════════════════════════════
+//  MAIN VIEW SWITCHER (Home / Announcements / Study)
+// ═══════════════════════════════════════
+let currentView = 'home'; // 'home' | 'announcements' | 'study'
+
+function switchMainView(view){
+  currentView = view;
+
+  document.querySelectorAll('.nav-main-tab').forEach(function(t){ t.classList.remove('active'); });
+  const tabMap = {home:'navTabHome', announcements:'navTabAnnounce', study:'navTabStudy'};
+  const activeTab = document.getElementById(tabMap[view]);
+  if(activeTab) activeTab.classList.add('active');
+
+  const coursesNav = document.getElementById('navCourses');
+
+  if(view === 'home'){
+    coursesNav.style.display = 'none';
+    renderHomePage();
+  } else if(view === 'announcements'){
+    coursesNav.style.display = 'none';
+    renderAnnouncementsFeed();
+    markAnnouncementsSeen();
+  } else if(view === 'study'){
+    coursesNav.style.display = 'flex';
+    // Jump into the first unlocked course, or show a friendly empty state
+    const data = currentUser && currentUser.data;
+    const courses = (data && data.courses) || [];
+    if(courses.length === 0){
+      document.getElementById('mainArea').innerHTML = `
+      <div style="text-align:center;padding:80px 20px;animation:fadeUp .4s ease">
+        <div style="font-size:64px;margin-bottom:16px">📚</div>
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:10px">Chưa có môn học nào</h2>
+        <p style="color:var(--muted);font-size:15px;line-height:1.7;max-width:420px;margin:0 auto 24px">
+          Tài khoản của bạn chưa được cấp môn học. Vui lòng liên hệ quản trị viên qua khung chat để được mở môn.
+        </p>
+        <button class="home-cta-btn primary" onclick="openStudentChat()">💬 Liên hệ StudyHub Assistant</button>
+      </div>`;
+    } else {
+      selectCourse(courses[0]);
+    }
+  }
+}
+
+// ═══════════════════════════════════════
+//  HOME PAGE (student landing)
+// ═══════════════════════════════════════
+function renderHomePage(){
+  const data = currentUser && currentUser.data;
+  const name = (data && data.name) || (currentUser && currentUser.user && currentUser.user.displayName) || '';
+  const unlockedCourses = (data && data.courses) || [];
+
+  const courseStripHTML = unlockedCourses.length > 0
+    ? unlockedCourses.map(function(idx){
+        const c = COURSES[idx];
+        if(!c) return '';
+        return '<div class="home-course-chip" onclick="switchMainView(\'study\');setTimeout(function(){selectCourse('+idx+')},50)">'
+          + '<div class="hcc-icon">'+c.icon+'</div>'
+          + '<div class="hcc-code">'+c.code+'</div>'
+          + '<div class="hcc-name">'+c.name+'</div>'
+          + '</div>';
+      }).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:20px 0">Bạn chưa được cấp môn học nào. Liên hệ StudyHub Assistant để được mở môn nhé!</div>';
+
+  document.getElementById('mainArea').innerHTML = `
+    <div class="home-hero">
+      <h1>Chào mừng${name ? ', ' + escapeHtml(name) : ''}! 👋</h1>
+      <p>StudyHub là nền tảng ôn luyện trắc nghiệm thông minh, giúp bạn ghi nhớ kiến thức nhanh hơn và tự tin hơn trước mỗi kỳ thi — học theo cách khoa học, không còn học vẹt.</p>
+      <div class="home-hero-cta">
+        <button class="home-cta-btn primary" onclick="switchMainView('study')">📚 Vào học ngay</button>
+        <button class="home-cta-btn secondary" onclick="switchMainView('announcements')">🔔 Xem thông báo mới</button>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <div class="home-section-title">✨ StudyHub giúp bạn học như thế nào?</div>
+      <div class="home-grid">
+        <div class="home-feature-card">
+          <div class="hfc-icon">🃏</div>
+          <h3>Thẻ ghi nhớ (Flashcard)</h3>
+          <p>Lật từng thẻ câu hỏi để làm quen kiến thức một cách nhẹ nhàng, phù hợp khi mới bắt đầu ôn một môn.</p>
+        </div>
+        <div class="home-feature-card">
+          <div class="hfc-icon">🧠</div>
+          <h3>Học theo phương pháp lặp lại ngắt quãng</h3>
+          <p>Câu nào trả lời sai sẽ tự động quay lại để bạn ôn ngay, câu đã thuộc sẽ được nhắc lại định kỳ để nhớ lâu hơn.</p>
+        </div>
+        <div class="home-feature-card">
+          <div class="hfc-icon">📝</div>
+          <h3>Kiểm tra thử có giới hạn thời gian</h3>
+          <p>Làm bài thi thử với số câu và thời gian giống thật, có thống kê chi tiết để biết mình còn yếu phần nào.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <div class="home-section-title">🚀 Bắt đầu chỉ với 3 bước</div>
+      <div class="home-steps">
+        <div class="home-step">
+          <div class="hs-num">1</div>
+          <div><h4>Chọn môn học</h4><p>Vào tab "📚 Học tập" và chọn môn bạn muốn ôn luyện trong danh sách đã được mở.</p></div>
+        </div>
+        <div class="home-step">
+          <div class="hs-num">2</div>
+          <div><h4>Chọn chế độ học phù hợp</h4><p>Mới bắt đầu? Dùng Thẻ ghi nhớ. Muốn nhớ sâu? Dùng chế độ Học. Gần thi? Làm bài Kiểm tra thử.</p></div>
+        </div>
+        <div class="home-step">
+          <div class="hs-num">3</div>
+          <div><h4>Theo dõi tiến độ & ôn lại</h4><p>StudyHub tự ghi nhớ câu bạn hay sai để nhắc bạn ôn lại đúng lúc, giúp kiến thức nhớ lâu hơn.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <div class="home-section-title">📚 Môn học của bạn</div>
+      <div class="home-courses-strip">${courseStripHTML}</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════
+//  ANNOUNCEMENTS — Firestore: announcements/{id}
+//    { title, content, type, createdAt }
+// ═══════════════════════════════════════
+let announceUnsub = null;
+let announceBadgeUnsub = null;
+let cachedAnnouncements = [];
+
+const ANNOUNCE_TYPE_META = {
+  update: {label:'🆕 Cập nhật', cls:'update'},
+  event:  {label:'🎉 Sự kiện', cls:'event'},
+  course: {label:'📚 Môn học mới', cls:'course'},
+  notice: {label:'📌 Thông báo', cls:'notice'}
+};
+
+function formatAnnounceTime(ts){
+  if(!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'}) + ' · ' + d.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ── Student: render the announcements feed ──
+function renderAnnouncementsFeed(){
+  const area = document.getElementById('mainArea');
+  area.innerHTML = `
+    <div class="home-section-title" style="margin-bottom:20px">🔔 Thông báo từ StudyHub</div>
+    <div class="announce-feed" id="announceFeedList">
+      <div class="announce-empty"><div class="ae-icon-big">⏳</div><p>Đang tải thông báo...</p></div>
+    </div>`;
+
+  if(announceUnsub) announceUnsub();
+  announceUnsub = db.collection('announcements').orderBy('createdAt','desc').onSnapshot(function(snap){
+    cachedAnnouncements = snap.docs.map(function(d){ return Object.assign({}, d.data(), {id:d.id}); });
+    if(currentView === 'announcements') paintAnnouncementsFeed();
+  });
+}
+
+function paintAnnouncementsFeed(){
+  const listEl = document.getElementById('announceFeedList');
+  if(!listEl) return;
+
+  if(cachedAnnouncements.length === 0){
+    listEl.innerHTML = '<div class="announce-empty"><div class="ae-icon-big">📭</div><p>Chưa có thông báo nào.</p></div>';
+    return;
+  }
+
+  listEl.innerHTML = cachedAnnouncements.map(function(a){
+    const meta = ANNOUNCE_TYPE_META[a.type] || ANNOUNCE_TYPE_META.notice;
+    return '<div class="announce-card">'
+      + '<div class="announce-card-header">'
+      + '<span class="announce-type-badge ' + meta.cls + '">' + meta.label + '</span>'
+      + '<span class="announce-time">' + formatAnnounceTime(a.createdAt) + '</span>'
+      + '</div>'
+      + '<div class="announce-title">' + escapeHtml(a.title) + '</div>'
+      + '<div class="announce-content">' + escapeHtml(a.content) + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+// ── Student: unread badge for the Announcements tab ──
+function watchAnnouncementsBadge(){
+  if(announceBadgeUnsub) return; // already running
+  const lastSeen = parseInt(localStorage.getItem('sh_announce_last_seen') || '0');
+
+  announceBadgeUnsub = db.collection('announcements').orderBy('createdAt','desc').limit(1).onSnapshot(function(snap){
+    if(snap.empty) return;
+    const latest = snap.docs[0].data();
+    const latestMs = (latest.createdAt && latest.createdAt.toMillis) ? latest.createdAt.toMillis() : 0;
+    const badge = document.getElementById('announceUnreadBadge');
+    if(!badge) return;
+    if(latestMs > lastSeen && currentView !== 'announcements'){
+      badge.textContent = '•';
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  });
+}
+
+function markAnnouncementsSeen(){
+  localStorage.setItem('sh_announce_last_seen', Date.now().toString());
+  const badge = document.getElementById('announceUnreadBadge');
+  if(badge) badge.style.display = 'none';
+}
+
+// ── Admin: publish a new announcement ──
+async function publishAnnouncement(){
+  const title = document.getElementById('annTitle').value.trim();
+  const content = document.getElementById('annContent').value.trim();
+  const type = document.getElementById('annType').value;
+  const errEl = document.getElementById('annErr');
+
+  if(!title || !content){
+    errEl.textContent = '❌ Vui lòng điền đầy đủ tiêu đề và nội dung.';
+    errEl.classList.add('show');
+    return;
+  }
+  errEl.classList.remove('show');
+
+  try{
+    await db.collection('announcements').add({
+      title: title, content: content, type: type,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById('annTitle').value = '';
+    document.getElementById('annContent').value = '';
+    showToast('Đã đăng thông báo!','ok');
+  } catch(e){
+    errEl.textContent = '❌ Lỗi: '+e.message;
+    errEl.classList.add('show');
+  }
+}
+
+// ── Admin: list + delete published announcements ──
+let adminAnnounceUnsub = null;
+
+function initAdminAnnouncementsWatcher(){
+  if(adminAnnounceUnsub) adminAnnounceUnsub();
+  adminAnnounceUnsub = db.collection('announcements').orderBy('createdAt','desc').onSnapshot(function(snap){
+    const list = snap.docs.map(function(d){ return Object.assign({}, d.data(), {id:d.id}); });
+    renderAnnouncementsAdminList(list);
+  });
+}
+
+function renderAnnouncementsAdminList(list){
+  const area = document.getElementById('announcementsAdminList');
+  if(!area) return;
+
+  if(list.length === 0){
+    area.innerHTML = '<div class="admin-empty"><div class="ae-icon">📭</div><p>Chưa đăng thông báo nào.</p></div>';
+    return;
+  }
+
+  area.innerHTML = list.map(function(a){
+    const meta = ANNOUNCE_TYPE_META[a.type] || ANNOUNCE_TYPE_META.notice;
+    const safeTitle = (a.title||'').replace(/'/g,"\\'");
+    return '<div class="announce-admin-item">'
+      + '<div class="aai-body">'
+      + '<span class="announce-type-badge ' + meta.cls + '" style="margin-bottom:6px;display:inline-block">' + meta.label + '</span>'
+      + '<div class="aai-title">' + escapeHtml(a.title) + '</div>'
+      + '<div class="aai-content">' + escapeHtml(a.content) + '</div>'
+      + '<div class="aai-meta">' + formatAnnounceTime(a.createdAt) + '</div>'
+      + '</div>'
+      + '<button class="admin-btn danger" onclick="deleteAnnouncement(\'' + a.id + '\',\'' + safeTitle + '\')">🗑</button>'
+      + '</div>';
+  }).join('');
+}
+
+async function deleteAnnouncement(id, title){
+  if(!confirm('Xóa thông báo "' + title + '"?')) return;
+  await db.collection('announcements').doc(id).delete();
+  showToast('Đã xóa thông báo.','ok');
 }
 
 </script>
