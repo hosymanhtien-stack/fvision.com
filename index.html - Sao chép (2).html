@@ -108,6 +108,16 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .login-logo .dot{width:10px;height:10px;border-radius:50%}
 .login-logo h1{font-size:28px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.5px}
 .login-logo p{color:var(--muted);font-size:13px}
+
+/* ─── REGISTER (post Google sign-in, first time only) ─── */
+.register-page{position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
+.register-page.show{display:flex}
+.register-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px 36px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;position:relative;text-align:center;animation:fadeUp .5s ease}
+.register-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc1),var(--acc2),var(--acc3))}
+.reg-avatar{width:64px;height:64px;border-radius:50%;border:2px solid var(--border);margin:0 auto 12px;display:block;object-fit:cover}
+.reg-email{font-size:12.5px;color:var(--muted);margin-bottom:24px}
+#regFormArea .field,#regFormArea .login-err,#regFormArea .login-btn,#regFormArea .login-hint{text-align:left}
+
 .field{margin-bottom:18px}
 .field label{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
 .field input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color .2s}
@@ -202,7 +212,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .card-hint{font-size:12px;color:var(--muted);text-align:center}
 .card-flip-hint{text-align:center;font-size:13px;color:var(--muted);margin-bottom:20px}
 
-.fc-controls{display:flex;align-items:center;justify-content:center;gap:12px}
+.fc-controls{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
 .fc-btn{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px 20px;color:var(--text);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px}
 .fc-btn:hover:not(:disabled){background:var(--card2);border-color:var(--border2);transform:translateY(-1px)}
 .fc-btn:disabled{opacity:.35;cursor:default}
@@ -377,15 +387,70 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .particle{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:1000;animation:fall linear forwards}
 @keyframes fall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 
-/* ─── RESPONSIVE ─── */
+/* ─── RESPONSIVE: STUDENT APP ─── */
+@media(max-width:900px){
+  .topnav{padding:0 16px;gap:8px}
+  .brand{margin-right:16px;font-size:15px}
+  .main{padding:24px 16px}
+}
+
 @media(max-width:700px){
   .mode-grid{grid-template-columns:1fr}
-  .topnav{padding:0 14px}
-  .main{padding:20px 14px}
   .q-text{font-size:15px}
+  .q-card{padding:20px 18px}
   .opt-btn,.test-opt-btn{font-size:13px;padding:12px 14px}
   .results-grid{grid-template-columns:repeat(2,1fr)}
   .nav-btn{padding:8px 10px;font-size:12px}
+  .user-chip span:not(.dot){display:none}
+  .user-chip{padding:7px}
+  .logout-btn{padding:6px 10px;font-size:11px}
+  .card-face{padding:24px 20px;min-height:220px}
+  .card-inner{min-height:220px}
+  .card-q{font-size:16px}
+  .card-a{font-size:14px}
+  .fc-btn{padding:10px 14px;font-size:13px}
+}
+
+@media(max-width:680px){
+  /* Topnav becomes a 2-row stack: scrollable tabs on top, actions below */
+  .topnav{
+    flex-wrap:wrap;
+    height:auto;
+    padding:10px 12px;
+    row-gap:8px;
+  }
+  .brand{order:1;margin-right:auto}
+  .nav-right{order:2;margin-left:0}
+  .nav-main-tabs,
+  .nav-courses{
+    order:3;
+    width:100%;
+    flex:1 1 100%;
+    overflow-x:auto;
+    -ms-overflow-style:none;
+    scrollbar-width:none;
+    padding-bottom:2px;
+  }
+  .nav-main-tabs::-webkit-scrollbar,
+  .nav-courses::-webkit-scrollbar{display:none}
+  .nav-main-tab,.nav-btn{flex-shrink:0}
+}
+
+@media(max-width:420px){
+  .brand{font-size:14px;margin-right:8px}
+  .theme-toggle-btn,.affiliate-fab-btn,.chat-fab-btn{width:34px;height:34px;font-size:14px}
+  .nav-right{gap:8px}
+  .results-grid{grid-template-columns:1fr 1fr}
+  .live-stats{gap:6px}
+  .ls-chip{font-size:11px;padding:6px 10px}
+}
+
+/* ─── RESPONSIVE: LOGIN ─── */
+@media(max-width:480px){
+  .login-card{padding:36px 24px;border-radius:20px}
+  .login-page{padding:14px}
+  .register-card{padding:28px 22px;border-radius:18px}
+  .register-page{padding:14px}
 }
 
 /* ─── ADMIN PANEL ─── */
@@ -394,13 +459,15 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .admin-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;gap:16px}
 .admin-topbar .brand{font-size:17px;font-weight:800;background:linear-gradient(90deg,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .admin-badge{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:#f59e0b;font-size:11px;font-weight:800;padding:3px 10px;border-radius:6px;letter-spacing:1px;text-transform:uppercase}
-.admin-body{display:flex;flex:1;overflow:hidden}
-.admin-sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;flex-shrink:0}
+.admin-hamburger-btn{display:none;background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;align-items:center;justify-content:center;color:var(--text);cursor:pointer;flex-shrink:0;font-size:16px}
+.admin-body{display:flex;flex:1;overflow:hidden;position:relative}
+.admin-sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:20px 0;flex-shrink:0;overflow-y:auto;transition:transform .25s ease}
 .admin-sidebar h3{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;padding:0 20px;margin-bottom:10px}
+.admin-sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
 .admin-nav-btn{width:100%;background:none;border:none;padding:10px 20px;text-align:left;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s}
 .admin-nav-btn:hover{background:var(--card);color:var(--text)}
 .admin-nav-btn.active{background:rgba(245,158,11,.12);color:#f59e0b;border-right:3px solid #f59e0b}
-.admin-content{flex:1;overflow-y:auto;padding:28px}
+.admin-content{flex:1;overflow-y:auto;padding:28px;min-width:0}
 .admin-section{display:none;animation:fadeUp .3s ease}
 .admin-section.show{display:block}
 .admin-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
@@ -751,12 +818,44 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 @media(max-width:900px){
   .admin-chat-layout{flex-direction:column;height:auto}
   .admin-chat-list{width:100%;max-height:240px}
+  .admin-topbar{padding:0 16px}
+  .admin-content{padding:20px}
 }
 
 @media(max-width:700px){
-  .admin-sidebar{display:none}
+  .admin-hamburger-btn{display:flex}
+  .admin-topbar .brand{font-size:14px}
+  .admin-badge{display:none} /* saves space; role is obvious from context on mobile */
+  #adminUserLabel{display:none}
+
+  .admin-sidebar{
+    position:fixed;
+    top:60px;
+    left:0;
+    bottom:0;
+    z-index:100;
+    transform:translateX(-100%);
+    box-shadow:4px 0 24px rgba(0,0,0,.3);
+  }
+  .admin-sidebar.open{transform:translateX(0)}
+  .admin-sidebar-overlay.show{display:block}
+
   .admin-stats{grid-template-columns:repeat(2,1fr)}
-  .admin-form-row{grid-template-columns:1fr}
+  .admin-form-row{grid-template-columns:1fr!important}
+  .admin-content{padding:16px}
+  .admin-card{padding:18px}
+  .aff-app-details{grid-template-columns:1fr 1fr}
+  .admin-table{font-size:12px}
+
+  /* Tables scroll horizontally instead of breaking layout */
+  .admin-card > div > table.admin-table,
+  #stuTable{display:block;overflow-x:auto;white-space:nowrap}
+}
+
+@media(max-width:480px){
+  .admin-stats{grid-template-columns:1fr 1fr}
+  .a-stat .a-num{font-size:22px}
+  .admin-sidebar{width:78%;max-width:280px}
 }
 
 /* ─── COURSE UPLOAD ─── */
@@ -875,6 +974,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 <symbol id="ic-hourglass" viewBox="0 0 24 24"><path d="M5 22h14M5 2h14M17 22v-4.172a2 2 0 0 0-.586-1.414L13 13l-3.414 3.414A2 2 0 0 0 9 17.828V22M17 2v4.172a2 2 0 0 1-.586 1.414L13 11l-3.414-3.414A2 2 0 0 1 9 6.172V2"/></symbol>
 <symbol id="ic-layers" viewBox="0 0 24 24"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m6.08 9.69-3.5 1.6a1 1 0 0 0 0 1.82l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59"/><path d="m6.08 14.69-3.5 1.6a1 1 0 0 0 0 1.82l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59"/></symbol>
 <symbol id="ic-log-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+<symbol id="ic-menu" viewBox="0 0 24 24"><path d="M4 12h16M4 6h16M4 18h16"/></symbol>
 <symbol id="ic-badge-plus" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="M9 12h6M12 9v6"/></symbol>
 <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
 
@@ -945,6 +1045,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 <!-- ══════════ ADMIN PAGE ══════════ -->
 <div class="admin-page" id="adminPage">
   <div class="admin-topbar">
+    <button class="admin-hamburger-btn" onclick="toggleAdminSidebar()" id="adminHamburgerBtn" title="Menu"><svg class="ic"><use href="#ic-menu"></use></svg></button>
     <div class="brand">StudyHub Admin</div>
     <span class="admin-badge"><svg class="ic"><use href="#ic-settings"></use></svg> Quản trị viên</span>
     <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
@@ -954,8 +1055,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     </div>
   </div>
   <div class="admin-body">
+    <!-- Mobile drawer overlay (click to close) -->
+    <div class="admin-sidebar-overlay" id="adminSidebarOverlay" onclick="toggleAdminSidebar(false)"></div>
     <!-- Sidebar -->
-    <div class="admin-sidebar">
+    <div class="admin-sidebar" id="adminSidebar">
       <h3>Quản lý</h3>
       <button class="admin-nav-btn active" onclick="showAdminTab('overview',this)"><svg class="ic"><use href="#ic-bar-chart-3"></use></svg> Tổng quan</button>
       <button class="admin-nav-btn" onclick="showAdminTab('students',this)"><svg class="ic"><use href="#ic-users"></use></svg> Học sinh</button>
@@ -2874,6 +2977,7 @@ function showAdminTab(tab, btn){
   if(tab==='manageCourses')  renderCourseListAdmin();
   if(tab==='chat')           initAdminChatInbox();
   if(tab==='affiliate')      renderAffiliateAppsList();
+  toggleAdminSidebar(false); // close mobile drawer after picking a section
 }
 
 function initAdminPanel(){
@@ -4288,6 +4392,18 @@ function toggleTheme(){
 
 // Sync icons once DOM is ready (theme attribute itself was already applied in <head>)
 document.addEventListener('DOMContentLoaded', syncThemeToggleIcons);
+
+// ═══════════════════════════════════════
+//  ADMIN MOBILE SIDEBAR DRAWER
+// ═══════════════════════════════════════
+function toggleAdminSidebar(forceState){
+  const sidebar = document.getElementById('adminSidebar');
+  const overlay = document.getElementById('adminSidebarOverlay');
+  if(!sidebar || !overlay) return;
+  const willOpen = typeof forceState === 'boolean' ? forceState : !sidebar.classList.contains('open');
+  sidebar.classList.toggle('open', willOpen);
+  overlay.classList.toggle('show', willOpen);
+}
 syncThemeToggleIcons();
 
 // ═══════════════════════════════════════
