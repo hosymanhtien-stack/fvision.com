@@ -2817,7 +2817,7 @@ auth.onAuthStateChanged(async user => {
   startAffOrdersCacheListener();
 
   // ── ADMIN ──
-  if(user.email === ADMIN_EMAIL){
+  if((user.email||'').trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase()){
     currentUser = {type:'admin', user};
     document.getElementById('adminUserLabel').textContent = user.displayName || user.email;
     showScreen('admin');
