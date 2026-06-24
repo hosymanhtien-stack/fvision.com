@@ -3690,7 +3690,8 @@ function showCourseHome(){
   const c = COURSES[activeCourse];
   const s = session[activeCourse];
   const total = c.questions.length;
-  const pct = total>0? Math.round(s.learned/total*100):0;
+  // Tiến độ hiển thị tạm thời theo RAM trong lúc chờ tải số liệu thật từ Firestore (tránh nhấp nháy 0%→đúng số)
+  const pctPlaceholder = total>0? Math.round(s.learned/total*100):0;
 
   document.getElementById('mainArea').innerHTML = `
   <div class="course-home">
@@ -3716,7 +3717,7 @@ function showCourseHome(){
         <div class="lbl">Trả lời sai</div>
       </div>
       <div class="stat-chip">
-        <div class="num" style="color:var(--gold)">${pct}%</div>
+        <div class="num" style="color:var(--gold)" id="courseProgressPct">${pctPlaceholder}%</div>
         <div class="lbl">Tiến độ</div>
       </div>
     </div>
@@ -3745,18 +3746,34 @@ function showCourseHome(){
     </div>
   </div>`;
 
-  // Kiểm tra ngầm xem môn này có tiến trình "Học" đang chờ tiếp tục không
+  // Kiểm tra ngầm xem môn này có tiến trình "Học" đang chờ tiếp tục không,
+  // đồng thời cập nhật lại % Tiến độ cho ĐÚNG với dữ liệu thật trên Firestore
+  // (chứ không chỉ dựa vào bộ nhớ RAM, vốn reset về 0 mỗi khi tải lại trang).
   checkAndShowResumeBadge(c.code);
 }
 
 async function checkAndShowResumeBadge(courseCode){
   const saved = await loadLearnProgress(courseCode);
-  // Chỉ hiện badge nếu vẫn đang xem đúng môn đó (tránh hiện sai khi người dùng đã chuyển môn khác trong lúc chờ)
+  // Chỉ áp dụng nếu vẫn đang xem đúng môn đó (tránh cập nhật sai khi người dùng đã chuyển môn khác trong lúc chờ)
   if(COURSES[activeCourse] && COURSES[activeCourse].code !== courseCode) return;
+  if(!saved) return;
+
+  const total = COURSES[activeCourse].questions.length;
+  const seenList = saved.seen || saved.mastered || []; // tương thích dữ liệu cũ
+  const seenCount = seenList.length;
+
+  // Cập nhật lại % Tiến độ trên trang chủ môn theo số liệu thật đã lưu
+  const pctEl = document.getElementById('courseProgressPct');
+  if(pctEl && total>0){
+    pctEl.textContent = Math.round(seenCount/total*100) + '%';
+  }
+  // Đồng bộ luôn vào session RAM để các lần render khác trong session này cũng đúng
+  if(session[activeCourse]) session[activeCourse].learned = Math.max(session[activeCourse].learned, seenCount);
+
   const badge = document.getElementById('lrnResumeBadge');
   if(!badge) return;
-  if(saved && Array.isArray(saved.mastered) && saved.mastered.length > 0){
-    badge.textContent = `Đang học dở · ${saved.mastered.length}/${COURSES[activeCourse].questions.length} câu`;
+  if(seenCount > 0){
+    badge.textContent = `Đang học dở · ${seenCount}/${total} câu`;
     badge.style.display = 'inline-flex';
   }
 }
@@ -3871,7 +3888,8 @@ const LRN_MASTER_NEED = 2; // số lần đúng liên tiếp để "mastered"
 
 let lrn = {
   allQs: [],          // toàn bộ câu (đã shuffle)
-  mastered: new Set(),// index câu đã thuộc
+  mastered: new Set(),// index câu đã thuộc (đúng 2 lần liên tiếp)
+  seen: new Set(),    // index câu đã từng được hỏi & chấm điểm (đúng hoặc sai) — dùng cho thanh "Tiến độ"
   streaks: {},        // {idx: số lần đúng liên tiếp hiện tại}
 
   // Trạng thái vòng hiện tại
@@ -3910,6 +3928,7 @@ function saveLearnProgress(){
     const data = {
       qOrder: lrn.allQs.map(q=>q._origIdx),
       mastered: Array.from(lrn.mastered),
+      seen: Array.from(lrn.seen),
       streaks: lrn.streaks,
       phase: lrn.phase,
       groupStart: lrn.groupStart,
@@ -3969,6 +3988,7 @@ async function startLearn(forceRestart){
     // ── Khôi phục đúng thứ tự câu hỏi đã xáo trộn trước đó ──
     lrn.allQs = saved.qOrder.map(origIdx => ({...c.questions[origIdx], _origIdx: origIdx}));
     lrn.mastered = new Set(saved.mastered || []);
+    lrn.seen = new Set(saved.seen || saved.mastered || []); // tương thích dữ liệu cũ chưa có field seen
     lrn.streaks = saved.streaks || {};
     lrn.phase = saved.phase || 'new';
     lrn.groupStart = saved.groupStart || 0;
@@ -3997,6 +4017,7 @@ async function startLearn(forceRestart){
   const all = shuffle([...c.questions]);
   lrn.allQs = all.map((q,i)=>({...q, _origIdx:i}));
   lrn.mastered = new Set();
+  lrn.seen = new Set();
   lrn.streaks = {};
   lrn.totalCorrect = 0;
   lrn.totalWrong = 0;
@@ -4136,8 +4157,9 @@ function endLearnSession(){
 function renderLearnQ(){
   const c = COURSES[activeCourse];
   const total = lrn.allQs.length;
+  const seenCount = lrn.seen.size;
   const masteredCount = lrn.mastered.size;
-  const masteredPct = total>0 ? (masteredCount/total*100).toFixed(1) : 0;
+  const progressPct = total>0 ? (seenCount/total*100).toFixed(1) : 0;
   const labels = ['A','B','C','D','E'];
 
   // Kiểm tra xong queue
@@ -4185,10 +4207,10 @@ function renderLearnQ(){
     </div>
 
     <div class="lrn-mastered-text">
-      <span>Đã thuộc: <strong style="color:${c.textBadge}">${masteredCount} / ${total}</strong></span>
-      <span style="color:var(--muted)">${masteredPct}%</span>
+      <span>Tiến độ: <strong style="color:${c.textBadge}">${seenCount} / ${total}</strong> câu <span style="color:var(--muted);font-weight:400">· Đã thuộc ${masteredCount}</span></span>
+      <span style="color:var(--muted)">${progressPct}%</span>
     </div>
-    <div class="lrn-mastered-bar"><div class="lrn-mastered-fill" style="width:${masteredPct}%;background:${c.color}"></div></div>
+    <div class="lrn-mastered-bar"><div class="lrn-mastered-fill" style="width:${progressPct}%;background:${c.color}"></div></div>
 
     <div class="lrn-round-info">
       <div>
@@ -4226,6 +4248,8 @@ function checkLearnQ(sel, correct, qIdx, btn){
   document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
   const labels=['A','B','C','D','E'];
   const fb=document.getElementById('fb'), fbT=document.getElementById('fbTitle'), fbB=document.getElementById('fbBody');
+
+  lrn.seen.add(qIdx); // đã hoàn thành chấm điểm câu này — dùng cho thanh "Tiến độ"
 
   if(sel === correct){
     lrn.totalCorrect++;
@@ -4267,7 +4291,7 @@ function checkLearnQ(sel, correct, qIdx, btn){
     document.getElementById('fb').after(expDiv);
   }
 
-  session[activeCourse].learned = Math.max(session[activeCourse].learned, lrn.mastered.size);
+  session[activeCourse].learned = Math.max(session[activeCourse].learned, lrn.seen.size);
   document.getElementById('nextLrnBtn').className='next-btn show';
   saveLearnProgress();
 }
@@ -4282,6 +4306,7 @@ function flushLearnProgress(){
   const data = {
     qOrder: lrn.allQs.map(q=>q._origIdx),
     mastered: Array.from(lrn.mastered),
+    seen: Array.from(lrn.seen),
     streaks: lrn.streaks,
     phase: lrn.phase,
     groupStart: lrn.groupStart,
@@ -5069,7 +5094,7 @@ async function submitAffiliateApp(){
 
     // Auto-post a system notice into the chat thread so admin sees it right away
     const chatRef = db.collection('chats').doc(uid);
-    const noticeText = `<svg class="ic"><use href="#ic-handshake"></use></svg> PHIẾU ĐĂNG KÝ AFFILIATE\n\n${studentName} đã gửi đơn đăng ký tham gia chương trình Affiliate StudyHub.\n\n<svg class="ic"><use href="#ic-clipboard-list"></use></svg> Họ tên: ${name}\n<svg class="ic"><use href="#ic-cake"></use></svg> Ngày sinh: ${dob}\n<svg class="ic"><use href="#ic-graduation-cap"></use></svg> Chuyên ngành: ${major}\n\nVui lòng vào tab "<svg class="ic"><use href="#ic-handshake"></use></svg> Quản lý Affiliate" để xem chi tiết và phê duyệt.`;
+    const noticeText = `🤝 PHIẾU ĐĂNG KÝ AFFILIATE\n\n${studentName} đã gửi đơn đăng ký tham gia chương trình Affiliate StudyHub.\n\n📋 Họ tên: ${name}\n🎂 Ngày sinh: ${dob}\n🎓 Chuyên ngành: ${major}\n\nVui lòng vào tab "Quản lý Affiliate" để xem chi tiết và phê duyệt.`;
     await chatRef.collection('messages').add({
       senderRole: 'system',
       text: noticeText,
@@ -5077,7 +5102,7 @@ async function submitAffiliateApp(){
     });
     await chatRef.set({
       studentName, studentEmail,
-      lastMessage: '<svg class="ic"><use href="#ic-handshake"></use></svg> Đã gửi phiếu đăng ký Affiliate',
+      lastMessage: '🤝 Đã gửi phiếu đăng ký Affiliate',
       lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
       unreadByAdmin: firebase.firestore.FieldValue.increment(1),
       unreadByStudent: 0
@@ -5478,12 +5503,12 @@ async function submitAffiliateOrder(){
     await chatRef.collection('messages').add({
       senderRole: 'affiliate-order',
       orderId: orderRef.id,
-      text: '<svg class="ic"><use href="#ic-shopping-bag"></use></svg> Đơn hàng mới: ' + courseLabel + ' cho ' + buyerName,
+      text: '🛍️ Đơn hàng mới: ' + courseLabel + ' cho ' + buyerName,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
     await chatRef.set({
       studentName: affiliateName, studentEmail: affiliateEmail,
-      lastMessage: '<svg class="ic"><use href="#ic-shopping-bag"></use></svg> Báo bán hàng: ' + courseLabel,
+      lastMessage: '🛍️ Báo bán hàng: ' + courseLabel,
       lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
       unreadByAdmin: firebase.firestore.FieldValue.increment(1),
       unreadByStudent: 0
@@ -5622,8 +5647,8 @@ async function adminApproveOrder(orderId){
   const courseLabel = (order.courses||[]).map(c=>c.code).join(', ') || order.courseCode || '';
   const payableAmount = (typeof order.payable === 'number') ? order.payable : order.price;
   const noteText = buyerExists
-    ? ('<svg class="ic"><use href="#ic-check"></use></svg> Đơn hàng ' + courseLabel + ' đã được xác nhận. Gmail người mua đã có tài khoản StudyHub — vui lòng thanh toán ' + formatVND(payableAmount) + ' để hoàn tất.')
-    : ('<svg class="ic"><use href="#ic-check"></use></svg> Đơn hàng ' + courseLabel + ' đã được xác nhận. Gmail người mua chưa có tài khoản — StudyHub sẽ mở môn sau khi người mua tự đăng ký. Vui lòng thanh toán ' + formatVND(payableAmount) + ' để hoàn tất.');
+    ? ('✅ Đơn hàng ' + courseLabel + ' đã được xác nhận. Gmail người mua đã có tài khoản StudyHub — vui lòng thanh toán ' + formatVND(payableAmount) + ' để hoàn tất.')
+    : ('✅ Đơn hàng ' + courseLabel + ' đã được xác nhận. Gmail người mua chưa có tài khoản — StudyHub sẽ mở môn sau khi người mua tự đăng ký. Vui lòng thanh toán ' + formatVND(payableAmount) + ' để hoàn tất.');
 
   await postSystemChatNote(order.affiliateUid, noteText);
   showToast('Đã xác nhận đơn hàng, chờ affiliate thanh toán.','ok');
@@ -5639,7 +5664,7 @@ async function adminRejectOrder(orderId){
     status: 'rejected',
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   });
-  await postSystemChatNote(order.affiliateUid, '<svg class="ic"><use href="#ic-x-circle"></use></svg> Đơn hàng ' + courseLabel + ' cho ' + order.buyerName + ' đã bị từ chối.');
+  await postSystemChatNote(order.affiliateUid, '❌ Đơn hàng ' + courseLabel + ' cho ' + order.buyerName + ' đã bị từ chối.');
   showToast('Đã từ chối đơn hàng.','ok');
 }
 
@@ -5655,7 +5680,7 @@ async function studentMarkPaid(orderId){
 
   const chatRef = db.collection('chats').doc(currentUser.user.uid);
   await chatRef.update({
-    lastMessage: '<svg class="ic"><use href="#ic-credit-card"></use></svg> Đã thanh toán đơn ' + courseLabel + ', chờ xác thực',
+    lastMessage: '💳 Đã thanh toán đơn ' + courseLabel + ', chờ xác thực',
     lastTimestamp: firebase.firestore.FieldValue.serverTimestamp(),
     unreadByAdmin: firebase.firestore.FieldValue.increment(1)
   });
@@ -5693,7 +5718,7 @@ async function adminConfirmPayment(orderId){
     }
   } catch(e){ console.warn('Could not auto-unlock courses for buyer:', e); }
 
-  await postSystemChatNote(order.affiliateUid, '<svg class="ic"><use href="#ic-party-popper"></use></svg> Giao dịch thành công! Đơn hàng ' + courseLabel + ' cho ' + order.buyerName + ' đã hoàn tất. Hoa hồng ' + formatVND(order.commission) + ' đã được ghi nhận.');
+  await postSystemChatNote(order.affiliateUid, '🎉 Giao dịch thành công! Đơn hàng ' + courseLabel + ' cho ' + order.buyerName + ' đã hoàn tất. Hoa hồng ' + formatVND(order.commission) + ' đã được ghi nhận.');
   showToast('Đã xác nhận giao dịch thành công!','ok');
 }
 
