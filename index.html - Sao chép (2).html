@@ -3,7 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudyHub — MKG101 · ACC101 · ECO111 · SSA101</title>
+<title>StudyHub — Phần mềm học tập, ôn luyện đề thi</title>
+<meta name="description" content="StudyHub — phần mềm học tập và ôn luyện đề thi trắc nghiệm thông minh: thẻ ghi nhớ, học theo phương pháp lặp lại ngắt quãng, kiểm tra thử có tính giờ.">
+
+<!-- Open Graph (Facebook, Zalo, Messenger...) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="StudyHub — Phần mềm học tập, ôn luyện đề thi">
+<meta property="og:description" content="Ôn luyện trắc nghiệm thông minh: thẻ ghi nhớ, học ghi nhớ sâu, kiểm tra thử có tính giờ — đầy đủ các môn học.">
+<meta property="og:image" content="https://api.dicebear.com/7.x/shapes/png?seed=studyhub&backgroundColor=6366f1,0ea5e9,10b981">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="StudyHub — Phần mềm học tập, ôn luyện đề thi">
+<meta name="twitter:description" content="Ôn luyện trắc nghiệm thông minh: thẻ ghi nhớ, học ghi nhớ sâu, kiểm tra thử có tính giờ — đầy đủ các môn học.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='50%25' stop-color='%230ea5e9'/%3E%3Cstop offset='100%25' stop-color='%2310b981'/%3E%3C/linearGradient%3E%3ClinearGradient id='shine' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.25'/%3E%3Cstop offset='100%25' stop-color='%23ffffff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23bg)'/%3E%3Crect width='64' height='64' rx='14' fill='url(%23shine)'/%3E%3Cg transform='translate(10,11)'%3E%3Crect x='2' y='2' width='28' height='36' rx='4' fill='%23ffffff' opacity='0.18'/%3E%3Crect x='0' y='0' width='28' height='36' rx='4' fill='none' stroke='%23ffffff' stroke-width='2.2' opacity='0.9'/%3E%3Cline x1='6' y1='10' x2='22' y2='10' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' opacity='0.9'/%3E%3Cline x1='6' y1='16' x2='22' y2='16' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' opacity='0.9'/%3E%3Cline x1='6' y1='22' x2='16' y2='22' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' opacity='0.9'/%3E%3Ccircle cx='33' cy='30' r='9' fill='%23f59e0b' opacity='0.95'/%3E%3Ccircle cx='33' cy='30' r='3.5' fill='%23ffffff' opacity='0.95'/%3E%3Cline x1='38.5' y1='24.5' x2='40.5' y2='22.5' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' opacity='0.85'/%3E%3Cline x1='39.5' y1='30' x2='42' y2='30' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' opacity='0.85'/%3E%3Cline x1='38.5' y1='35.5' x2='40.5' y2='37.5' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' opacity='0.85'/%3E%3C/g%3E%3C/svg%3E">
 <meta name="theme-color" content="#6366f1">
 <meta name="apple-mobile-web-app-title" content="StudyHub">
@@ -97,6 +109,19 @@ body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans
 
 /* ─── NOISE TEXTURE ─── */
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
+
+/* ─── WEBVIEW WARNING (Zalo/Messenger embedded browser block) ─── */
+.webview-warning{display:none;position:fixed;inset:0;z-index:999;background:var(--bg);align-items:center;justify-content:center;padding:24px}
+.webview-warning.show{display:flex}
+.webview-warning-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:36px 28px;max-width:440px;width:100%;text-align:center;animation:fadeUp .4s ease}
+.webview-warning-icon{font-size:52px;margin-bottom:16px}
+.webview-warning-card h2{font-size:19px;font-weight:800;margin-bottom:14px;color:var(--text)}
+.webview-warning-card p{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:14px}
+.webview-warning-step{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;text-align:left!important}
+.webview-warning-step b{color:var(--gold)}
+.webview-copy-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--acc1),var(--acc2));border:none;border-radius:14px;color:#fff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin:18px 0 12px;transition:all .2s}
+.webview-copy-btn:hover{opacity:.9;transform:translateY(-1px)}
+.webview-warning-hint{font-size:12px!important;color:var(--muted2)!important;margin-bottom:0!important}
 
 /* ─── LOGIN ─── */
 .login-page{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg)}
@@ -649,6 +674,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .aff-course-select{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:11px 14px;color:var(--text);font-family:inherit;font-size:13px;outline:none;cursor:pointer}
 
 /* Multi-course selection checkboxes for sale reporting */
+.aff-course-search-input{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:12.5px;outline:none;margin-bottom:10px;transition:border-color .2s}
+.aff-course-search-input:focus{border-color:#ec4899}
+.aff-course-search-input::placeholder{color:var(--muted2)}
+.aff-course-search-empty{text-align:center;font-size:12px;color:var(--muted);padding:20px 0}
 .aff-course-checks{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;padding-right:2px}
 .aff-course-check-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:10px 14px;cursor:pointer;font-size:12.5px;color:var(--text);transition:all .15s}
 .aff-course-check-row:hover{border-color:var(--border2)}
@@ -915,6 +944,60 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 </style>
 </head>
 <body>
+<!-- ══════════ WEBVIEW WARNING ══════════
+     Zalo/Facebook/Messenger mở link bằng trình duyệt nhúng (embedded webview).
+     Google CHẶN CỨNG đăng nhập Google Sign-In từ webview vì lý do an ninh
+     (đây là chính sách của Google áp dụng cho mọi website, không thể vượt qua bằng code).
+     Màn hình này phát hiện sớm và hướng dẫn người dùng mở bằng trình duyệt thật. -->
+<div class="webview-warning" id="webviewWarning">
+  <div class="webview-warning-card">
+    <div class="webview-warning-icon">⚠️</div>
+    <h2>Vui lòng mở bằng trình duyệt</h2>
+    <p>Bạn đang mở StudyHub từ một ứng dụng nhắn tin (Zalo, Messenger...). Vì lý do an toàn, Google không cho phép đăng nhập từ trình duyệt nhúng bên trong các ứng dụng này.</p>
+    <p class="webview-warning-step"><b>Cách khắc phục:</b> nhấn vào nút <b>"⋮"</b> hoặc <b>"Mở bằng trình duyệt khác"</b> ở góc trên cùng của ứng dụng đang mở link này, chọn <b>Chrome / Safari / Cốc Cốc</b>.</p>
+    <button class="webview-copy-btn" onclick="copyStudyHubLink()" id="webviewCopyBtn">📋 Sao chép liên kết để dán vào Chrome</button>
+    <p class="webview-warning-hint">Sau khi sao chép, mở Chrome (hoặc Safari) → dán liên kết vào ô địa chỉ → Enter.</p>
+  </div>
+</div>
+<script>
+(function(){
+  var ua = navigator.userAgent || '';
+  // Các dấu hiệu nhận diện trình duyệt nhúng phổ biến tại VN: Zalo, Facebook/Messenger, một số WebView Android/iOS chung
+  var isEmbeddedWebview =
+    /Zalo/i.test(ua) ||
+    /FBAN|FBAV|FB_IAB|FBIOS/i.test(ua) ||   // Facebook & Messenger in-app browser
+    /Instagram/i.test(ua) ||
+    /Line\//i.test(ua) ||
+    (/; wv\)/i.test(ua)) ||                  // Android WebView signature
+    (/iPhone|iPad/i.test(ua) && !(/Safari/i.test(ua)) && !(/CriOS/i.test(ua))); // iOS app webview (no Safari/Chrome token)
+
+  if(isEmbeddedWebview){
+    document.getElementById('webviewWarning').classList.add('show');
+  }
+})();
+
+function copyStudyHubLink(){
+  const url = window.location.href;
+  const btn = document.getElementById('webviewCopyBtn');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(()=>{
+      btn.textContent = '✅ Đã sao chép! Mở Chrome và dán vào';
+    }).catch(()=>{ fallbackCopy(url, btn); });
+  } else {
+    fallbackCopy(url, btn);
+  }
+}
+function fallbackCopy(url, btn){
+  const ta = document.createElement('textarea');
+  ta.value = url;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); btn.textContent = '✅ Đã sao chép! Mở Chrome và dán vào'; }catch(e){}
+  document.body.removeChild(ta);
+}
+</script>
 <svg style="display:none" id="iconSpriteSheet">
 <defs>
 
@@ -5486,7 +5569,9 @@ function renderAffiliateDashboard(appData){
       <div class="aff-err" id="affOrderErr"></div>
       <div class="aff-field">
         <label>Môn học đã giới thiệu thành công (chọn 1 hoặc nhiều môn)</label>
+        <input type="text" id="affCourseSearch" class="aff-course-search-input" placeholder="🔍 Tìm tên hoặc mã môn học..." oninput="filterAffOrderCourses()"/>
         <div id="affOrderCourseChecks" class="aff-course-checks"></div>
+        <div id="affCourseSearchEmpty" class="aff-course-search-empty" style="display:none">Không tìm thấy môn học phù hợp.</div>
       </div>
       <div class="aff-order-total-box" id="affOrderTotalBox" style="display:none">
         <div class="aotb-row"><span>Số môn đã chọn</span><b id="aotbCount">0</b></div>
@@ -5514,12 +5599,15 @@ function renderAffiliateDashboard(appData){
   // Populate course checkboxes from live COURSES array — hiện kèm giá riêng từng môn
   const checksArea = document.getElementById('affOrderCourseChecks');
   checksArea.innerHTML = COURSES.map(function(c,i){
-    return '<label class="aff-course-check-row" id="acc-wrap-'+i+'">'
+    const searchKey = (c.code+' '+c.name).toLowerCase();
+    return '<label class="aff-course-check-row" id="acc-wrap-'+i+'" data-search="'+searchKey.replace(/"/g,'&quot;')+'">'
       + '<input type="checkbox" value="'+i+'" class="aff-course-checkbox" onchange="updateAffOrderTotal()"/>'
       + '<span class="acc-course-info">'+c.icon+' '+c.code+' — '+c.name+'</span>'
       + '<span class="acc-course-price">'+formatVND(c.price||DEFAULT_COURSE_PRICE)+'</span>'
       + '</label>';
   }).join('');
+  const affSearchInput = document.getElementById('affCourseSearch');
+  if(affSearchInput) affSearchInput.value = '';
 
   // Watch this affiliate's own orders for stats + history
   if(affDashboardOrdersUnsub) affDashboardOrdersUnsub();
@@ -5565,6 +5653,24 @@ function updateAffOrderTotal(){
   document.getElementById('aotbTotal').textContent = formatVND(totalPrice);
   document.getElementById('aotbCommission').textContent = formatVND(totalCommission);
   document.getElementById('aotbPayable').textContent = formatVND(totalPayable);
+}
+
+// ── Tìm kiếm/lọc danh sách môn học để báo bán hàng — chỉ ẩn/hiện DOM,
+//    KHÔNG đụng tới trạng thái checked nên không làm mất các môn đã chọn trước đó. ──
+function filterAffOrderCourses(){
+  const q = (document.getElementById('affCourseSearch')?.value || '').trim().toLowerCase();
+  const rows = document.querySelectorAll('#affOrderCourseChecks .aff-course-check-row');
+  let visibleCount = 0;
+
+  rows.forEach(row=>{
+    const haystack = row.getAttribute('data-search') || '';
+    const match = !q || haystack.includes(q);
+    row.style.display = match ? '' : 'none';
+    if(match) visibleCount++;
+  });
+
+  const emptyEl = document.getElementById('affCourseSearchEmpty');
+  if(emptyEl) emptyEl.style.display = visibleCount === 0 ? 'block' : 'none';
 }
 
 function renderAffiliateOwnStats(orders){
